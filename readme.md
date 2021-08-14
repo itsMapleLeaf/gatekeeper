@@ -83,10 +83,10 @@ const commands: CommandHandler[] = [
 
         const interaction = await context.waitForInteraction()
 
-        if (interaction?.customId === counterId) {
+        if (interaction.customId === counterId) {
           times += 1
         }
-        if (interaction?.customId === doneId) {
+        if (interaction.customId === doneId) {
           break
         }
       }
