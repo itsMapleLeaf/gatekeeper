@@ -2,7 +2,7 @@
   "name": "@itsmapleleaf/gatekeeper",
   "description": "a slash command and interaction framework for discord.js",
   "authors": "MapleLeaf",
-  "version": "0.0.0-alpha.1",
+  "version": "0.0.0-alpha.2",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "files": [
