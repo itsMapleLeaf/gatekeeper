@@ -1,0 +1,19 @@
+{
+  "name": "@itsmapleleaf/gatekeeper",
+  "description": "a slash command and interaction framework for discord.js",
+  "authors": "MapleLeaf",
+  "version": "0.0.0-alpha.0",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "discord.js": ">=13"
+  },
+  "devDependencies": {
+    "discord.js": "^13.1.0",
+    "typescript": "4.4.1-rc"
+  }
+}
