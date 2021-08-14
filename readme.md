@@ -53,46 +53,38 @@ const commands: CommandHandler[] = [
 creates a `/counter` command which responds with a counter button. each counter button has its own count. try running it multiple times!
 
 ```js
-const commands: CommandHandler[] = [
-  {
-    name: "counter",
-    description: "make a counter",
-    async run(context) {
-      const reply = await context.addReply("ok one sec")
-      let times = 0
+export const counterCommand = {
+  name: "counter",
+  description: "make a counter",
+  async run(context) {
+    const reply = await context.defer()
 
-      while (true) {
-        const counterId = `counter-${Math.random()}`
-        const doneId = `done-${Math.random()}`
+    let count = 0
+    let running = true
 
-        await reply.edit(
-          `button pressed ${times} times`,
-          actionRowComponent(
-            buttonComponent({
-              style: "PRIMARY",
-              label: "press it",
-              customId: counterId,
-            }),
-            buttonComponent({
-              style: "PRIMARY",
-              label: "i'm bored",
-              customId: doneId,
-            })
-          )
+    do {
+      await reply.edit(
+        `button pressed ${count} times`,
+        actionRowComponent(
+          buttonComponent({
+            style: "PRIMARY",
+            label: "press it",
+            onClick: () => {
+              count += 1
+            },
+          }),
+          buttonComponent({
+            style: "PRIMARY",
+            label: "i'm bored",
+            onClick: () => {
+              running = false
+            },
+          })
         )
+      )
+    } while (running)
 
-        const interaction = await context.waitForInteraction()
-
-        if (interaction.customId === counterId) {
-          times += 1
-        }
-        if (interaction.customId === doneId) {
-          break
-        }
-      }
-
-      await reply.edit("well fine then")
-    },
+    await reply.edit("well fine then")
   },
-]
+}
 ```
