@@ -18,7 +18,8 @@
   },
   "devDependencies": {
     "discord.js": "^13.1.0",
-    "typescript": "4.4.1-rc"
+    "typescript": "4.4.1-rc",
+    "@types/node": "16.6.1"
   },
   "publishConfig": {
     "access": "public"

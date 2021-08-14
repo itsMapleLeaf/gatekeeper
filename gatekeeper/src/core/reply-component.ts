@@ -8,6 +8,7 @@ import type {
   MessageSelectMenuOptions,
   MessageSelectOptionData,
 } from "discord.js"
+import { randomUUID } from "node:crypto"
 import { isObject, isString, isTruthy } from "../internal/helpers.js"
 import type { Falsy } from "../internal/types.js"
 
@@ -16,22 +17,28 @@ export type ReplyComponent =
   | { type: "embed"; embed: MessageEmbedOptions | MessageEmbed }
   | { type: "actionRow"; children: ActionRowChild[] }
 
+export type ReplyComponentOfType<T> = Extract<ReplyComponent, { type: T }>
+
 export type ReplyComponentArgs = (string | ReplyComponent)[]
 
 export type ActionRowChild = SelectMenuComponent | ButtonComponent
 
-type ButtonComponent = {
+export type ButtonComponent = {
   type: "button"
-  customId: string
   style: MessageButtonStyle
-  label?: string
+  label: string
   emoji?: EmojiResolvable
+  onClick: () => void
 }
 
-type SelectMenuComponent = {
+export type SelectMenuComponent = {
   type: "selectMenu"
-  customId: string
   options: MessageSelectOptionData[]
+  selected?: string | string[] | undefined
+  placeholder?: string | undefined
+  minValues?: number | undefined
+  maxValues?: number | undefined
+  onSelect: (values: string[]) => void
 }
 
 export function embedComponent(
@@ -55,16 +62,25 @@ export function buttonComponent(
   return { type: "button", ...options }
 }
 
-export function selectMenuComponent(options: {
-  customId: string
-  options: MessageSelectOptionData[]
-}): SelectMenuComponent {
-  return { type: "selectMenu", ...options }
+export function selectMenuComponent({
+  options,
+  ...args
+}: Omit<SelectMenuComponent, "type">): SelectMenuComponent {
+  const selectedOptions = [args.selected].flat().filter(isString)
+
+  return {
+    ...args,
+    type: "selectMenu",
+    options: options.map((option) => ({
+      ...option,
+      default: option.default ?? selectedOptions.includes(option.value),
+    })),
+  }
 }
 
-export function createReplyOptions(
-  components: ReplyComponent[]
-): InteractionReplyOptions {
+export function processReplyComponents(components: ReplyComponent[]) {
+  const messageComponentIds = new Map<ActionRowChild, string>()
+
   const content = components.filter(isString).join("\n")
 
   const embeds = components
@@ -80,10 +96,14 @@ export function createReplyOptions(
         type: "ACTION_ROW",
         components: component.children.map<MessageSelectMenuOptions>(
           (child) => {
+            const customId = randomUUID()
+
+            messageComponentIds.set(child, customId)
+
             if (child.type === "selectMenu") {
-              return { ...child, type: "SELECT_MENU" }
+              return { ...child, type: "SELECT_MENU", customId }
             } else {
-              return { ...child, type: "BUTTON" }
+              return { ...child, type: "BUTTON", customId }
             }
           }
         ),
@@ -91,5 +111,12 @@ export function createReplyOptions(
     })
     .filter(isTruthy)
 
-  return { content, embeds, components: replyComponents }
+  const options: InteractionReplyOptions = {
+    // workaround: can't send components by themselves
+    content: content || "_ _",
+    embeds,
+    components: replyComponents,
+  }
+
+  return { replyOptions: options, messageComponentIds }
 }

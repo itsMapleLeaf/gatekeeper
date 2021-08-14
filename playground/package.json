@@ -2,7 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nodemon ./bot.js",
+    "dev": "nodemon -w ./ -w ../gatekeeper/dist ./bot.js",
     "start": "node ./bot.js"
   },
   "dependencies": {

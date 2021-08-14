@@ -6,6 +6,8 @@ import {
 } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 import "dotenv/config.js"
+import { counterCommand } from "./counter.js"
+import { selectCommand } from "./select.js"
 
 /** @type {import("@itsmapleleaf/gatekeeper").CommandHandler[]} */
 const commands = [
@@ -18,46 +20,37 @@ const commands = [
   },
 
   {
-    name: "counter",
-    description: "make a counter",
-    run: async (context) => {
-      const reply = await context.defer()
+    name: "button",
+    description: "testing a button",
+    async run(context) {
+      let secret = "you clicked nothing???"
 
-      let times = 0
-
-      while (true) {
-        const counterId = `counter-${Math.random()}`
-        const doneId = `done-${Math.random()}`
-
-        await reply.edit(
-          `button pressed ${times} times`,
-          actionRowComponent(
-            buttonComponent({
-              style: "PRIMARY",
-              label: "press it",
-              customId: counterId,
-            }),
-            buttonComponent({
-              style: "PRIMARY",
-              label: "i'm bored",
-              customId: doneId,
-            })
-          )
+      const reply = await context.addReply(
+        "button",
+        actionRowComponent(
+          buttonComponent({
+            style: "PRIMARY",
+            label: "first",
+            onClick: () => {
+              secret = "you clicked the first"
+            },
+          }),
+          buttonComponent({
+            style: "SECONDARY",
+            label: "second",
+            onClick: () => {
+              secret = "you clicked the second"
+            },
+          })
         )
+      )
 
-        const interaction = await context.waitForInteraction()
-
-        if (interaction.customId === counterId) {
-          times += 1
-        }
-        if (interaction.customId === doneId) {
-          break
-        }
-      }
-
-      await reply.edit("well fine then")
+      await reply.edit(secret)
     },
   },
+
+  selectCommand,
+  counterCommand,
 ]
 
 const client = new Client({

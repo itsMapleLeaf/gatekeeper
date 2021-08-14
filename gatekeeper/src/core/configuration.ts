@@ -1,6 +1,5 @@
 import type {
   Client,
-  CommandInteraction,
   GuildMember,
   MessageComponentInteraction,
   Snowflake,
@@ -8,71 +7,10 @@ import type {
 import { AsyncQueue } from "../internal/async-queue.js"
 import { bindClientEvents } from "../internal/client-events.js"
 import {
-  addOrCreateReply,
-  getComponentInteractionInfo,
-} from "../internal/interaction-helpers"
-import type { CommandHandler, CommandHandlerContext } from "./command-handler"
-import { createReplyOptions } from "./reply-component"
-
-const interactionQueue = new AsyncQueue<MessageComponentInteraction>()
-
-function createCommandHandlerContext(
-  interaction: CommandInteraction,
-  member: GuildMember
-): CommandHandlerContext {
-  return {
-    member,
-
-    async addReply(...components) {
-      const message = await addOrCreateReply(
-        interaction,
-        createReplyOptions(components)
-      )
-
-      return {
-        async edit(...components) {
-          await message.edit(createReplyOptions(components))
-        },
-        async delete() {
-          await message.delete()
-        },
-      }
-    },
-
-    async addEphemeralReply(...components) {
-      const message = await addOrCreateReply(interaction, {
-        ...createReplyOptions(components),
-        ephemeral: true,
-      })
-
-      return {
-        async edit(...components) {
-          await message.edit(createReplyOptions(components))
-        },
-      }
-    },
-
-    async defer() {
-      await interaction.deferReply({
-        fetchReply: true,
-      })
-
-      return {
-        async edit(...components) {
-          await interaction.editReply(createReplyOptions(components))
-        },
-        async delete() {
-          await interaction.deleteReply()
-        },
-      }
-    },
-
-    async waitForInteraction() {
-      const interaction = await interactionQueue.pop()
-      return getComponentInteractionInfo(interaction)
-    },
-  }
-}
+  CommandHandler,
+  CommandHandlerContext,
+  createCommandHandlerContext,
+} from "./command-handler"
 
 async function syncCommands(
   bot: Client,
@@ -94,6 +32,8 @@ async function syncCommands(
 }
 
 export function applyCommands(client: Client, commands: CommandHandler[]) {
+  const interactionQueue = new AsyncQueue<MessageComponentInteraction>()
+
   bindClientEvents(client, {
     async ready() {
       console.info("Ready")
@@ -118,7 +58,8 @@ export function applyCommands(client: Client, commands: CommandHandler[]) {
 
         const context: CommandHandlerContext = createCommandHandlerContext(
           interaction,
-          interaction.member as GuildMember
+          interaction.member as GuildMember,
+          interactionQueue
         )
 
         await handler.run(context)
