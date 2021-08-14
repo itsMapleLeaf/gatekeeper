@@ -126,8 +126,8 @@ export function applyCommands(client: Client, commands: CommandHandler[]) {
       }
 
       if (interaction.isMessageComponent()) {
-        await interaction.deferUpdate()
         interactionQueue.add(interaction)
+        await interaction.deferUpdate()
       }
     },
   })
