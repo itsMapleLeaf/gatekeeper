@@ -20,7 +20,7 @@ export type CommandHandlerContext = {
     ...components: ReplyComponentArgs
   ) => Promise<EphemeralCommandReply>
   defer: () => Promise<CommandReply>
-  waitForInteraction: () => Promise<ComponentInteraction | undefined>
+  waitForInteraction: () => Promise<ComponentInteraction>
 }
 
 export type EphemeralCommandReply = {

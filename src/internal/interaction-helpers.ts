@@ -1,6 +1,5 @@
 import type {
   CommandInteraction,
-  Interaction,
   InteractionReplyOptions,
   Message,
   MessageComponentInteraction,
@@ -41,13 +40,11 @@ export function addOrCreateReply(
 }
 
 export function getComponentInteractionInfo(
-  interaction: Interaction
-): ComponentInteraction | undefined {
-  if (interaction.isSelectMenu() || interaction.isButton()) {
-    return {
-      customId: interaction.customId,
-      values: interaction.isSelectMenu() ? interaction.values : [],
-      defer: () => interaction.deferUpdate(),
-    }
+  interaction: MessageComponentInteraction
+): ComponentInteraction {
+  return {
+    customId: interaction.customId,
+    values: interaction.isSelectMenu() ? interaction.values : [],
+    defer: () => interaction.deferUpdate(),
   }
 }
