@@ -2,7 +2,6 @@ import type {
   Client,
   CommandInteraction,
   GuildMember,
-  Message,
   MessageComponentInteraction,
   Snowflake,
 } from "discord.js"
@@ -54,16 +53,16 @@ function createCommandHandlerContext(
     },
 
     async defer() {
-      const message = (await interaction.deferReply({
+      await interaction.deferReply({
         fetchReply: true,
-      })) as Message
+      })
 
       return {
         async edit(...components) {
-          await message.edit(createReplyOptions(components))
+          await interaction.editReply(createReplyOptions(components))
         },
         async delete() {
-          await message.delete()
+          await interaction.deleteReply()
         },
       }
     },
