@@ -9,6 +9,18 @@
     "dist"
   ],
   "repository": "itsMapleLeaf/gatekeeper",
+  "keywords": [
+    "discord",
+    "discord.js",
+    "slash",
+    "command",
+    "commands",
+    "interaction",
+    "message",
+    "component",
+    "framework",
+    "bot"
+  ],
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc"
