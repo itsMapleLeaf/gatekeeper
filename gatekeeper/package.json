@@ -8,7 +8,7 @@
   "files": [
     "dist"
   ],
-  "repository": "itsMapleLeaf/gatekeeper",
+  "repository": "https://github.com/itsMapleLeaf/gatekeeper",
   "keywords": [
     "discord",
     "discord.js",
