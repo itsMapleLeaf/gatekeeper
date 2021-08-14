@@ -5,6 +5,10 @@
   "version": "0.0.0-alpha.0",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": "itsMapleLeaf/gatekeeper",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc"
