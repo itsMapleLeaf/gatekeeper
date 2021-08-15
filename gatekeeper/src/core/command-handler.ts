@@ -25,7 +25,9 @@ export type CommandHandler = {
   run: (context: CommandHandlerContext) => void | Promise<unknown>
 }
 
-type RenderReplyFn = () => ReplyComponent[] | undefined
+type RenderReplyFn = () =>
+  | (ReplyComponent | boolean | undefined | null)[] // TODO: need to make a RenderResult type
+  | undefined
 
 export type CommandHandlerContext = {
   member: GuildMember
@@ -99,7 +101,8 @@ export function createCommandHandlerContext(
           interaction: MessageComponentInteraction,
         ) {
           const matchingComponents = components
-            ?.filter(isActionRow)
+            ?.filter(isObject)
+            .filter(isActionRow)
             .flatMap((c) => c.children)
             .filter((c) => c.customId === interaction.customId)
 
@@ -175,7 +178,8 @@ export function createCommandHandlerContext(
           interaction: MessageComponentInteraction,
         ) {
           const matchingComponents = components
-            ?.filter(isActionRow)
+            ?.filter(isObject)
+            .filter(isActionRow)
             .flatMap((c) => c.children)
             .filter((c) => c.customId === interaction.customId)
 

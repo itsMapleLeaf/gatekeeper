@@ -97,7 +97,7 @@ export function selectMenuComponent({
 }
 
 export function createInteractionReplyOptions(
-  components: ReplyComponent[],
+  components: (ReplyComponent | boolean | undefined | null)[],
 ): InteractionReplyOptions {
   const content = components.filter(isString).join("\n")
 
