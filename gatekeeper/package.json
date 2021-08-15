@@ -1,14 +1,16 @@
 {
   "name": "@itsmapleleaf/gatekeeper",
   "description": "a slash command and interaction framework for discord.js",
-  "authors": "MapleLeaf",
-  "version": "0.0.0-alpha.3",
+  "author": "itsmapleleaf",
+  "version": "0.0.0-alpha.4",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "files": [
     "dist"
   ],
   "repository": "https://github.com/itsMapleLeaf/gatekeeper",
+  "homepage": "https://github.com/itsMapleLeaf/gatekeeper#readme",
+  "bugs": "https://github.com/itsMapleLeaf/gatekeeper/issues",
   "keywords": [
     "discord",
     "discord.js",
