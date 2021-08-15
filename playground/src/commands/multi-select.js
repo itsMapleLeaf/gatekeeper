@@ -29,7 +29,7 @@ export const multiSelectCommand = defineSlashCommand({
               { label: "strawberry", value: ":strawberry:", emoji: "🍓" },
               { label: "banana", value: ":banana:", emoji: "🍌" },
               { label: "apple", value: ":apple:", emoji: "🍎" },
-              { label: "orange", value: ":orange:", emoji: "🍊" },
+              { label: "orange", value: ":tangerine:", emoji: "🍊" },
               { label: "pear", value: ":pear:", emoji: "🍐" },
               { label: "peach", value: ":peach:", emoji: "🍑" },
             ],
