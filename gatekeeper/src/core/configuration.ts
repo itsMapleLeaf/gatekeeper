@@ -57,24 +57,13 @@ export function applyCommands(client: Client, commands: CommandHandler[]) {
       }
 
       if (interaction.isMessageComponent()) {
-        // give a bit of time for the instance to handle the interaction
-        // before deferring it
-        let deferred = false
-        const timeout = setTimeout(() => {
-          interaction.deferUpdate()
-          deferred = true
-        }, 3000)
+        interaction.deferUpdate().catch(console.warn)
 
         await Promise.all(
           [...messageInstances].map((instance) =>
             instance.handleMessageComponentInteraction(interaction),
           ),
         )
-
-        if (!deferred) {
-          clearTimeout(timeout)
-          interaction.deferUpdate()
-        }
       }
     },
   })

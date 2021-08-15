@@ -5,7 +5,6 @@ import type {
   Message,
   MessageComponentInteraction,
 } from "discord.js"
-import { inspect } from "util"
 import { isObject } from "../internal/helpers.js"
 import {
   createInteractionReplyOptions,
@@ -25,14 +24,14 @@ export type CommandHandler = {
   run: (context: CommandHandlerContext) => void | Promise<unknown>
 }
 
+type RenderReplyFn = () => ReplyComponent[] | undefined
+
 export type CommandHandlerContext = {
   member: GuildMember
-  createReply: (
-    render: () => ReplyComponent[] | undefined,
-  ) => Promise<CommandReplyHandle>
+  createReply: (render: RenderReplyFn) => Promise<CommandReplyHandle>
   createEphemeralReply: (
-    render: () => ReplyComponent[] | undefined,
-  ) => Promise<CommandReplyHandle>
+    render: RenderReplyFn,
+  ) => Promise<EphemeralCommandReplyHandle>
   // defer: () => Promise<CommandReply>
 }
 
@@ -43,10 +42,12 @@ export type CommandReplyInstance = {
 }
 
 export type EphemeralCommandReplyHandle = {
-  delete: () => Promise<void>
+  update: () => Promise<void>
 }
 
-export type CommandReplyHandle = EphemeralCommandReplyHandle & {}
+export type CommandReplyHandle = EphemeralCommandReplyHandle & {
+  delete: () => Promise<void>
+}
 
 const isActionRow = (
   component: ReplyComponent,
@@ -63,15 +64,29 @@ export function createCommandHandlerContext(
 
     async createReply(render) {
       let components = render()
-      console.log("components", inspect(components, { depth: undefined }))
       if (!components) {
-        return { async delete() {} }
+        return {
+          async delete() {},
+          async update() {},
+        }
       }
 
       const message = (await addReply(
         interaction,
         createInteractionReplyOptions(components),
       )) as Message
+
+      async function rerender() {
+        components = render()
+        if (components) {
+          await message.edit(createInteractionReplyOptions(components))
+        } else {
+          instances.delete(instance)
+          try {
+            await message.delete()
+          } catch {}
+        }
+      }
 
       const instance: CommandReplyInstance = {
         async handleMessageComponentInteraction(
@@ -94,15 +109,7 @@ export function createCommandHandlerContext(
             }
           }
 
-          components = render()
-          if (components) {
-            await message.edit(createInteractionReplyOptions(components))
-          } else {
-            instances.delete(instance)
-            try {
-              await message.delete()
-            } catch {}
-          }
+          await rerender()
         },
       }
 
@@ -114,6 +121,9 @@ export function createCommandHandlerContext(
           try {
             await message.delete()
           } catch {}
+        },
+        async update() {
+          await rerender()
         },
       }
     },
