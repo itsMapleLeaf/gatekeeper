@@ -70,7 +70,7 @@ type SelectMenuComponentArgs = Omit<
   SelectMenuComponent,
   "type" | "customId" | "selected"
 > & {
-  selected: Iterable<string> | string
+  selected?: Iterable<string> | string | undefined
 }
 
 export function selectMenuComponent({
@@ -79,7 +79,11 @@ export function selectMenuComponent({
   ...args
 }: SelectMenuComponentArgs): SelectMenuComponent {
   const selectedOptions =
-    typeof selected === "string" ? [selected] : [...selected]
+    typeof selected === "string"
+      ? [selected]
+      : selected != null
+      ? [...selected]
+      : []
 
   return {
     ...args,
