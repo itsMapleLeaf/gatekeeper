@@ -1,8 +1,10 @@
 # hey
 
-this is a ✨reactive✨ interaction framework for discord.js and it's very not done don't use it
+gatekeeper is a ✨reactive✨ interaction framework for discord.js and it's very not done don't use it
 
 maybe more docs later
+
+![showcase](./showcase.gif)
 
 ## todo
 
