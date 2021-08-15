@@ -15,7 +15,7 @@ export const selectCommand = {
 
     await context.createReply(() => {
       if (result) {
-        return [result]
+        return [`yeah, i'm a ${result}`]
       }
 
       return [

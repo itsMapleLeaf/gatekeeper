@@ -14,10 +14,6 @@ export const counterCommand = {
         return ["well fine then"]
       }
 
-      if (state === "deleted") {
-        return
-      }
-
       return [
         `button pressed ${count} times`,
         actionRowComponent(
@@ -34,11 +30,8 @@ export const counterCommand = {
             onClick: async () => {
               state = "done"
               await reply.update()
-
               await wait(1000)
-
-              state = "deleted"
-              await reply.update()
+              await reply.delete()
             },
           }),
         ),

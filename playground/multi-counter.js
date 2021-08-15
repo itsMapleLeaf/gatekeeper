@@ -9,8 +9,7 @@ export const multiCounterCommand = {
     /** @type {import("@itsmapleleaf/gatekeeper").CommandReplyHandle[]} */
     const replies = []
 
-    // simple usage
-    /** @type {'active' | 'cleaningUp' | 'done' | 'deleted'} */
+    /** @type {'active' | 'cleaningUp' | 'done'} */
     let state = "active"
     const reply = await context.createReply(() => {
       const cleanup = async () => {
@@ -25,9 +24,7 @@ export const multiCounterCommand = {
         await reply.update()
 
         await wait(1000)
-
-        state = "deleted"
-        await reply.update()
+        await reply.delete()
       }
 
       if (state === "cleaningUp") {
@@ -36,10 +33,6 @@ export const multiCounterCommand = {
 
       if (state === "done") {
         return ["done"]
-      }
-
-      if (state === "deleted") {
-        return
       }
 
       return [

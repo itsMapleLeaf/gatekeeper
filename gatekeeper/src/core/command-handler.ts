@@ -77,13 +77,18 @@ export function createCommandHandlerContext(
         createInteractionReplyOptions(components),
       )) as Message
 
+      let deleted = false
+
       async function rerender() {
+        if (deleted) return
+
         components = render()
         if (components) {
           await message.edit(createInteractionReplyOptions(components))
         } else {
           replyManager.remove(instance)
           try {
+            deleted = true
             await message.delete()
           } catch {}
         }
@@ -116,6 +121,7 @@ export function createCommandHandlerContext(
 
       return {
         async delete() {
+          deleted = true
           replyManager.remove(instance)
           try {
             await message.delete()
