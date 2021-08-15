@@ -1,18 +1,19 @@
 # hey
 
-this is a slash command framework for discord.js and it's very not done don't use it
+this is a ✨reactive✨ interaction framework for discord.js and it's very not done don't use it
 
 maybe more docs later
+
+## todo
+
+- command arguments
+- pass more info to onClick/onSelect handlers, e.g. member
+- deferred reply
 
 ## usage
 
 ```ts
-import {
-  actionRowComponent,
-  applyCommands,
-  buttonComponent,
-  CommandHandler,
-} from "@itsmapleleaf/gatekeeper"
+import { applyCommands, CommandHandler } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 
 const commands: CommandHandler[] = [
@@ -34,15 +35,17 @@ await client.login(process.env.BOT_TOKEN).catch(console.error)
 
 ## examples
 
+you can find some example code in the [playground](./tree/main/playground) directory
+
 ### ping
 
-```ts
+```js
 const commands: CommandHandler[] = [
   {
     name: "ping",
     description: "pong",
     async run(context) {
-      await context.addReply("pong!")
+      await context.createReply(() => ["pong!"])
     },
   },
 ]
@@ -57,13 +60,19 @@ export const counterCommand = {
   name: "counter",
   description: "make a counter",
   async run(context) {
-    const reply = await context.defer()
-
     let count = 0
-    let running = true
+    let state = "running"
 
-    do {
-      await reply.edit(
+    const reply = await context.createReply(() => {
+      if (state === "done") {
+        return ["well fine then"]
+      }
+
+      if (state === "deleted") {
+        return
+      }
+
+      return [
         `button pressed ${count} times`,
         actionRowComponent(
           buttonComponent({
@@ -76,15 +85,19 @@ export const counterCommand = {
           buttonComponent({
             style: "PRIMARY",
             label: "i'm bored",
-            onClick: () => {
-              running = false
-            },
-          })
-        )
-      )
-    } while (running)
+            onClick: async () => {
+              state = "done"
+              await reply.update()
 
-    await reply.edit("well fine then")
+              await wait(1000)
+
+              state = "deleted"
+              await reply.update()
+            },
+          }),
+        ),
+      ]
+    })
   },
 }
 ```
