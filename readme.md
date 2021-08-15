@@ -35,7 +35,7 @@ await client.login(process.env.BOT_TOKEN).catch(console.error)
 
 ## examples
 
-you can find some example code in the [playground](./tree/main/playground) directory
+you can find some example code in the [playground](./playground) directory
 
 ### ping
 
