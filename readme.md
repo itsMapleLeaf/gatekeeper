@@ -10,6 +10,7 @@ maybe more docs later
 - pass more info to onClick/onSelect handlers, e.g. member
 - deferred reply
 - cleanup of inactive command instances after 15 mins
+- allow publishing global commands _and_ guild commands
 
 ## usage
 
