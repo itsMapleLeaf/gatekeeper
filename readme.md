@@ -40,7 +40,7 @@ client.on("ready", () => {
   console.info("bot running ayy lmao")
 })
 
-await client.login(process.env.BOT_TOKEN).catch(console.error)
+client.login(process.env.BOT_TOKEN).catch(console.error)
 ```
 
 ## examples
