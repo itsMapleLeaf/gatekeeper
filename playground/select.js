@@ -10,17 +10,18 @@ export const selectCommand = {
   name: "select",
   description: "testing a select",
   async run(context) {
-    const reply = await context.defer()
+    let selected = ""
+    let result = ""
 
-    /** @type {string | undefined} */
-    let selected
-    let running = true
+    await context.createReply(() => {
+      if (result) {
+        return [result]
+      }
 
-    while (running) {
-      await reply.edit(
+      return [
         actionRowComponent(
           selectMenuComponent({
-            selected,
+            selected: selected || undefined,
             options: [
               {
                 label: "die",
@@ -41,20 +42,18 @@ export const selectCommand = {
             onSelect: ([value]) => {
               selected = value
             },
-          })
+          }),
         ),
         actionRowComponent(
           buttonComponent({
             style: "SECONDARY",
             label: "done",
             onClick: () => {
-              running = false
+              result = selected
             },
-          })
-        )
-      )
-    }
-
-    await reply.edit(`yeah, i'm a ${selected}`)
+          }),
+        ),
+      ]
+    })
   },
 }

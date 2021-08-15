@@ -1,17 +1,24 @@
 import { actionRowComponent, buttonComponent } from "@itsmapleleaf/gatekeeper"
+import { wait } from "./wait.js"
 
 /** @type {import("@itsmapleleaf/gatekeeper").CommandHandler} */
 export const counterCommand = {
   name: "counter",
   description: "make a counter",
   async run(context) {
-    const reply = await context.defer()
-
     let count = 0
-    let running = true
+    let state = "running"
 
-    do {
-      await reply.edit(
+    const reply = await context.createReply(() => {
+      if (state === "done") {
+        return ["well fine then"]
+      }
+
+      if (state === "deleted") {
+        return
+      }
+
+      return [
         `button pressed ${count} times`,
         actionRowComponent(
           buttonComponent({
@@ -24,14 +31,18 @@ export const counterCommand = {
           buttonComponent({
             style: "PRIMARY",
             label: "i'm bored",
-            onClick: () => {
-              running = false
-            },
-          })
-        )
-      )
-    } while (running)
+            onClick: async () => {
+              state = "done"
+              await reply.update()
 
-    await reply.edit("well fine then")
+              await wait(1000)
+
+              state = "deleted"
+              await reply.update()
+            },
+          }),
+        ),
+      ]
+    })
   },
 }
