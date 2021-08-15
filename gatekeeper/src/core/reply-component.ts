@@ -19,6 +19,16 @@ export type ReplyComponent =
 
 export type ReplyComponentOfType<T> = Extract<ReplyComponent, { type: T }>
 
+export type RenderReplyFn = () => RenderResult
+
+export type RenderResult =
+  | ReplyComponent
+  | number
+  | boolean
+  | undefined
+  | null
+  | RenderResult[]
+
 export type ActionRowChild = SelectMenuComponent | ButtonComponent
 
 export type ButtonComponent = {
@@ -96,8 +106,27 @@ export function selectMenuComponent({
   }
 }
 
+export function isActionRow(
+  component: ReplyComponent,
+): component is ReplyComponentOfType<"actionRow"> {
+  return isObject(component) && component.type === "actionRow"
+}
+
+export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
+  if (Array.isArray(result)) return result.flatMap(flattenRenderResult)
+  if (isObject(result) || isString(result)) return [result]
+  if (typeof result === "number") return [String(result)]
+  return []
+}
+
+export function getInteractiveComponents(result: RenderResult) {
+  return flattenRenderResult(result)
+    .filter(isActionRow)
+    .flatMap((actionRow) => actionRow.children)
+}
+
 export function createInteractionReplyOptions(
-  components: (ReplyComponent | boolean | undefined | null)[],
+  components: ReplyComponent[],
 ): InteractionReplyOptions {
   const content = components.filter(isString).join("\n")
 

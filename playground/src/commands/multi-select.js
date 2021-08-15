@@ -2,11 +2,11 @@
 import {
   actionRowComponent,
   buttonComponent,
+  defineSlashCommand,
   selectMenuComponent,
 } from "@itsmapleleaf/gatekeeper"
 
-/** @type {import("@itsmapleleaf/gatekeeper").CommandHandler} */
-export const multiSelectCommand = {
+export const multiSelectCommand = defineSlashCommand({
   name: "multi-select",
   description: "multiple selections",
   async run(context) {
@@ -51,4 +51,4 @@ export const multiSelectCommand = {
       ]
     })
   },
-}
+})

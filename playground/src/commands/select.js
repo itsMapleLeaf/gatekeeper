@@ -2,11 +2,11 @@
 import {
   actionRowComponent,
   buttonComponent,
+  defineSlashCommand,
   selectMenuComponent,
 } from "@itsmapleleaf/gatekeeper"
 
-/** @type {import("@itsmapleleaf/gatekeeper").CommandHandler} */
-export const selectCommand = {
+export const selectCommand = defineSlashCommand({
   name: "select",
   description: "testing a select",
   async run(context) {
@@ -56,4 +56,4 @@ export const selectCommand = {
       ]
     })
   },
-}
+})

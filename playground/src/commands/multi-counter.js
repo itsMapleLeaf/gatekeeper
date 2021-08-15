@@ -1,12 +1,15 @@
-import { actionRowComponent, buttonComponent } from "@itsmapleleaf/gatekeeper"
-import { wait } from "./wait.js"
+import {
+  actionRowComponent,
+  buttonComponent,
+  defineSlashCommand,
+} from "@itsmapleleaf/gatekeeper"
+import { wait } from "../wait.js"
 
-/** @type {import("@itsmapleleaf/gatekeeper").CommandHandler} */
-export const multiCounterCommand = {
+export const multiCounterCommand = defineSlashCommand({
   name: "multi-counter",
   description: "a counter on sterroids",
   async run(context) {
-    /** @type {import("@itsmapleleaf/gatekeeper").CommandReplyHandle[]} */
+    /** @type {import("@itsmapleleaf/gatekeeper").SlashCommandReplyHandle[]} */
     const replies = []
 
     /** @type {'active' | 'cleaningUp' | 'done'} */
@@ -53,9 +56,9 @@ export const multiCounterCommand = {
       ]
     })
   },
-}
+})
 
-/** @param {import("@itsmapleleaf/gatekeeper").CommandHandlerContext} context */
+/** @param {import("@itsmapleleaf/gatekeeper").SlashCommandContext<any>} context */
 async function createCounterReply(context) {
   let count = 0
   let finished = false

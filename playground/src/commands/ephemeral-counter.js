@@ -1,7 +1,10 @@
-import { actionRowComponent, buttonComponent } from "@itsmapleleaf/gatekeeper"
+import {
+  actionRowComponent,
+  buttonComponent,
+  defineSlashCommand,
+} from "@itsmapleleaf/gatekeeper"
 
-/** @type {import("@itsmapleleaf/gatekeeper").CommandHandler} */
-export const ephemeralCounterCommand = {
+export const ephemeralCounterCommand = defineSlashCommand({
   name: "ephemeral-counter",
   description: "a counter, but private",
   async run(context) {
@@ -21,4 +24,4 @@ export const ephemeralCounterCommand = {
       ]
     })
   },
-}
+})

@@ -1,8 +1,11 @@
-import { actionRowComponent, buttonComponent } from "@itsmapleleaf/gatekeeper"
-import { wait } from "./wait.js"
+import {
+  actionRowComponent,
+  buttonComponent,
+  defineSlashCommand,
+} from "@itsmapleleaf/gatekeeper"
+import { wait } from "../wait.js"
 
-/** @type {import("@itsmapleleaf/gatekeeper").CommandHandler} */
-export const counterCommand = {
+export const counterCommand = defineSlashCommand({
   name: "counter",
   description: "make a counter",
   async run(context) {
@@ -38,4 +41,4 @@ export const counterCommand = {
       ]
     })
   },
-}
+})
