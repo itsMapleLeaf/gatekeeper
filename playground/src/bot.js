@@ -37,6 +37,9 @@ manager
   .addSlashCommand(multiCounterCommand)
   .addSlashCommand(ephemeralCounterCommand)
   .addSlashCommand(doubleCommand)
-  .useClient(client, { createGuildCommands: isDev })
+  .useClient(client, {
+    useGlobalCommands: false,
+    useGuildCommands: true,
+  })
 
 await client.login(process.env.BOT_TOKEN).catch(console.error)

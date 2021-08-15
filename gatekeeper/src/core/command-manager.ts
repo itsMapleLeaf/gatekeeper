@@ -18,8 +18,8 @@ type DiscordCommandManager =
   | Discord.GuildApplicationCommandManager
 
 type UseClientOptions = {
-  debug?: boolean
-  createGuildCommands?: boolean
+  useGlobalCommands?: boolean
+  useGuildCommands?: boolean
 }
 
 export class CommandManager {
@@ -43,37 +43,47 @@ export class CommandManager {
 
   useClient(
     client: Discord.Client,
-    { createGuildCommands = false }: UseClientOptions = {},
+    {
+      useGlobalCommands = true,
+      useGuildCommands = false,
+    }: UseClientOptions = {},
   ) {
+    const syncGuildCommands = async (guild: Discord.Guild) => {
+      await guild.commands.fetch()
+      if (useGuildCommands) {
+        this.#logger.info(`Syncing commands for guild "${guild.name}"...`)
+        await this.#syncCommands(guild.commands)
+        this.#logger.info(`Syncing commands for guild "${guild.name}"... done`)
+      } else {
+        this.#logger.info(`Removing commands for guild "${guild.name}"...`)
+        await this.#removeAllCommands(guild.commands)
+        this.#logger.info(`Removing commands for guild "${guild.name}"... done`)
+      }
+    }
+
     client.on("ready", async () => {
       this.#logger.info("Client ready")
 
       if (client.application) {
-        this.#logger.info("Syncing global commands...")
-        await client.application.commands.fetch()
-        await this.#syncCommands(client.application.commands)
-        this.#logger.info("Syncing global commands... done")
+        if (useGlobalCommands) {
+          this.#logger.info("Syncing global commands...")
+          await client.application.commands.fetch()
+          await this.#syncCommands(client.application.commands)
+          this.#logger.info("Syncing global commands... done")
+        } else {
+          this.#logger.info("Removing global commands...")
+          await this.#removeAllCommands(client.application.commands)
+          this.#logger.info("Removing global commands... done")
+        }
       }
 
       for (const guild of client.guilds.cache.values()) {
-        if (createGuildCommands) {
-          this.#logger.info(`Syncing commands for guild "${guild.name}"...`)
-          await guild.commands.fetch()
-          await this.#syncCommands(guild.commands)
-          this.#logger.info(
-            `Syncing commands for guild "${guild.name}"... done`,
-          )
-        }
+        await syncGuildCommands(guild)
       }
     })
 
     client.on("guildCreate", async (guild) => {
-      if (createGuildCommands) {
-        this.#logger.info(`Syncing commands for guild "${guild.name}"...`)
-        await guild.commands.fetch()
-        await this.#syncCommands(guild.commands)
-        this.#logger.info(`Syncing commands for guild "${guild.name}"... done`)
-      }
+      await syncGuildCommands(guild)
     })
 
     client.on("interactionCreate", async (interaction) => {
@@ -97,6 +107,46 @@ export class CommandManager {
   disableLogging() {
     this.#logger = new NoopLogger()
     return this
+  }
+
+  async #syncCommands(manager: DiscordCommandManager) {
+    for (const command of this.#slashCommands.values()) {
+      const options = Object.entries(
+        command.options ?? {},
+      ).map<Discord.ApplicationCommandOptionData>(([name, option]) => ({
+        name,
+        description: option.description,
+        type: option.type,
+        required: option.required,
+        choices: "choices" in option ? option.choices : undefined,
+      }))
+
+      this.#logger.info(`Creating command "${command.name}"...`)
+      await manager.create({
+        name: command.name,
+        description: command.description,
+        options,
+      })
+      this.#logger.info(`Creating command "${command.name}"... done`)
+    }
+
+    for (const appCommand of manager.cache.values()) {
+      if (!this.#slashCommands.has(appCommand.name)) {
+        this.#logger.info(`Removing unused command "${appCommand.name}"...`)
+        await manager.delete(appCommand.id)
+        this.#logger.info(
+          `Removing unused command "${appCommand.name}"... done`,
+        )
+      }
+    }
+  }
+
+  async #removeAllCommands(manager: DiscordCommandManager) {
+    for (const command of manager.cache.values()) {
+      this.#logger.info(`Removing command "${command.name}"...`)
+      await manager.delete(command.id)
+      this.#logger.info(`Removing command "${command.name}"... done`)
+    }
   }
 
   async #handleCommandInteraction(interaction: Discord.CommandInteraction) {
@@ -136,38 +186,6 @@ export class CommandManager {
         instance.handleMessageComponentInteraction(interaction),
       ),
     )
-  }
-
-  async #syncCommands(manager: DiscordCommandManager) {
-    for (const command of this.#slashCommands.values()) {
-      const options = Object.entries(
-        command.options ?? {},
-      ).map<Discord.ApplicationCommandOptionData>(([name, option]) => ({
-        name,
-        description: option.description,
-        type: option.type,
-        required: option.required,
-        choices: "choices" in option ? option.choices : undefined,
-      }))
-
-      this.#logger.info(`Creating command "${command.name}"...`)
-      await manager.create({
-        name: command.name,
-        description: command.description,
-        options,
-      })
-      this.#logger.info(`Creating command "${command.name}"... done`)
-    }
-
-    for (const appCommand of manager.cache.values()) {
-      if (!this.#slashCommands.has(appCommand.name)) {
-        this.#logger.info(`Removing unused command "${appCommand.name}"...`)
-        await manager.delete(appCommand.id)
-        this.#logger.info(
-          `Removing unused command "${appCommand.name}"... done`,
-        )
-      }
-    }
   }
 
   async #createReplyInstance(
