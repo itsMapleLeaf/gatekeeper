@@ -18,18 +18,23 @@ maybe more docs later
 ## usage
 
 ```ts
-import { applyCommands, CommandHandler } from "@itsmapleleaf/gatekeeper"
+import { CommandManager } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
-
-const commands: CommandHandler[] = [
-  // list of commands here
-]
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 })
 
-applyCommands(client, commands)
+CommandManager.create()
+  .enableLogging()
+  .defineCommand({
+    name: "ping",
+    description: "pong!",
+    async run(context) {
+      context.createReply(() => 'pong!')
+    },
+  })
+  .useClient(client, { useGuildCommands: true })
 
 client.on("ready", () => {
   console.info("bot running ayy lmao")
