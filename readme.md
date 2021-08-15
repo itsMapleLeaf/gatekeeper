@@ -13,6 +13,7 @@ maybe more docs later
 - deferred reply
 - cleanup of inactive command instances after 15 mins
 - allow publishing global commands _and_ guild commands
+- context menu stuff?
 
 ## usage
 
