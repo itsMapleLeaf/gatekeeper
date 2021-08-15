@@ -1,50 +1,41 @@
-import type {
-  Client,
-  GuildMember,
-  MessageComponentInteraction,
-  Snowflake,
-} from "discord.js"
-import { AsyncQueue } from "../internal/async-queue.js"
+import type { Client, Guild, GuildMember } from "discord.js"
 import { bindClientEvents } from "../internal/client-events.js"
 import {
   CommandHandler,
   CommandHandlerContext,
+  CommandReplyInstance,
   createCommandHandlerContext,
-} from "./command-handler"
+} from "./command-handler.js"
 
-async function syncCommands(
-  bot: Client,
-  commands: CommandHandler[],
-  guildId: Snowflake
-) {
+async function syncCommands(commands: CommandHandler[], guild: Guild) {
   for (const command of commands) {
     console.info(`Adding command: ${command.name}`)
-    await bot.application?.commands.create(command, guildId)
+    await guild.commands.create(command)
   }
 
   const commandNames = new Set(commands.map((c) => c.name))
-  for (const appCommand of bot.application?.commands.cache.values() ?? []) {
+  for (const appCommand of guild.commands.cache.values() ?? []) {
     if (!commandNames.has(appCommand.name)) {
       console.info(`Removing command: ${appCommand.name}`)
-      await bot.application?.commands.delete(appCommand.id)
+      await guild.commands.delete(appCommand.id)
     }
   }
 }
 
 export function applyCommands(client: Client, commands: CommandHandler[]) {
-  const interactionQueue = new AsyncQueue<MessageComponentInteraction>()
+  const messageInstances = new Set<CommandReplyInstance>()
 
   bindClientEvents(client, {
     async ready() {
       console.info("Ready")
 
       for (const [, guild] of client.guilds.cache) {
-        await syncCommands(client, commands, guild.id)
+        await syncCommands(commands, guild)
       }
     },
 
     async guildCreate(guild) {
-      await syncCommands(client, commands, guild.id)
+      await syncCommands(commands, guild)
     },
 
     async interactionCreate(interaction) {
@@ -59,15 +50,31 @@ export function applyCommands(client: Client, commands: CommandHandler[]) {
         const context: CommandHandlerContext = createCommandHandlerContext(
           interaction,
           interaction.member as GuildMember,
-          interactionQueue
+          messageInstances,
         )
 
         await handler.run(context)
       }
 
       if (interaction.isMessageComponent()) {
-        interactionQueue.add(interaction)
-        await interaction.deferUpdate()
+        // give a bit of time for the instance to handle the interaction
+        // before deferring it
+        let deferred = false
+        const timeout = setTimeout(() => {
+          interaction.deferUpdate()
+          deferred = true
+        }, 3000)
+
+        await Promise.all(
+          [...messageInstances].map((instance) =>
+            instance.handleMessageComponentInteraction(interaction),
+          ),
+        )
+
+        if (!deferred) {
+          clearTimeout(timeout)
+          interaction.deferUpdate()
+        }
       }
     },
   })

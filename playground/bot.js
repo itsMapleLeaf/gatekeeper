@@ -1,56 +1,52 @@
 // @ts-check
-import {
-  actionRowComponent,
-  applyCommands,
-  buttonComponent,
-} from "@itsmapleleaf/gatekeeper"
+import { applyCommands } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 import "dotenv/config.js"
-import { counterCommand } from "./counter.js"
-import { selectCommand } from "./select.js"
+import { multiCounterCommand } from "./multi-counter.js"
 
 /** @type {import("@itsmapleleaf/gatekeeper").CommandHandler[]} */
 const commands = [
-  {
-    name: "ping",
-    description: "pong",
-    async run(context) {
-      await context.addReply("pong!")
-    },
-  },
+  // {
+  //   name: "ping",
+  //   description: "pong",
+  //   async run(context) {
+  //     await context.addReply("pong!")
+  //   },
+  // },
 
-  {
-    name: "button",
-    description: "testing a button",
-    async run(context) {
-      let secret = "you clicked nothing???"
+  // {
+  //   name: "button",
+  //   description: "testing a button",
+  //   async run(context) {
+  //     let secret = "you clicked nothing???"
 
-      const reply = await context.addReply(
-        "button",
-        actionRowComponent(
-          buttonComponent({
-            style: "PRIMARY",
-            label: "first",
-            onClick: () => {
-              secret = "you clicked the first"
-            },
-          }),
-          buttonComponent({
-            style: "SECONDARY",
-            label: "second",
-            onClick: () => {
-              secret = "you clicked the second"
-            },
-          })
-        )
-      )
+  //     const reply = await context.addReply(
+  //       "button",
+  //       actionRowComponent(
+  //         buttonComponent({
+  //           style: "PRIMARY",
+  //           label: "first",
+  //           onClick: () => {
+  //             secret = "you clicked the first"
+  //           },
+  //         }),
+  //         buttonComponent({
+  //           style: "SECONDARY",
+  //           label: "second",
+  //           onClick: () => {
+  //             secret = "you clicked the second"
+  //           },
+  //         }),
+  //       ),
+  //     )
 
-      await reply.edit(secret)
-    },
-  },
+  //     await reply.edit(secret)
+  //   },
+  // },
 
-  selectCommand,
-  counterCommand,
+  // selectCommand,
+  // counterCommand,
+  multiCounterCommand,
 ]
 
 const client = new Client({

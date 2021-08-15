@@ -5,13 +5,11 @@ import type {
   Message,
   MessageComponentInteraction,
 } from "discord.js"
-import type { AsyncQueue } from "../internal/async-queue.js"
+import { inspect } from "util"
 import { isObject } from "../internal/helpers.js"
 import {
-  ActionRowChild,
-  processReplyComponents,
+  createInteractionReplyOptions,
   ReplyComponent,
-  ReplyComponentArgs,
   ReplyComponentOfType,
 } from "./reply-component.js"
 
@@ -29,149 +27,138 @@ export type CommandHandler = {
 
 export type CommandHandlerContext = {
   member: GuildMember
-  addReply: (...components: ReplyComponentArgs) => Promise<CommandReply>
-  addEphemeralReply: (
-    ...components: ReplyComponentArgs
-  ) => Promise<EphemeralCommandReply>
-  defer: () => Promise<CommandReply>
+  createReply: (
+    render: () => ReplyComponent[] | undefined,
+  ) => Promise<CommandReplyHandle>
+  createEphemeralReply: (
+    render: () => ReplyComponent[] | undefined,
+  ) => Promise<CommandReplyHandle>
+  // defer: () => Promise<CommandReply>
 }
 
-export type EphemeralCommandReply = {
-  edit: (...components: ReplyComponentArgs) => Promise<void>
+export type CommandReplyInstance = {
+  handleMessageComponentInteraction(
+    interaction: MessageComponentInteraction,
+  ): Promise<void>
 }
 
-export type CommandReply = EphemeralCommandReply & {
+export type EphemeralCommandReplyHandle = {
   delete: () => Promise<void>
 }
 
+export type CommandReplyHandle = EphemeralCommandReplyHandle & {}
+
 const isActionRow = (
-  c: ReplyComponent
-): c is ReplyComponentOfType<"actionRow"> =>
-  isObject(c) && c.type === "actionRow"
+  component: ReplyComponent,
+): component is ReplyComponentOfType<"actionRow"> =>
+  isObject(component) && component.type === "actionRow"
 
 export function createCommandHandlerContext(
   interaction: CommandInteraction,
   member: GuildMember,
-  interactionQueue: AsyncQueue<MessageComponentInteraction>
+  instances: Set<CommandReplyInstance>,
 ): CommandHandlerContext {
   return {
     member,
 
-    async addReply(...components) {
-      const processResult = processReplyComponents(components)
+    async createReply(render) {
+      let components = render()
+      console.log("components", inspect(components, { depth: undefined }))
+      if (!components) {
+        return { async delete() {} }
+      }
 
-      const message = await addOrCreateReply(
+      const message = (await addReply(
         interaction,
-        processResult.replyOptions
-      )
+        createInteractionReplyOptions(components),
+      )) as Message
 
-      await handleMessageComponentInteraction(
-        processResult.messageComponentIds,
-        interactionQueue
-      )
+      const instance: CommandReplyInstance = {
+        async handleMessageComponentInteraction(
+          interaction: MessageComponentInteraction,
+        ) {
+          const matchingComponents = components
+            ?.filter(isActionRow)
+            .flatMap((c) => c.children)
+            .filter((c) => c.customId === interaction.customId)
+
+          if (!matchingComponents?.length) return
+
+          for (const component of matchingComponents ?? []) {
+            if (component.type === "button" && interaction.isButton()) {
+              await component.onClick()
+            }
+
+            if (component.type === "selectMenu" && interaction.isSelectMenu()) {
+              await component.onSelect(interaction.values)
+            }
+          }
+
+          components = render()
+          if (components) {
+            await message.edit(createInteractionReplyOptions(components))
+          } else {
+            instances.delete(instance)
+            try {
+              await message.delete()
+            } catch {}
+          }
+        },
+      }
+
+      instances.add(instance)
 
       return {
-        async edit(...components) {
-          const processResult = processReplyComponents(components)
-
-          await message.edit(processResult.replyOptions)
-
-          await handleMessageComponentInteraction(
-            processResult.messageComponentIds,
-            interactionQueue
-          )
-        },
         async delete() {
-          await message.delete()
+          instances.delete(instance)
+          try {
+            await message.delete()
+          } catch {}
         },
       }
     },
 
-    async addEphemeralReply(...components) {
-      const processResult = processReplyComponents(components)
-
-      const message = await addOrCreateReply(interaction, {
-        ...processReplyComponents(components),
-        ephemeral: true,
-      })
-
-      await handleMessageComponentInteraction(
-        processResult.messageComponentIds,
-        interactionQueue
-      )
-
-      return {
-        async edit(...components) {
-          const processResult = processReplyComponents(components)
-
-          await message.edit(processResult.replyOptions)
-
-          await handleMessageComponentInteraction(
-            processResult.messageComponentIds,
-            interactionQueue
-          )
-        },
-      }
+    async createEphemeralReply(...components) {
+      throw new Error("not implemented")
     },
 
-    async defer() {
-      await interaction.deferReply({
-        fetchReply: true,
-      })
-
-      return {
-        async edit(...components) {
-          const processResult = processReplyComponents(components)
-
-          await interaction.editReply(processResult.replyOptions)
-
-          await handleMessageComponentInteraction(
-            processResult.messageComponentIds,
-            interactionQueue
-          )
-        },
-        async delete() {
-          await interaction.deleteReply()
-        },
-      }
-    },
+    // async defer() {
+    //   await interaction.deferReply()
+    //   return {
+    //     async edit(...components) {
+    //       await interaction.editReply(processReplyComponents(components))
+    //       await handleMessageComponentInteraction(components, instances)
+    //     },
+    //     async delete() {
+    //       await interaction.deleteReply()
+    //     },
+    //   }
+    // },
   }
 }
 
-async function handleMessageComponentInteraction(
-  messageComponentIds: Map<ActionRowChild, string>,
-  interactionQueue: AsyncQueue<MessageComponentInteraction>
-) {
-  if (messageComponentIds.size > 0) {
-    const messageInteraction = await interactionQueue.pop()
+// async function handleMessageComponentInteraction(
+//   components: ReplyComponentArgs,
+//   instances: Set<CommandInstance>,
+// ) {
+//   const actionRowComponents = components
+//     .filter(isActionRow)
+//     .flatMap((c) => c.children)
 
-    const interactedComponents = [...messageComponentIds]
-      .filter(([, id]) => id === messageInteraction.customId)
-      .map(([component]) => component)
+//   if (actionRowComponents.length > 0) {
+//     await new Promise<void>((resolve) => {
+//       instances.add({
+//         components: actionRowComponents,
+//         resolve,
+//       })
+//     })
+//   }
+// }
 
-    for (const component of interactedComponents) {
-      if (component.type === "button") {
-        component.onClick()
-      }
-      if (
-        component.type === "selectMenu" &&
-        messageInteraction.isSelectMenu()
-      ) {
-        component.onSelect(messageInteraction.values)
-      }
-    }
-  }
-}
-
-function addOrCreateReply(
+function addReply(
   interaction: CommandInteraction | MessageComponentInteraction,
-  reply: InteractionReplyOptions
-): Promise<Message> {
-  const messagePromise = (() => {
-    if (interaction.deferred) return interaction.editReply(reply)
-    if (interaction.replied) return interaction.followUp(reply)
-    return interaction.reply({ ...reply, fetchReply: true })
-  })()
-
-  return messagePromise as Promise<Message>
+  reply: InteractionReplyOptions,
+) {
+  if (interaction.replied) return interaction.followUp(reply)
+  return interaction.reply({ ...reply, fetchReply: true })
 }
