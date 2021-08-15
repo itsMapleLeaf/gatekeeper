@@ -21,7 +21,10 @@
     "message",
     "component",
     "framework",
-    "bot"
+    "bot",
+    "react",
+    "reactive",
+    "declarative"
   ],
   "scripts": {
     "dev": "tsc --watch",
