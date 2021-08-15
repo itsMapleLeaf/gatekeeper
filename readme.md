@@ -31,7 +31,7 @@ CommandManager.create()
     name: "ping",
     description: "pong!",
     async run(context) {
-      context.createReply(() => 'pong!')
+      await context.createReply(() => 'pong!')
     },
   })
   .useClient(client, { useGuildCommands: true })
