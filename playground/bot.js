@@ -9,6 +9,7 @@ import "dotenv/config.js"
 import { counterCommand } from "./counter.js"
 import { ephemeralCounterCommand } from "./ephemeral-counter.js"
 import { multiCounterCommand } from "./multi-counter.js"
+import { multiSelectCommand } from "./multi-select.js"
 import { selectCommand } from "./select.js"
 
 /** @type {import("@itsmapleleaf/gatekeeper").CommandHandler[]} */
@@ -56,6 +57,7 @@ const commands = [
   },
 
   selectCommand,
+  multiSelectCommand,
   counterCommand,
   multiCounterCommand,
   ephemeralCounterCommand,
