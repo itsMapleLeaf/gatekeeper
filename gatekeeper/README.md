@@ -9,6 +9,7 @@ maybe more docs later
 - command arguments
 - pass more info to onClick/onSelect handlers, e.g. member
 - deferred reply
+- cleanup of inactive command instances after 15 mins
 
 ## usage
 
