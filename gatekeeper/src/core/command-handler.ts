@@ -11,6 +11,7 @@ import {
   ReplyComponent,
   ReplyComponentOfType,
 } from "./reply-component.js"
+import type { ReplyManager } from "./reply-instance.js"
 
 export type ComponentInteraction = {
   customId: string
@@ -35,7 +36,7 @@ export type CommandHandlerContext = {
   // defer: () => Promise<CommandReply>
 }
 
-export type CommandReplyInstance = {
+export type ReplyInstance = {
   handleMessageComponentInteraction(
     interaction: MessageComponentInteraction,
   ): Promise<void>
@@ -57,7 +58,7 @@ const isActionRow = (
 export function createCommandHandlerContext(
   interaction: CommandInteraction,
   member: GuildMember,
-  instances: Set<CommandReplyInstance>,
+  replyManager: ReplyManager,
 ): CommandHandlerContext {
   return {
     member,
@@ -81,14 +82,14 @@ export function createCommandHandlerContext(
         if (components) {
           await message.edit(createInteractionReplyOptions(components))
         } else {
-          instances.delete(instance)
+          replyManager.remove(instance)
           try {
             await message.delete()
           } catch {}
         }
       }
 
-      const instance: CommandReplyInstance = {
+      const instance = replyManager.add({
         async handleMessageComponentInteraction(
           interaction: MessageComponentInteraction,
         ) {
@@ -111,13 +112,11 @@ export function createCommandHandlerContext(
 
           await rerender()
         },
-      }
-
-      instances.add(instance)
+      })
 
       return {
         async delete() {
-          instances.delete(instance)
+          replyManager.remove(instance)
           try {
             await message.delete()
           } catch {}
@@ -128,47 +127,81 @@ export function createCommandHandlerContext(
       }
     },
 
-    async createEphemeralReply(...components) {
-      throw new Error("not implemented")
-    },
+    async createEphemeralReply(render) {
+      let components = render()
+      if (!components) {
+        return {
+          async update() {},
+        }
+      }
 
-    // async defer() {
-    //   await interaction.deferReply()
-    //   return {
-    //     async edit(...components) {
-    //       await interaction.editReply(processReplyComponents(components))
-    //       await handleMessageComponentInteraction(components, instances)
-    //     },
-    //     async delete() {
-    //       await interaction.deleteReply()
-    //     },
-    //   }
-    // },
+      const options = {
+        ...createInteractionReplyOptions(components),
+        ephemeral: true,
+      }
+
+      if (interaction.replied) {
+        await interaction.followUp(options)
+        return {
+          async update() {
+            console.warn(
+              "Ephemeral followup replies can't be updated - blame discord 🙃",
+            )
+          },
+        }
+      }
+
+      await interaction.reply(options)
+
+      async function rerender() {
+        components = render()
+
+        if (!components) {
+          replyManager.remove(instance)
+          return
+        }
+
+        return interaction.editReply(createInteractionReplyOptions(components))
+      }
+
+      const instance = replyManager.add({
+        async handleMessageComponentInteraction(
+          interaction: MessageComponentInteraction,
+        ) {
+          const matchingComponents = components
+            ?.filter(isActionRow)
+            .flatMap((c) => c.children)
+            .filter((c) => c.customId === interaction.customId)
+
+          if (!matchingComponents?.length) return
+
+          for (const component of matchingComponents ?? []) {
+            if (component.type === "button" && interaction.isButton()) {
+              await component.onClick()
+            }
+
+            if (component.type === "selectMenu" && interaction.isSelectMenu()) {
+              await component.onSelect(interaction.values)
+            }
+          }
+
+          await rerender()
+        },
+      })
+
+      return {
+        async update() {
+          await rerender()
+        },
+      }
+    },
   }
 }
 
-// async function handleMessageComponentInteraction(
-//   components: ReplyComponentArgs,
-//   instances: Set<CommandInstance>,
-// ) {
-//   const actionRowComponents = components
-//     .filter(isActionRow)
-//     .flatMap((c) => c.children)
-
-//   if (actionRowComponents.length > 0) {
-//     await new Promise<void>((resolve) => {
-//       instances.add({
-//         components: actionRowComponents,
-//         resolve,
-//       })
-//     })
-//   }
-// }
-
 function addReply(
   interaction: CommandInteraction | MessageComponentInteraction,
-  reply: InteractionReplyOptions,
+  options: InteractionReplyOptions,
 ) {
-  if (interaction.replied) return interaction.followUp(reply)
-  return interaction.reply({ ...reply, fetchReply: true })
+  if (interaction.replied) return interaction.followUp(options)
+  return interaction.reply({ ...options, fetchReply: true })
 }

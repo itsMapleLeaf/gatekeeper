@@ -3,9 +3,9 @@ import { bindClientEvents } from "../internal/client-events.js"
 import {
   CommandHandler,
   CommandHandlerContext,
-  CommandReplyInstance,
   createCommandHandlerContext,
 } from "./command-handler.js"
+import { ReplyManager } from "./reply-instance.js"
 
 async function syncCommands(commands: CommandHandler[], guild: Guild) {
   for (const command of commands) {
@@ -23,7 +23,7 @@ async function syncCommands(commands: CommandHandler[], guild: Guild) {
 }
 
 export function applyCommands(client: Client, commands: CommandHandler[]) {
-  const messageInstances = new Set<CommandReplyInstance>()
+  const replyManager = new ReplyManager()
 
   bindClientEvents(client, {
     async ready() {
@@ -50,20 +50,14 @@ export function applyCommands(client: Client, commands: CommandHandler[]) {
         const context: CommandHandlerContext = createCommandHandlerContext(
           interaction,
           interaction.member as GuildMember,
-          messageInstances,
+          replyManager,
         )
 
         await handler.run(context)
       }
 
       if (interaction.isMessageComponent()) {
-        interaction.deferUpdate().catch(console.warn)
-
-        await Promise.all(
-          [...messageInstances].map((instance) =>
-            instance.handleMessageComponentInteraction(interaction),
-          ),
-        )
+        await replyManager.handleMessageComponentInteraction(interaction)
       }
     },
   })

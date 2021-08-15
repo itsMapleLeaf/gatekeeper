@@ -1,9 +1,5 @@
 import { actionRowComponent, buttonComponent } from "@itsmapleleaf/gatekeeper"
-
-/**
- * @typedef {Object} Counter
- * @property {number} count
- */
+import { wait } from "./wait.js"
 
 /** @type {import("@itsmapleleaf/gatekeeper").CommandHandler} */
 export const multiCounterCommand = {
@@ -28,7 +24,7 @@ export const multiCounterCommand = {
         state = "done"
         await reply.update()
 
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await wait(1000)
 
         state = "deleted"
         await reply.update()
