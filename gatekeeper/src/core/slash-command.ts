@@ -7,7 +7,7 @@ export type SlashCommandDefinition<
   name: string
   description: string
   options?: Options
-  run: (context: SlashCommandContext<Options>) => Promise<void>
+  run: (context: SlashCommandContext<Options>) => void | Promise<unknown>
 }
 
 export type SlashCommandOptions = {
