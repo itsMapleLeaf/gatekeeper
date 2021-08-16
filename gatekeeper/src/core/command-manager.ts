@@ -154,9 +154,6 @@ export class CommandManager {
     const slashCommand = this.#slashCommands.get(interaction.commandName)
     if (!slashCommand) return
 
-    const member =
-      (interaction.member as Discord.GuildMember | null) ?? undefined
-
     const options: Record<string, string | number | boolean | undefined> = {}
 
     for (const [name, optionDefinition] of Object.entries(
@@ -169,7 +166,10 @@ export class CommandManager {
     }
 
     await slashCommand.run({
-      member,
+      channel: interaction.channel ?? undefined,
+      member: (interaction.member as Discord.GuildMember | null) ?? undefined,
+      user: interaction.user,
+      guild: interaction.guild ?? undefined,
       options,
       createReply: (render) => this.#createReplyInstance(interaction, render),
       createEphemeralReply: (render) =>

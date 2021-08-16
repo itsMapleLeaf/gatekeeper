@@ -1,4 +1,4 @@
-import type { GuildMember } from "discord.js"
+import type { Guild, GuildMember, TextBasedChannels, User } from "discord.js"
 import type { RenderReplyFn } from "./reply-component"
 
 export type SlashCommandDefinition<
@@ -41,7 +41,10 @@ export type SlashCommandOptionValueTypes = {
 }
 
 export type SlashCommandContext<Options extends SlashCommandOptions> = {
+  channel: TextBasedChannels | undefined
   member: GuildMember | undefined
+  user: User
+  guild: Guild | undefined
   options: {
     [Name in keyof Options]: Options[Name]["required"] extends true
       ? SlashCommandOptionValueTypes[Options[Name]["type"]]
