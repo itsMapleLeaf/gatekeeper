@@ -9,12 +9,12 @@ maybe more docs later
 ## todo
 
 - ~~command arguments~~
-- pass more info to onClick/onSelect handlers, e.g. member
+- ~~pass more info to onClick/onSelect handlers, e.g. member~~
+- explicit reply instance state/updates
 - deferred reply
 - cleanup of inactive command instances after 15 mins
 - allow publishing global commands _and_ guild commands
 - context menu stuff?
-- explicit reply instance state/updates
 
 ## usage
 
