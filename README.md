@@ -15,6 +15,7 @@ maybe more docs later
 - cleanup of inactive command instances after 15 mins
 - ~~allow publishing global commands _and_ guild commands~~
 - context menu stuff?
+- deterministic component IDs per command
 
 ## usage
 
