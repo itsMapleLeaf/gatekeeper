@@ -3,6 +3,7 @@
   "scripts": {
     "dev": "pnpm run --parallel dev",
     "build": "pnpm run --parallel build",
+    "release": "pnpm run --parallel release",
     "lint": "eslint --ext js,ts,tsx ."
   },
   "devDependencies": {
