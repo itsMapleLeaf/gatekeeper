@@ -9,7 +9,8 @@
     "declaration": true,
     "rootDir": "src",
     "outDir": "dist",
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    "esModuleInterop": true
   },
   "include": ["src"]
 }

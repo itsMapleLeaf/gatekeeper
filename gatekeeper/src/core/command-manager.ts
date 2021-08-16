@@ -1,4 +1,5 @@
 import type * as Discord from "discord.js"
+import { toError } from "../internal/helpers"
 import { DebugLogger, Logger, NoopLogger } from "../internal/logger"
 import type { RenderReplyFn } from "./reply-component"
 import {
@@ -51,29 +52,32 @@ export class CommandManager {
     const syncGuildCommands = async (guild: Discord.Guild) => {
       await guild.commands.fetch()
       if (useGuildCommands) {
-        this.#logger.info(`Syncing commands for guild "${guild.name}"...`)
-        await this.#syncCommands(guild.commands)
-        this.#logger.info(`Syncing commands for guild "${guild.name}"... done`)
+        await this.#logger.task(
+          `Syncing guild commands for "${guild.name}"`,
+          () => this.#syncCommands(guild.commands),
+        )
       } else {
-        this.#logger.info(`Removing commands for guild "${guild.name}"...`)
-        await this.#removeAllCommands(guild.commands)
-        this.#logger.info(`Removing commands for guild "${guild.name}"... done`)
+        await this.#logger.task(
+          `Removing commands for guild "${guild.name}"`,
+          () => this.#removeAllCommands(guild.commands),
+        )
       }
     }
 
     client.on("ready", async () => {
       this.#logger.info("Client ready")
 
-      if (client.application) {
+      const { application } = client
+      if (application) {
         if (useGlobalCommands) {
-          this.#logger.info("Syncing global commands...")
-          await client.application.commands.fetch()
-          await this.#syncCommands(client.application.commands)
-          this.#logger.info("Syncing global commands... done")
+          await this.#logger.task("Syncing global commands", async () => {
+            await application.commands.fetch()
+            return this.#syncCommands(application.commands)
+          })
         } else {
-          this.#logger.info("Removing global commands...")
-          await this.#removeAllCommands(client.application.commands)
-          this.#logger.info("Removing global commands... done")
+          await this.#logger.task("Removing global commands", async () => {
+            await this.#removeAllCommands(application.commands)
+          })
         }
       }
 
@@ -121,21 +125,20 @@ export class CommandManager {
         choices: "choices" in option ? option.choices : undefined,
       }))
 
-      this.#logger.info(`Creating command "${command.name}"...`)
-      await manager.create({
-        name: command.name,
-        description: command.description,
-        options,
+      await this.#logger.task(`Creating command "${command.name}"`, () => {
+        return manager.create({
+          name: command.name,
+          description: command.description,
+          options,
+        })
       })
-      this.#logger.info(`Creating command "${command.name}"... done`)
     }
 
     for (const appCommand of manager.cache.values()) {
       if (!this.#slashCommands.has(appCommand.name)) {
-        this.#logger.info(`Removing unused command "${appCommand.name}"...`)
-        await manager.delete(appCommand.id)
-        this.#logger.info(
-          `Removing unused command "${appCommand.name}"... done`,
+        await this.#logger.task(
+          `Removing unused command "${appCommand.name}"`,
+          () => manager.delete(appCommand.id),
         )
       }
     }
@@ -143,9 +146,9 @@ export class CommandManager {
 
   async #removeAllCommands(manager: DiscordCommandManager) {
     for (const command of manager.cache.values()) {
-      this.#logger.info(`Removing command "${command.name}"...`)
-      await manager.delete(command.id)
-      this.#logger.info(`Removing command "${command.name}"... done`)
+      await this.#logger.task(`Removing command "${command.name}"`, () =>
+        manager.delete(command.id),
+      )
     }
   }
 
@@ -179,7 +182,10 @@ export class CommandManager {
   #handleMessageComponentInteraction(
     interaction: Discord.MessageComponentInteraction,
   ) {
-    interaction.deferUpdate().catch(console.warn)
+    interaction.deferUpdate().catch((error) => {
+      this.#logger.warn("Failed to defer interaction update")
+      this.#logger.warn(toError(error).stack || toError(error).message)
+    })
 
     return Promise.all(
       [...this.#replyInstances].map((instance) =>
