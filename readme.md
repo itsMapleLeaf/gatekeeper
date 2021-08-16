@@ -14,6 +14,7 @@ maybe more docs later
 - cleanup of inactive command instances after 15 mins
 - allow publishing global commands _and_ guild commands
 - context menu stuff?
+- explicit reply instance state/updates
 
 ## usage
 
@@ -31,7 +32,7 @@ CommandManager.create()
     name: "ping",
     description: "pong!",
     async run(context) {
-      await context.createReply(() => 'pong!')
+      await context.createReply(() => "pong!")
     },
   })
   .useClient(client, { useGuildCommands: true })
