@@ -3,6 +3,7 @@ import { CommandManager } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
 import { buttonCommand } from "./commands/button"
+import { callbackInfoCommand } from "./commands/callback-info"
 import { counterCommand } from "./commands/counter"
 import { doubleCommand } from "./commands/double"
 import { ephemeralCounterCommand } from "./commands/ephemeral-counter"
@@ -37,6 +38,7 @@ manager
   .addSlashCommand(multiCounterCommand)
   .addSlashCommand(ephemeralCounterCommand)
   .addSlashCommand(doubleCommand)
+  .addSlashCommand(callbackInfoCommand)
   .useClient(client, {
     useGlobalCommands: false,
     useGuildCommands: true,
