@@ -1,10 +1,15 @@
 import type {
   CommandInteraction,
+  GuildMember,
   InteractionReplyOptions,
   Message,
   MessageComponentInteraction,
 } from "discord.js"
-import type { RenderReplyFn, ReplyComponent } from "./reply-component"
+import type {
+  BaseEvent,
+  RenderReplyFn,
+  ReplyComponent,
+} from "./reply-component"
 import {
   createInteractionReplyOptions,
   flattenRenderResult,
@@ -34,12 +39,19 @@ export abstract class ReplyInstance {
     )
     if (!component) return
 
+    const event: BaseEvent = {
+      user: interaction.user,
+      channel: interaction.channel ?? undefined,
+      member: (interaction.member as GuildMember | null) ?? undefined,
+      guild: interaction.guild ?? undefined,
+    }
+
     if (interaction.isSelectMenu() && component.type === "selectMenu") {
-      await component.onSelect(interaction.values)
+      await component.onSelect({ ...event, values: interaction.values })
     }
 
     if (interaction.isButton() && component.type === "button") {
-      await component.onClick()
+      await component.onClick(event)
     }
 
     await this.update()

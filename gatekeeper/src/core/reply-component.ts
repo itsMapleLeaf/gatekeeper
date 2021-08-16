@@ -1,7 +1,11 @@
 import type {
+  Guild,
+  GuildMember,
   InteractionReplyOptions,
   MessageActionRowOptions,
   MessageSelectMenuOptions,
+  TextBasedChannels,
+  User,
 } from "discord.js"
 import { isObject, isString, isTruthy } from "../internal/helpers.js"
 import type { Falsy } from "../internal/types.js"
@@ -19,6 +23,13 @@ export type RenderResult =
   | undefined
   | null
   | RenderResult[]
+
+export type BaseEvent = {
+  channel: TextBasedChannels | undefined
+  member: GuildMember | undefined
+  user: User
+  guild: Guild | undefined
+}
 
 export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
   if (Array.isArray(result)) return result.flatMap(flattenRenderResult)

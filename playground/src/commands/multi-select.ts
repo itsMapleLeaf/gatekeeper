@@ -10,8 +10,8 @@ export const multiSelectCommand = defineSlashCommand({
   name: "multi-select",
   description: "multiple selections",
   async run(context) {
-    let selected = new Set()
-    let result = new Set()
+    let selected = new Set<string>()
+    let result = new Set<string>()
 
     await context.createReply(() => {
       if (result.size) {
@@ -33,8 +33,8 @@ export const multiSelectCommand = defineSlashCommand({
               { label: "pear", value: ":pear:", emoji: "🍐" },
               { label: "peach", value: ":peach:", emoji: "🍑" },
             ],
-            onSelect: (values) => {
-              selected = new Set(values)
+            onSelect: (event) => {
+              selected = new Set(event.values)
             },
           }),
         ),

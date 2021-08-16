@@ -1,5 +1,6 @@
 import type { EmojiResolvable, MessageButtonStyle } from "discord.js"
 import { randomUUID } from "node:crypto"
+import type { BaseEvent } from "../reply-component"
 
 export type ButtonComponent = {
   type: "button"
@@ -7,8 +8,10 @@ export type ButtonComponent = {
   style: MessageButtonStyle
   label: string
   emoji?: EmojiResolvable
-  onClick: () => void | Promise<unknown>
+  onClick: (event: ClickEvent) => void | Promise<unknown>
 }
+
+export type ClickEvent = BaseEvent
 
 export function buttonComponent(
   options: Omit<ButtonComponent, "type" | "customId">,
