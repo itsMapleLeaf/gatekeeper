@@ -1,23 +1,14 @@
 import type {
-  EmojiResolvable,
   InteractionReplyOptions,
   MessageActionRowOptions,
-  MessageButtonStyle,
-  MessageEmbed,
-  MessageEmbedOptions,
   MessageSelectMenuOptions,
-  MessageSelectOptionData,
 } from "discord.js"
-import { randomUUID } from "node:crypto"
 import { isObject, isString, isTruthy } from "../internal/helpers.js"
 import type { Falsy } from "../internal/types.js"
+import { ActionRowComponent, isActionRow } from "./components/action-row.js"
+import type { EmbedComponent } from "./components/embed.js"
 
-export type ReplyComponent =
-  | string
-  | { type: "embed"; embed: MessageEmbedOptions | MessageEmbed }
-  | { type: "actionRow"; children: ActionRowChild[] }
-
-export type ReplyComponentOfType<T> = Extract<ReplyComponent, { type: T }>
+export type ReplyComponent = string | EmbedComponent | ActionRowComponent
 
 export type RenderReplyFn = () => RenderResult
 
@@ -28,89 +19,6 @@ export type RenderResult =
   | undefined
   | null
   | RenderResult[]
-
-export type ActionRowChild = SelectMenuComponent | ButtonComponent
-
-export type ButtonComponent = {
-  type: "button"
-  customId: string
-  style: MessageButtonStyle
-  label: string
-  emoji?: EmojiResolvable
-  onClick: () => void | Promise<unknown>
-}
-
-export type SelectMenuComponent = {
-  type: "selectMenu"
-  customId: string
-  options: MessageSelectOptionData[]
-  selected?: string | string[] | undefined
-  placeholder?: string | undefined
-  minValues?: number | undefined
-  maxValues?: number | undefined
-  onSelect: (values: string[]) => void | Promise<unknown>
-}
-
-export function embedComponent(
-  embed: MessageEmbedOptions | MessageEmbed,
-): ReplyComponent {
-  return { type: "embed", embed }
-}
-
-export function actionRowComponent(
-  ...children: (ActionRowChild | ActionRowChild[])[]
-): ReplyComponent {
-  return {
-    type: "actionRow",
-    children: children.flat(),
-  }
-}
-
-export function buttonComponent(
-  options: Omit<ButtonComponent, "type" | "customId">,
-): ButtonComponent {
-  return {
-    ...options,
-    type: "button",
-    customId: randomUUID(),
-  }
-}
-
-type SelectMenuComponentArgs = Omit<
-  SelectMenuComponent,
-  "type" | "customId" | "selected"
-> & {
-  selected?: Iterable<string> | string | undefined
-}
-
-export function selectMenuComponent({
-  options,
-  selected,
-  ...args
-}: SelectMenuComponentArgs): SelectMenuComponent {
-  const selectedOptions =
-    typeof selected === "string"
-      ? [selected]
-      : selected != null
-      ? [...selected]
-      : []
-
-  return {
-    ...args,
-    type: "selectMenu",
-    customId: randomUUID(),
-    options: options.map((option) => ({
-      ...option,
-      default: option.default ?? selectedOptions.includes(option.value),
-    })),
-  }
-}
-
-export function isActionRow(
-  component: ReplyComponent,
-): component is ReplyComponentOfType<"actionRow"> {
-  return isObject(component) && component.type === "actionRow"
-}
 
 export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
   if (Array.isArray(result)) return result.flatMap(flattenRenderResult)
