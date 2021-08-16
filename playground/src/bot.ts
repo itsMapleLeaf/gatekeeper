@@ -1,14 +1,14 @@
 // @ts-check
 import { CommandManager } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
-import "dotenv/config.js"
-import { buttonCommand } from "./commands/button.js"
-import { counterCommand } from "./commands/counter.js"
-import { doubleCommand } from "./commands/double.js"
-import { ephemeralCounterCommand } from "./commands/ephemeral-counter.js"
-import { multiCounterCommand } from "./commands/multi-counter.js"
-import { multiSelectCommand } from "./commands/multi-select.js"
-import { selectCommand } from "./commands/select.js"
+import "dotenv/config"
+import { buttonCommand } from "./commands/button"
+import { counterCommand } from "./commands/counter"
+import { doubleCommand } from "./commands/double"
+import { ephemeralCounterCommand } from "./commands/ephemeral-counter"
+import { multiCounterCommand } from "./commands/multi-counter"
+import { multiSelectCommand } from "./commands/multi-select"
+import { selectCommand } from "./commands/select"
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],

@@ -1,11 +1,11 @@
 {
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "nodemon -w ./ -w ../gatekeeper/dist ./src/bot.js",
-    "start": "node ./src/bot.js"
+    "dev": "nodemon -w ./ -w ../gatekeeper/dist --transpile-only ./src/bot.ts",
+    "start": "ts-node --transpile-only ./src/bot"
   },
   "dependencies": {
+    "ts-node": "10.2.0",
     "@itsmapleleaf/gatekeeper": "link:../gatekeeper",
     "discord.js": "13.1.0",
     "dotenv": "10.0.0"

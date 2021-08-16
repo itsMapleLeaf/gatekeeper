@@ -3,7 +3,7 @@ import {
   buttonComponent,
   defineSlashCommand,
 } from "@itsmapleleaf/gatekeeper"
-import { wait } from "../wait.js"
+import { wait } from "../wait"
 
 export const counterCommand = defineSlashCommand({
   name: "counter",

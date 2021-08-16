@@ -10,8 +10,8 @@ export const selectCommand = defineSlashCommand({
   name: "select",
   description: "testing a select",
   async run(context) {
-    let selected = ""
-    let result = ""
+    let selected: string | undefined
+    let result: string | undefined
 
     await context.createReply(() => {
       if (result) {

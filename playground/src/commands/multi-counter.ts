@@ -1,19 +1,21 @@
+import type {
+  SlashCommandContext,
+  SlashCommandReplyHandle,
+} from "@itsmapleleaf/gatekeeper"
 import {
   actionRowComponent,
   buttonComponent,
   defineSlashCommand,
 } from "@itsmapleleaf/gatekeeper"
-import { wait } from "../wait.js"
+import { wait } from "../wait"
 
 export const multiCounterCommand = defineSlashCommand({
   name: "multi-counter",
   description: "a counter on sterroids",
   async run(context) {
-    /** @type {import("@itsmapleleaf/gatekeeper").SlashCommandReplyHandle[]} */
-    const replies = []
+    const replies: SlashCommandReplyHandle[] = []
 
-    /** @type {'active' | 'cleaningUp' | 'done'} */
-    let state = "active"
+    let state: "active" | "cleaningUp" | "done" = "active"
     const reply = await context.createReply(() => {
       const cleanup = async () => {
         state = "cleaningUp"
@@ -58,8 +60,7 @@ export const multiCounterCommand = defineSlashCommand({
   },
 })
 
-/** @param {import("@itsmapleleaf/gatekeeper").SlashCommandContext<any>} context */
-async function createCounterReply(context) {
+async function createCounterReply(context: SlashCommandContext<any>) {
   let count = 0
   let finished = false
 
