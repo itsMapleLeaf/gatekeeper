@@ -1,4 +1,4 @@
-import type { Falsy } from "./types.js"
+import type { Falsy } from "./types"
 
 export function raise(error: string | Error): never {
   throw typeof error === "string" ? new Error(error) : error
@@ -13,11 +13,17 @@ export function getErrorInfo(error: unknown): string {
   return stack || message
 }
 
-export function includes<Value>(array: readonly Value[], value: unknown): value is Value {
+export function includes<Value>(
+  array: readonly Value[],
+  value: unknown,
+): value is Value {
   return array.includes(value as Value)
 }
 
-export function hasKey<Subject>(object: Subject, key: PropertyKey): key is keyof Subject {
+export function hasKey<Subject>(
+  object: Subject,
+  key: PropertyKey,
+): key is keyof Subject {
   return key in object
 }
 
