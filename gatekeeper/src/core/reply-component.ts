@@ -5,7 +5,7 @@ import type {
 } from "discord.js"
 import { isObject, isString, isTruthy } from "../internal/helpers.js"
 import type { Falsy } from "../internal/types.js"
-import { ActionRowComponent, isActionRow } from "./components/action-row.js"
+import type { ActionRowComponent } from "./components/action-row.js"
 import type { EmbedComponent } from "./components/embed.js"
 
 export type ReplyComponent = string | EmbedComponent | ActionRowComponent
@@ -29,8 +29,10 @@ export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
 
 export function getInteractiveComponents(result: RenderResult) {
   return flattenRenderResult(result)
-    .filter(isActionRow)
-    .flatMap((actionRow) => actionRow.children)
+    .filter(isObject)
+    .flatMap((actionRow) =>
+      actionRow.type === "actionRow" ? actionRow.children : [],
+    )
 }
 
 export function createInteractionReplyOptions(
