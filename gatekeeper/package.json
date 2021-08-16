@@ -2,7 +2,7 @@
   "name": "@itsmapleleaf/gatekeeper",
   "description": "a slash command and interaction framework for discord.js",
   "author": "itsmapleleaf",
-  "version": "0.0.0-alpha.7",
+  "version": "0.0.0-alpha.8",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
   "files": [
@@ -30,7 +30,7 @@
     "clean": "trash dist",
     "dev": "pnpm run clean && pnpm run build -- --watch",
     "build": "pnpm run clean && tsc --project ./tsconfig.build.json",
-    "release": "pnpm run build && cpy ../readme.md . && np --no-cleanup --no-tests --no-release-draft"
+    "release": "pnpm run build && cpy ../README.md . && np --no-cleanup --no-tests --no-release-draft"
   },
   "peerDependencies": {
     "discord.js": ">=13"
