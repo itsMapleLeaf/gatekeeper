@@ -1,27 +1,50 @@
-# hey
+# gatekeeper
 
-gatekeeper is a ✨reactive✨ interaction framework for discord.js and it's very not done don't use it
+gatekeeper is a ✨reactive✨ interaction framework for discord.js!
 
-maybe more docs later
+it's a rough work in progress; things will probably change a lot before an actual release. but feel free to try it out and give feedback!
 
 ![showcase](./showcase.gif)
 
-## todo
+## install
 
-- ~~command arguments~~
-- ~~pass more info to onClick/onSelect handlers, e.g. member~~
-- explicit reply instance state/updates
-- deferred reply
-- cleanup of inactive command instances after 15 mins
-- ~~allow publishing global commands _and_ guild commands~~
-- context menu stuff?
-- deterministic component IDs per command
+```sh
+npm install @itsmapleleaf/gatekeeper
+```
+
+(or with your favorite package manager)
 
 ## usage
 
 ```ts
-import { CommandManager } from "@itsmapleleaf/gatekeeper"
+import {
+  actionRowComponent,
+  buttonComponent,
+  CommandManager,
+  defineSlashCommand,
+} from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
+
+const counterCommand = defineSlashCommand({
+  name: "counter",
+  description: "make a counter",
+  async run(context) {
+    let count = 0
+
+    await context.createReply(() => [
+      `button pressed ${count} times`,
+      actionRowComponent(
+        buttonComponent({
+          style: "PRIMARY",
+          label: "press it",
+          onClick: () => {
+            count += 1
+          },
+        }),
+      ),
+    ])
+  },
+})
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
@@ -29,22 +52,22 @@ const client = new Client({
 
 CommandManager.create()
   .enableLogging()
-  .defineSlashCommand({
-    name: "ping",
-    description: "pong!",
-    async run(context) {
-      await context.createReply(() => "pong!")
-    },
-  })
+  .addSlashCommand(counterCommand)
   .useClient(client, { useGuildCommands: true })
-
-client.on("ready", () => {
-  console.info("bot running ayy lmao")
-})
 
 client.login(process.env.BOT_TOKEN).catch(console.error)
 ```
 
-## examples
+## [examples](./playground/src)
 
-you can find some example code in the [playground](./playground/src) folder
+## todo
+
+- ~~command arguments~~
+- ~~pass more info to onClick/onSelect handlers, e.g. member~~
+- ~~allow publishing global commands _and_ guild commands~~
+- automatic actionRow placement
+- explicit updates + reply instance state
+- deferred reply
+- cleanup of inactive command instances after 15 mins
+- context menu stuff (?)
+- deterministic component IDs per command (?)
