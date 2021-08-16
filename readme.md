@@ -13,7 +13,7 @@ maybe more docs later
 - explicit reply instance state/updates
 - deferred reply
 - cleanup of inactive command instances after 15 mins
-- allow publishing global commands _and_ guild commands
+- ~~allow publishing global commands _and_ guild commands~~
 - context menu stuff?
 
 ## usage
