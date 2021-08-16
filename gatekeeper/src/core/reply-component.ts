@@ -7,10 +7,10 @@ import type {
   TextBasedChannels,
   User,
 } from "discord.js"
-import { isObject, isString, isTruthy } from "../internal/helpers.js"
-import type { Falsy } from "../internal/types.js"
-import type { ActionRowComponent } from "./components/action-row.js"
-import type { EmbedComponent } from "./components/embed.js"
+import { isObject, isString, isTruthy } from "../internal/helpers"
+import type { Falsy } from "../internal/types"
+import type { ActionRowComponent } from "./components/action-row"
+import type { EmbedComponent } from "./components/embed"
 
 export type ReplyComponent = string | EmbedComponent | ActionRowComponent
 
