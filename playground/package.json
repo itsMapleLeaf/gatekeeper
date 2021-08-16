@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon -w ./ -w ../gatekeeper/dist --transpile-only ./src/bot.ts",
+    "dev-counter": "nodemon -w ./ -w ../gatekeeper/dist --transpile-only ./src/counter-vanilla.ts",
     "start": "ts-node --transpile-only ./src/bot"
   },
   "dependencies": {
