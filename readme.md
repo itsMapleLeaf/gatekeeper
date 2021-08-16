@@ -27,7 +27,7 @@ const client = new Client({
 
 CommandManager.create()
   .enableLogging()
-  .defineCommand({
+  .defineSlashCommand({
     name: "ping",
     description: "pong!",
     async run(context) {
