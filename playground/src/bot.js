@@ -42,4 +42,5 @@ manager
     useGuildCommands: true,
   })
 
-await client.login(process.env.BOT_TOKEN).catch(console.error)
+// eslint-disable-next-line no-console
+client.login(process.env.BOT_TOKEN).catch(console.error)

@@ -4,12 +4,11 @@ import type {
   Message,
   MessageComponentInteraction,
 } from "discord.js"
+import type { RenderReplyFn, ReplyComponent } from "./reply-component"
 import {
   createInteractionReplyOptions,
   flattenRenderResult,
   getInteractiveComponents,
-  RenderReplyFn,
-  ReplyComponent,
 } from "./reply-component"
 
 export abstract class ReplyInstance {
@@ -139,7 +138,8 @@ export class EphemeralReplyInstance extends ReplyInstance {
     await this.interaction.editReply(replyOptions)
   }
 
-  async cleanup() {
+  cleanup() {
     this.active = false
+    return Promise.resolve()
   }
 }

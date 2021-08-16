@@ -1,12 +1,10 @@
 import type * as Discord from "discord.js"
 import { toError } from "../internal/helpers"
-import { DebugLogger, Logger, NoopLogger } from "../internal/logger"
+import type { Logger } from "../internal/logger"
+import { DebugLogger, NoopLogger } from "../internal/logger"
 import type { RenderReplyFn } from "./reply-component"
-import {
-  EphemeralReplyInstance,
-  PublicReplyInstance,
-  ReplyInstance,
-} from "./reply-instance"
+import type { ReplyInstance } from "./reply-instance"
+import { EphemeralReplyInstance, PublicReplyInstance } from "./reply-instance"
 import type {
   SlashCommandDefinition,
   SlashCommandEphemeralReplyHandle,

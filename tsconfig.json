@@ -3,14 +3,15 @@
     "target": "es2017",
     "module": "commonjs",
     "moduleResolution": "node",
+    "allowJs": true,
+    "checkJs": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "isolatedModules": true,
     "declaration": true,
-    "rootDir": "src",
-    "outDir": "dist",
     "importsNotUsedAsValues": "error",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noEmit": true
   },
-  "include": ["src"]
+  "exclude": ["**/dist/**", "**/node_modules/**"]
 }

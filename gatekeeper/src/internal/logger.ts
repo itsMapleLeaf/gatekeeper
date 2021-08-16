@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
+/* eslint-disable class-methods-use-this */
 import chalk from "chalk"
 import { toError } from "./helpers"
 
 const loggerPrefix = chalk.gray`[gatekeeper]`
 
-export interface Logger {
+export type Logger = {
   info(...args: unknown[]): void
   success(...args: unknown[]): void
   error(...args: unknown[]): void

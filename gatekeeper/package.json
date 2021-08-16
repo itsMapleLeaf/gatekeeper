@@ -27,8 +27,8 @@
     "declarative"
   ],
   "scripts": {
-    "dev": "tsc --watch",
-    "build": "tsc"
+    "dev": "pnpm build -- --watch",
+    "build": "tsc --project ./tsconfig.build.json"
   },
   "peerDependencies": {
     "discord.js": ">=13"
