@@ -1,4 +1,3 @@
-// @ts-check
 import { CommandManager } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
@@ -11,19 +10,13 @@ import { multiCounterCommand } from "./commands/multi-counter"
 import { multiSelectCommand } from "./commands/multi-select"
 import { selectCommand } from "./commands/select"
 
+const isDev = process.env.NODE_ENV !== "production"
+
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 })
 
-const manager = CommandManager.create()
-
-const isDev = process.env.NODE_ENV !== "production"
-
-if (isDev) {
-  manager.enableLogging()
-}
-
-manager
+CommandManager.create({ logging: isDev })
   .addSlashCommand({
     name: "ping",
     description: "pong",

@@ -12,24 +12,30 @@ import type {
   SlashCommandReplyHandle,
 } from "./slash-command"
 
-type DiscordCommandManager =
-  | Discord.ApplicationCommandManager
-  | Discord.GuildApplicationCommandManager
+type CommandManagerOptions = {
+  logging?: boolean
+}
 
 type UseClientOptions = {
   useGlobalCommands?: boolean
   useGuildCommands?: boolean
 }
 
+type DiscordCommandManager =
+  | Discord.ApplicationCommandManager
+  | Discord.GuildApplicationCommandManager
+
 export class CommandManager {
-  #slashCommands = new Map<string, SlashCommandDefinition>()
-  #replyInstances = new Set<ReplyInstance>()
-  #logger: Logger = new NoopLogger()
+  readonly #slashCommands = new Map<string, SlashCommandDefinition>()
+  readonly #replyInstances = new Set<ReplyInstance>()
+  readonly #logger: Logger
 
-  private constructor() {}
+  private constructor(options: CommandManagerOptions) {
+    this.#logger = options.logging ? new DebugLogger() : new NoopLogger()
+  }
 
-  static create() {
-    return new CommandManager()
+  static create(options: CommandManagerOptions = {}) {
+    return new CommandManager(options)
   }
 
   addSlashCommand<Options extends SlashCommandOptions>(
@@ -98,16 +104,6 @@ export class CommandManager {
         await this.#handleMessageComponentInteraction(interaction)
       }
     })
-    return this
-  }
-
-  enableLogging() {
-    this.#logger = new DebugLogger()
-    return this
-  }
-
-  disableLogging() {
-    this.#logger = new NoopLogger()
     return this
   }
 
