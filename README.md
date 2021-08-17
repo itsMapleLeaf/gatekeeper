@@ -50,10 +50,9 @@ const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 })
 
-CommandManager.create()
-  .enableLogging()
-  .addSlashCommand(counterCommand)
-  .useClient(client, { useGuildCommands: true })
+const manager = CommandManager.create({ debug: true })
+manager.addSlashCommand(counterCommand)
+manager.useClient(client, { useGuildCommands: true })
 
 client.login(process.env.BOT_TOKEN).catch(console.error)
 ```
