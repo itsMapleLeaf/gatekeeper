@@ -26,6 +26,7 @@ export type RenderReplyFn = () => RenderResult
 
 export type RenderResult =
   | ReplyComponent
+  | string
   | number
   | boolean
   | undefined
