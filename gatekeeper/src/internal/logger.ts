@@ -8,6 +8,7 @@ export type Logger = {
   success(...args: unknown[]): void
   error(...args: unknown[]): void
   warn(...args: unknown[]): void
+  // TODO: accept a promise instead of a callback, rename to promise
   task<T>(description: string, block: () => Promise<T>): Promise<T>
 }
 
