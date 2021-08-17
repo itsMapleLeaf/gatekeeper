@@ -9,7 +9,7 @@ it's a rough work in progress; things will probably change a lot before an actua
 ## install
 
 ```sh
-npm install @itsmapleleaf/gatekeeper
+npm install @itsmapleleaf/gatekeeper@next
 ```
 
 (or with your favorite package manager)
