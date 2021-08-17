@@ -45,7 +45,9 @@ export type SlashCommandOptionValueTypes = {
   BOOLEAN: boolean
 }
 
-export type SlashCommandContext<Options extends SlashCommandOptions> = {
+export type SlashCommandContext<
+  Options extends SlashCommandOptions = SlashCommandOptions,
+> = {
   channel: TextBasedChannels | undefined
   member: GuildMember | undefined
   user: User
