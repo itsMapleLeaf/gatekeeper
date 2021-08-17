@@ -3,41 +3,59 @@
 import chalk from "chalk"
 import { toError } from "./helpers"
 
-const loggerPrefix = chalk.gray`[gatekeeper]`
-
 export type Logger = {
   info(...args: unknown[]): void
   success(...args: unknown[]): void
   error(...args: unknown[]): void
   warn(...args: unknown[]): void
-  task(description: string, block: () => Promise<unknown>): Promise<void>
+  task<T>(description: string, block: () => Promise<T>): Promise<T>
 }
 
-export class DebugLogger implements Logger {
+type ConsoleLoggerOptions = {
+  name?: string
+}
+
+export class ConsoleLogger implements Logger {
+  readonly #options: ConsoleLoggerOptions
+
+  private constructor(options: ConsoleLoggerOptions) {
+    this.#options = options
+  }
+
+  static withName(name: string) {
+    return new ConsoleLogger({ name })
+  }
+
+  get name() {
+    return this.#options.name && chalk.gray`[${this.#options.name}]`
+  }
+
   info(...args: unknown[]) {
-    console.info(loggerPrefix, chalk.cyan`[i]`, ...args)
+    console.info(this.name, chalk.cyan`[i]`, ...args)
   }
 
   success(...args: unknown[]) {
-    console.info(loggerPrefix, chalk.green`[s]`, ...args)
+    console.info(this.name, chalk.green`[s]`, ...args)
   }
 
   error(...args: unknown[]) {
-    console.error(loggerPrefix, chalk.red`[e]`, ...args)
+    console.error(this.name, chalk.red`[e]`, ...args)
   }
 
   warn(...args: unknown[]) {
-    console.warn(loggerPrefix, chalk.yellow`[w]`, ...args)
+    console.warn(this.name, chalk.yellow`[w]`, ...args)
   }
 
-  async task(description: string, block: () => Promise<void>) {
+  async task<T>(description: string, block: () => Promise<T>) {
     try {
       this.info(description, chalk.gray`...`)
-      await block()
+      const result = await block()
       this.success(description, chalk.green`done`)
+      return result
     } catch (error) {
       this.error(description, chalk.red`failed`)
       this.error(toError(error).stack || toError(error).message)
+      throw error
     }
   }
 }
@@ -47,5 +65,7 @@ export class NoopLogger implements Logger {
   success() {}
   error() {}
   warn() {}
-  async task() {}
+  task<T>(_description: string, block: () => Promise<T>) {
+    return block()
+  }
 }

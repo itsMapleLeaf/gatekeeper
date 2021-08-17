@@ -1,9 +1,14 @@
 import type { Guild, GuildMember, TextBasedChannels, User } from "discord.js"
+import { isObject } from "../internal/helpers"
+import type { OptionalKeys, UsefulUnknown } from "../internal/types"
 import type { RenderReplyFn } from "./reply-component"
+
+export const slashCommandType = Symbol("slashCommand")
 
 export type SlashCommandDefinition<
   Options extends SlashCommandOptions = SlashCommandOptions,
 > = {
+  __type: typeof slashCommandType
   name: string
   description: string
   options?: Options
@@ -65,7 +70,13 @@ export type SlashCommandReplyHandle = SlashCommandEphemeralReplyHandle & {
 }
 
 export function defineSlashCommand<Options extends SlashCommandOptions>(
-  slashCommand: SlashCommandDefinition<Options>,
-) {
-  return slashCommand
+  definition: OptionalKeys<SlashCommandDefinition<Options>, "__type">,
+): SlashCommandDefinition<Options> {
+  return { ...definition, __type: slashCommandType }
+}
+
+export function isSlashCommandDefinition(
+  definition: UsefulUnknown,
+): definition is SlashCommandDefinition<any> {
+  return isObject(definition) && definition?.__type === slashCommandType
 }

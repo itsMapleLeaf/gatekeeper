@@ -1,4 +1,4 @@
-import type { Falsy } from "./types"
+import type { Falsy, Primitive } from "./types"
 
 export function raise(error: string | Error): never {
   throw typeof error === "string" ? new Error(error) : error
@@ -35,10 +35,7 @@ export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function isObject<T extends object>(
-  value: T | string | number | boolean | undefined | null,
-): value is T {
+export function isObject<T>(value: T): value is Exclude<T, Primitive> {
   return typeof value === "object" && value !== null
 }
 

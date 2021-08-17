@@ -1,41 +1,33 @@
-import { CommandManager } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
-import { buttonCommand } from "./commands/button"
-import { callbackInfoCommand } from "./commands/callback-info"
-import { counterCommand } from "./commands/counter"
-import { doubleCommand } from "./commands/double"
-import { ephemeralCounterCommand } from "./commands/ephemeral-counter"
-import { multiCounterCommand } from "./commands/multi-counter"
-import { multiSelectCommand } from "./commands/multi-select"
-import { selectCommand } from "./commands/select"
-
-const isDev = process.env.NODE_ENV !== "production"
+import glob from "fast-glob"
+import { ConsoleLogger } from "../../gatekeeper/src/internal/logger"
+import { CommandManager } from "../../gatekeeper/src/main"
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 })
 
-CommandManager.create({ logging: isDev })
-  .addSlashCommand({
-    name: "ping",
-    description: "pong",
-    async run(context) {
-      await context.createReply(() => ["pong!"])
-    },
-  })
-  .addSlashCommand(buttonCommand)
-  .addSlashCommand(selectCommand)
-  .addSlashCommand(multiSelectCommand)
-  .addSlashCommand(counterCommand)
-  .addSlashCommand(multiCounterCommand)
-  .addSlashCommand(ephemeralCounterCommand)
-  .addSlashCommand(doubleCommand)
-  .addSlashCommand(callbackInfoCommand)
-  .useClient(client, {
+const manager = CommandManager.create({ debug: false })
+
+const logger = ConsoleLogger.withName("bot")
+
+client.on("ready", () => {
+  logger.success("Ready")
+})
+
+async function main() {
+  await manager.loadCommands(
+    await glob("commands/**/*.ts", { absolute: true, cwd: __dirname }),
+  )
+
+  manager.useClient(client, {
     useGlobalCommands: false,
     useGuildCommands: true,
   })
 
+  await client.login(process.env.BOT_TOKEN)
+}
+
 // eslint-disable-next-line no-console
-client.login(process.env.BOT_TOKEN).catch(console.error)
+main().catch(console.error)
