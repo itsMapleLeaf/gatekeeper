@@ -1,8 +1,8 @@
-import { defineSlashCommand } from "@itsmapleleaf/gatekeeper"
 import {
   actionRowComponent,
   buttonComponent,
-} from "@itsmapleleaf/gatekeeper/src/main"
+  defineSlashCommand,
+} from "../../../gatekeeper/src/main"
 
 export const callbackInfoCommand = defineSlashCommand({
   name: "callback-info",

@@ -2,7 +2,7 @@ import {
   actionRowComponent,
   buttonComponent,
   defineSlashCommand,
-} from "@itsmapleleaf/gatekeeper"
+} from "../../../gatekeeper/src/main"
 
 export const counterCommand = defineSlashCommand({
   name: "counter",

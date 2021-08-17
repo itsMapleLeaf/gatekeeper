@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "pnpm run --parallel dev",
+    "dev": "pnpm run --filter ./playground dev",
     "build": "pnpm run --parallel build",
     "release": "pnpm run --parallel release",
     "lint": "eslint --ext js,ts,tsx ."

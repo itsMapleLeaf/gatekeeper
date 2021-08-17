@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "ts-node": "10.2.0",
-    "@itsmapleleaf/gatekeeper": "link:../gatekeeper",
     "discord.js": "13.1.0",
     "dotenv": "10.0.0"
   },

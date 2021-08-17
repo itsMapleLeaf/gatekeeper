@@ -4,7 +4,7 @@ import {
   buttonComponent,
   defineSlashCommand,
   selectMenuComponent,
-} from "@itsmapleleaf/gatekeeper"
+} from "../../../gatekeeper/src/main"
 
 export const selectCommand = defineSlashCommand({
   name: "select",

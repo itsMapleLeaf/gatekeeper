@@ -1,12 +1,12 @@
 import type {
   SlashCommandContext,
   SlashCommandReplyHandle,
-} from "@itsmapleleaf/gatekeeper"
+} from "../../../gatekeeper/src/main"
 import {
   actionRowComponent,
   buttonComponent,
   defineSlashCommand,
-} from "@itsmapleleaf/gatekeeper"
+} from "../../../gatekeeper/src/main"
 import { wait } from "../wait"
 
 export const multiCounterCommand = defineSlashCommand({
