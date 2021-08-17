@@ -3,15 +3,18 @@ import { relative } from "path"
 import { toError } from "../internal/helpers"
 import type { Logger } from "../internal/logger"
 import { ConsoleLogger, NoopLogger } from "../internal/logger"
+import type { UnknownRecord } from "../internal/types"
 import type { RenderReplyFn } from "./reply-component"
 import type { ReplyInstance } from "./reply-instance"
 import { EphemeralReplyInstance, PublicReplyInstance } from "./reply-instance"
 import type {
   SlashCommandDefinition,
+  SlashCommandDefinitionWithoutType,
   SlashCommandEphemeralReplyHandle,
   SlashCommandOptions,
   SlashCommandReplyHandle,
 } from "./slash-command"
+import { defineSlashCommand, isSlashCommandDefinition } from "./slash-command"
 
 type CommandManagerOptions = {
   /**
@@ -45,10 +48,13 @@ export class CommandManager {
   }
 
   addSlashCommand<Options extends SlashCommandOptions>(
-    slashCommand: SlashCommandDefinition<Options>,
+    slashCommand: SlashCommandDefinitionWithoutType<Options>,
   ) {
     this.logger.info(`Defining slash command: ${slashCommand.name}`)
-    this.#slashCommands.set(slashCommand.name, slashCommand as any)
+    this.#slashCommands.set(
+      slashCommand.name,
+      defineSlashCommand(slashCommand) as SlashCommandDefinition,
+    )
   }
 
   /**
@@ -62,7 +68,7 @@ export class CommandManager {
           .map((path) =>
             this.logger.task(
               `Loading command module "${relative(process.cwd(), path)}"`,
-              () => import(path),
+              () => import(path) as Promise<UnknownRecord>,
             ),
           ),
       )
@@ -70,7 +76,9 @@ export class CommandManager {
       const commands = commandModules.flatMap(Object.values)
 
       for (const command of commands) {
-        this.addSlashCommand(command)
+        if (isSlashCommandDefinition(command)) {
+          this.addSlashCommand(command)
+        }
       }
     })
   }

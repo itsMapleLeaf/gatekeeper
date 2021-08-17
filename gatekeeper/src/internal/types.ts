@@ -15,4 +15,4 @@ export type OptionalKeys<
 
 export type Primitive = string | number | boolean | undefined | null
 
-export type UsefulUnknown = Primitive | Record<string, unknown>
+export type UnknownRecord = Record<string, unknown>

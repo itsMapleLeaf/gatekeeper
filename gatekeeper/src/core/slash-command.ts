@@ -1,6 +1,6 @@
 import type { Guild, GuildMember, TextBasedChannels, User } from "discord.js"
-import { isObject } from "../internal/helpers"
-import type { OptionalKeys, UsefulUnknown } from "../internal/types"
+import { isAnyObject } from "../internal/helpers"
+import type { OptionalKeys } from "../internal/types"
 import type { RenderReplyFn } from "./reply-component"
 
 export const slashCommandType = Symbol("slashCommand")
@@ -55,7 +55,9 @@ export type SlashCommandContext<Options extends SlashCommandOptions> = {
       ? SlashCommandOptionValueTypes[Options[Name]["type"]]
       : SlashCommandOptionValueTypes[Options[Name]["type"]] | undefined
   }
+
   createReply: (render: RenderReplyFn) => Promise<SlashCommandReplyHandle>
+
   createEphemeralReply: (
     render: RenderReplyFn,
   ) => Promise<SlashCommandEphemeralReplyHandle>
@@ -69,14 +71,18 @@ export type SlashCommandReplyHandle = SlashCommandEphemeralReplyHandle & {
   delete: () => Promise<void>
 }
 
+export type SlashCommandDefinitionWithoutType<
+  Options extends SlashCommandOptions,
+> = OptionalKeys<SlashCommandDefinition<Options>, "__type">
+
 export function defineSlashCommand<Options extends SlashCommandOptions>(
-  definition: OptionalKeys<SlashCommandDefinition<Options>, "__type">,
+  definition: SlashCommandDefinitionWithoutType<Options>,
 ): SlashCommandDefinition<Options> {
   return { ...definition, __type: slashCommandType }
 }
 
 export function isSlashCommandDefinition(
-  definition: UsefulUnknown,
+  definition: unknown,
 ): definition is SlashCommandDefinition<any> {
-  return isObject(definition) && definition?.__type === slashCommandType
+  return isAnyObject(definition) && definition.__type === slashCommandType
 }

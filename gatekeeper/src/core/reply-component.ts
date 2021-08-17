@@ -9,10 +9,18 @@ import type {
 } from "discord.js"
 import { isObject, isString, isTruthy } from "../internal/helpers"
 import type { Falsy } from "../internal/types"
-import type { ActionRowComponent } from "./components/action-row"
+import type {
+  ActionRowChild,
+  ActionRowComponent,
+} from "./components/action-row"
 import type { EmbedComponent } from "./components/embed"
 
-export type ReplyComponent = string | EmbedComponent | ActionRowComponent
+export type ReplyComponent = TextComponent | EmbedComponent | ActionRowComponent
+
+export type TextComponent = {
+  type: "text"
+  text: string
+}
 
 export type RenderReplyFn = () => RenderResult
 
@@ -33,31 +41,34 @@ export type BaseEvent = {
 
 export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
   if (Array.isArray(result)) return result.flatMap(flattenRenderResult)
-  if (isObject(result) || isString(result)) return [result]
-  if (typeof result === "number") return [String(result)]
+  if (isObject(result)) return [result]
+  if (isString(result)) return [{ type: "text", text: result }]
+  if (typeof result === "number")
+    return [{ type: "text", text: String(result) }]
   return []
 }
 
-export function getInteractiveComponents(result: RenderResult) {
-  return flattenRenderResult(result)
-    .filter(isObject)
-    .flatMap((actionRow) =>
-      actionRow.type === "actionRow" ? actionRow.children : [],
-    )
+export function getInteractiveComponents(
+  result: RenderResult,
+): ActionRowChild[] {
+  return flattenRenderResult(result).flatMap((actionRow) =>
+    actionRow.type === "actionRow" ? actionRow.children : [],
+  )
 }
 
 export function createInteractionReplyOptions(
   components: ReplyComponent[],
 ): InteractionReplyOptions {
-  const content = components.filter(isString).join("\n")
+  const content = components
+    .map((component) => component.type === "text" && component.text)
+    .filter(isTruthy)
+    .join("\n")
 
   const embeds = components
-    .filter(isObject)
     .map((component) => component.type === "embed" && component.embed)
     .filter(isTruthy)
 
   const replyComponents: MessageActionRowOptions[] = components
-    .filter(isObject)
     .map<MessageActionRowOptions | Falsy>((component) => {
       if (component.type !== "actionRow") return
       return {

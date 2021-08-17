@@ -1,4 +1,4 @@
-import type { Falsy, Primitive } from "./types"
+import type { Falsy, Primitive, UnknownRecord } from "./types"
 
 export function raise(error: string | Error): never {
   throw typeof error === "string" ? new Error(error) : error
@@ -35,8 +35,20 @@ export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export function isObject<T>(value: T): value is Exclude<T, Primitive> {
+/**
+ * Checks at runtime if a value is a non-primitive,
+ * while narrowing primitives out of the type
+ */
+export function isObject<T>(value: T | Primitive): value is T {
   return typeof value === "object" && value !== null
+}
+
+/**
+ * Like {@link isObject}, but accepts unknown,
+ * and narrows it to a more usable UnknownRecord
+ */
+export function isAnyObject(value: unknown): value is UnknownRecord {
+  return isObject(value)
 }
 
 export function isString(value: unknown): value is string {
