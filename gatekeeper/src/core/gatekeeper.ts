@@ -60,7 +60,7 @@ export class Gatekeeper {
   }
 
   /**
-   * A list of **absoluete** file paths to load commands from.
+   * A list of **absolute** file paths to load commands from.
    */
   async loadCommands(filePaths: ArrayLike<string>) {
     await this.#logger.task(
