@@ -1,10 +1,10 @@
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
 import glob from "fast-glob"
-import { ConsoleLogger } from "../../gatekeeper/src/internal/logger"
+import { createConsoleLogger } from "../../gatekeeper/src/internal/logger"
 import { Gatekeeper } from "../../gatekeeper/src/main"
 
-const logger = ConsoleLogger.withName("bot")
+const logger = createConsoleLogger({ name: "bot" })
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
@@ -15,7 +15,7 @@ client.on("ready", () => {
 })
 
 async function main() {
-  const manager = Gatekeeper.create({ debug: false })
+  const manager = Gatekeeper.create({ debug: true })
 
   await manager.loadCommands(
     await glob("commands/**/*.ts", { absolute: true, cwd: __dirname }),

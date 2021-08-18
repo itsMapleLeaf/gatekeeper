@@ -3,7 +3,7 @@ import type { CommandInteraction } from "discord.js"
 import { relative } from "path"
 import { toError } from "../internal/helpers"
 import type { Logger } from "../internal/logger"
-import { ConsoleLogger, NoopLogger } from "../internal/logger"
+import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { UnknownRecord } from "../internal/types"
 import type { RenderReplyFn } from "./reply-component"
 import type { ReplyInstance } from "./reply-instance"
@@ -41,8 +41,8 @@ export class Gatekeeper {
 
   private constructor(options: CommandManagerOptions) {
     this.#logger = options.debug
-      ? ConsoleLogger.withName("gatekeeper")
-      : new NoopLogger()
+      ? createConsoleLogger({ name: "gatekeeper" })
+      : createNoopLogger()
   }
 
   static create(options: CommandManagerOptions = {}) {
@@ -63,29 +63,25 @@ export class Gatekeeper {
    * A list of **absolute** file paths to load commands from.
    */
   async loadCommands(filePaths: ArrayLike<string>) {
-    await this.#logger.task(
+    const commandModulePromises = Array.from(filePaths)
+      .map((path) => path.replace(/\.[a-z]+$/i, ""))
+      .map((path) =>
+        this.#logger.promise<UnknownRecord>(
+          `Loading command module "${relative(process.cwd(), path)}"`,
+          import(path),
+        ),
+      )
+
+    const commandModules = await this.#logger.promise(
       `Loading ${filePaths.length} commands`,
-      async () => {
-        const commandModules = await Promise.all(
-          Array.from(filePaths)
-            .map((path) => path.replace(/\.[a-z]+$/i, ""))
-            .map((path) =>
-              this.#logger.task(
-                `Loading command module "${relative(process.cwd(), path)}"`,
-                () => import(path) as Promise<UnknownRecord>,
-              ),
-            ),
-        )
-
-        const commands = commandModules.flatMap(Object.values)
-
-        for (const command of commands) {
-          if (isSlashCommandDefinition(command)) {
-            this.addSlashCommand(command)
-          }
-        }
-      },
+      Promise.all(commandModulePromises),
     )
+
+    for (const command of commandModules.flatMap<unknown>(Object.values)) {
+      if (isSlashCommandDefinition(command)) {
+        this.addSlashCommand(command)
+      }
+    }
   }
 
   useClient(
@@ -98,14 +94,14 @@ export class Gatekeeper {
     const syncGuildCommands = async (guild: Discord.Guild) => {
       await guild.commands.fetch()
       if (useGuildCommands) {
-        await this.#logger.task(
+        await this.#logger.promise(
           `Syncing guild commands for "${guild.name}"`,
-          () => this.#syncCommands(guild.commands),
+          this.#syncCommands(guild.commands),
         )
       } else {
-        await this.#logger.task(
+        await this.#logger.promise(
           `Removing commands for guild "${guild.name}"`,
-          () => this.#removeAllCommands(guild.commands),
+          this.#removeAllCommands(guild.commands),
         )
       }
     }
@@ -116,14 +112,16 @@ export class Gatekeeper {
       const { application } = client
       if (application) {
         if (useGlobalCommands) {
-          await this.#logger.task("Syncing global commands", async () => {
-            await application.commands.fetch()
-            return this.#syncCommands(application.commands)
-          })
+          await application.commands.fetch()
+          await this.#logger.promise(
+            "Syncing global commands",
+            this.#syncCommands(application.commands),
+          )
         } else {
-          await this.#logger.task("Removing global commands", async () => {
-            await this.#removeAllCommands(application.commands)
-          })
+          await this.#logger.promise(
+            "Removing global commands",
+            this.#removeAllCommands(application.commands),
+          )
         }
       }
 
@@ -138,11 +136,9 @@ export class Gatekeeper {
 
     client.on("interactionCreate", async (interaction) => {
       if (interaction.isCommand()) {
-        this.#logger.info(`Command interaction id ${interaction.id}`)
         await this.#handleCommandInteraction(interaction)
       }
       if (interaction.isMessageComponent()) {
-        this.#logger.info(`Message component interaction id ${interaction.id}`)
         await this.#handleMessageComponentInteraction(interaction)
       }
     })
@@ -160,20 +156,21 @@ export class Gatekeeper {
         choices: "choices" in option ? option.choices : undefined,
       }))
 
-      await this.#logger.task(`Creating command "${command.name}"`, () => {
-        return manager.create({
+      await this.#logger.promise(
+        `Creating command "${command.name}"`,
+        manager.create({
           name: command.name,
           description: command.description,
           options,
-        })
-      })
+        }),
+      )
     }
 
     for (const appCommand of manager.cache.values()) {
       if (!this.#slashCommands.has(appCommand.name)) {
-        await this.#logger.task(
+        await this.#logger.promise(
           `Removing unused command "${appCommand.name}"`,
-          () => manager.delete(appCommand.id),
+          manager.delete(appCommand.id),
         )
       }
     }
@@ -181,7 +178,8 @@ export class Gatekeeper {
 
   async #removeAllCommands(manager: DiscordCommandManager) {
     for (const command of manager.cache.values()) {
-      await this.#logger.task(`Removing command "${command.name}"`, () =>
+      await this.#logger.promise(
+        `Removing command "${command.name}"`,
         manager.delete(command.id),
       )
     }
