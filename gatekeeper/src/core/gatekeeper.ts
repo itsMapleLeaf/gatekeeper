@@ -2,7 +2,6 @@ import type * as Discord from "discord.js"
 import type { CommandInteraction } from "discord.js"
 import { relative } from "path"
 import { toError } from "../internal/helpers"
-import type { Logger } from "../internal/logger"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { UnknownRecord } from "../internal/types"
 import type { RenderReplyFn } from "./reply-component"
@@ -34,118 +33,18 @@ type DiscordCommandManager =
   | Discord.ApplicationCommandManager
   | Discord.GuildApplicationCommandManager
 
-export class Gatekeeper {
-  readonly #slashCommands = new Map<string, SlashCommandDefinition>()
-  readonly #replyInstances = new Set<ReplyInstance>()
-  readonly #logger: Logger
+export function createGatekeeper({
+  debug = false,
+}: CommandManagerOptions = {}) {
+  const slashCommands = new Map<string, SlashCommandDefinition>()
+  const replyInstances = new Set<ReplyInstance>()
 
-  private constructor(options: CommandManagerOptions) {
-    this.#logger = options.debug
-      ? createConsoleLogger({ name: "gatekeeper" })
-      : createNoopLogger()
-  }
+  const logger = debug
+    ? createConsoleLogger({ name: "gatekeeper" })
+    : createNoopLogger()
 
-  static create(options: CommandManagerOptions = {}) {
-    return new Gatekeeper(options)
-  }
-
-  addSlashCommand<Options extends SlashCommandOptions>(
-    slashCommand: SlashCommandDefinitionWithoutType<Options>,
-  ) {
-    this.#logger.info(`Defining slash command: ${slashCommand.name}`)
-    this.#slashCommands.set(
-      slashCommand.name,
-      defineSlashCommand(slashCommand) as SlashCommandDefinition,
-    )
-  }
-
-  /**
-   * A list of **absolute** file paths to load commands from.
-   */
-  async loadCommands(filePaths: ArrayLike<string>) {
-    const commandModulePromises = Array.from(filePaths)
-      .map((path) => path.replace(/\.[a-z]+$/i, ""))
-      .map((path) =>
-        this.#logger.promise<UnknownRecord>(
-          `Loading command module "${relative(process.cwd(), path)}"`,
-          import(path),
-        ),
-      )
-
-    const commandModules = await this.#logger.promise(
-      `Loading ${filePaths.length} commands`,
-      Promise.all(commandModulePromises),
-    )
-
-    for (const command of commandModules.flatMap<unknown>(Object.values)) {
-      if (isSlashCommandDefinition(command)) {
-        this.addSlashCommand(command)
-      }
-    }
-  }
-
-  useClient(
-    client: Discord.Client,
-    {
-      useGlobalCommands = true,
-      useGuildCommands = false,
-    }: UseClientOptions = {},
-  ) {
-    const syncGuildCommands = async (guild: Discord.Guild) => {
-      await guild.commands.fetch()
-      if (useGuildCommands) {
-        await this.#logger.promise(
-          `Syncing guild commands for "${guild.name}"`,
-          this.#syncCommands(guild.commands),
-        )
-      } else {
-        await this.#logger.promise(
-          `Removing commands for guild "${guild.name}"`,
-          this.#removeAllCommands(guild.commands),
-        )
-      }
-    }
-
-    client.on("ready", async () => {
-      this.#logger.info("Client ready")
-
-      const { application } = client
-      if (application) {
-        if (useGlobalCommands) {
-          await application.commands.fetch()
-          await this.#logger.promise(
-            "Syncing global commands",
-            this.#syncCommands(application.commands),
-          )
-        } else {
-          await this.#logger.promise(
-            "Removing global commands",
-            this.#removeAllCommands(application.commands),
-          )
-        }
-      }
-
-      for (const guild of client.guilds.cache.values()) {
-        await syncGuildCommands(guild)
-      }
-    })
-
-    client.on("guildCreate", async (guild) => {
-      await syncGuildCommands(guild)
-    })
-
-    client.on("interactionCreate", async (interaction) => {
-      if (interaction.isCommand()) {
-        await this.#handleCommandInteraction(interaction)
-      }
-      if (interaction.isMessageComponent()) {
-        await this.#handleMessageComponentInteraction(interaction)
-      }
-    })
-  }
-
-  async #syncCommands(manager: DiscordCommandManager) {
-    for (const command of this.#slashCommands.values()) {
+  async function syncCommands(manager: DiscordCommandManager) {
+    for (const command of slashCommands.values()) {
       const options = Object.entries(
         command.options ?? {},
       ).map<Discord.ApplicationCommandOptionData>(([name, option]) => ({
@@ -156,7 +55,7 @@ export class Gatekeeper {
         choices: "choices" in option ? option.choices : undefined,
       }))
 
-      await this.#logger.promise(
+      await logger.promise(
         `Creating command "${command.name}"`,
         manager.create({
           name: command.name,
@@ -167,8 +66,8 @@ export class Gatekeeper {
     }
 
     for (const appCommand of manager.cache.values()) {
-      if (!this.#slashCommands.has(appCommand.name)) {
-        await this.#logger.promise(
+      if (!slashCommands.has(appCommand.name)) {
+        await logger.promise(
           `Removing unused command "${appCommand.name}"`,
           manager.delete(appCommand.id),
         )
@@ -176,25 +75,25 @@ export class Gatekeeper {
     }
   }
 
-  async #removeAllCommands(manager: DiscordCommandManager) {
+  async function removeAllCommands(manager: DiscordCommandManager) {
     for (const command of manager.cache.values()) {
-      await this.#logger.promise(
+      await logger.promise(
         `Removing command "${command.name}"`,
         manager.delete(command.id),
       )
     }
   }
 
-  async #handleCommandInteraction(interaction: Discord.CommandInteraction) {
-    const slashCommand = this.#slashCommands.get(interaction.commandName)
+  async function handleCommandInteraction(
+    interaction: Discord.CommandInteraction,
+  ) {
+    const slashCommand = slashCommands.get(interaction.commandName)
     if (!slashCommand) return
 
-    await slashCommand.run(
-      this.#createSlashCommandContext(slashCommand, interaction),
-    )
+    await slashCommand.run(createSlashCommandContext(slashCommand, interaction))
   }
 
-  #createSlashCommandContext(
+  function createSlashCommandContext(
     slashCommand: SlashCommandDefinition,
     interaction: CommandInteraction,
   ): SlashCommandContext {
@@ -215,28 +114,28 @@ export class Gatekeeper {
       user: interaction.user,
       guild: interaction.guild ?? undefined,
       options,
-      createReply: (render) => this.#createReplyInstance(interaction, render),
+      createReply: (render) => createReplyInstance(interaction, render),
       createEphemeralReply: (render) =>
-        this.#createEphemeralReplyInstance(interaction, render),
+        createEphemeralReplyInstance(interaction, render),
     }
   }
 
-  #handleMessageComponentInteraction(
+  function handleMessageComponentInteraction(
     interaction: Discord.MessageComponentInteraction,
   ) {
     interaction.deferUpdate().catch((error) => {
-      this.#logger.warn("Failed to defer interaction update")
-      this.#logger.warn(toError(error).stack || toError(error).message)
+      logger.warn("Failed to defer interaction update")
+      logger.warn(toError(error).stack || toError(error).message)
     })
 
     return Promise.all(
-      [...this.#replyInstances].map((instance) =>
+      [...replyInstances].map((instance) =>
         instance.handleMessageComponentInteraction(interaction),
       ),
     )
   }
 
-  async #createReplyInstance(
+  async function createReplyInstance(
     interaction: Discord.CommandInteraction,
     render: RenderReplyFn,
   ): Promise<SlashCommandReplyHandle> {
@@ -249,20 +148,20 @@ export class Gatekeeper {
       }
     }
 
-    this.#replyInstances.add(instance)
+    replyInstances.add(instance)
 
     return {
       update: async () => {
         await instance.update()
       },
       delete: async () => {
-        this.#replyInstances.delete(instance)
+        replyInstances.delete(instance)
         await instance.cleanup()
       },
     }
   }
 
-  async #createEphemeralReplyInstance(
+  async function createEphemeralReplyInstance(
     interaction: Discord.CommandInteraction,
     render: RenderReplyFn,
   ): Promise<SlashCommandEphemeralReplyHandle> {
@@ -274,7 +173,7 @@ export class Gatekeeper {
       }
     }
 
-    this.#replyInstances.add(instance)
+    replyInstances.add(instance)
 
     return {
       update: async () => {
@@ -282,4 +181,100 @@ export class Gatekeeper {
       },
     }
   }
+
+  const gatekeeper = {
+    addSlashCommand<Options extends SlashCommandOptions>(
+      definition: SlashCommandDefinitionWithoutType<Options>,
+    ) {
+      slashCommands.set(
+        definition.name,
+        defineSlashCommand(definition) as SlashCommandDefinition,
+      )
+      logger.info(`Added slash command "${definition.name}"`)
+    },
+
+    async loadCommands(filePaths: ArrayLike<string>) {
+      const commandModulePromises = Array.from(filePaths)
+        .map((path) => path.replace(/\.[a-z]+$/i, ""))
+        .map((path) =>
+          logger.promise<UnknownRecord>(
+            `Loading command module "${relative(process.cwd(), path)}"`,
+            import(path),
+          ),
+        )
+
+      const commandModules = await logger.promise(
+        `Loading ${filePaths.length} commands`,
+        Promise.all(commandModulePromises),
+      )
+
+      for (const command of commandModules.flatMap<unknown>(Object.values)) {
+        if (isSlashCommandDefinition(command)) {
+          gatekeeper.addSlashCommand(command)
+        }
+      }
+    },
+
+    useClient(
+      client: Discord.Client,
+      {
+        useGlobalCommands = true,
+        useGuildCommands = false,
+      }: UseClientOptions = {},
+    ) {
+      async function syncGuildCommands(guild: Discord.Guild) {
+        await guild.commands.fetch()
+        if (useGuildCommands) {
+          await logger.promise(
+            `Syncing guild commands for "${guild.name}"`,
+            syncCommands(guild.commands),
+          )
+        } else {
+          await logger.promise(
+            `Removing commands for guild "${guild.name}"`,
+            removeAllCommands(guild.commands),
+          )
+        }
+      }
+
+      client.on("ready", async () => {
+        logger.info("Client ready")
+
+        const { application } = client
+        if (application) {
+          if (useGlobalCommands) {
+            await application.commands.fetch()
+            await logger.promise(
+              "Syncing global commands",
+              syncCommands(application.commands),
+            )
+          } else {
+            await logger.promise(
+              "Removing global commands",
+              removeAllCommands(application.commands),
+            )
+          }
+        }
+
+        for (const guild of client.guilds.cache.values()) {
+          await syncGuildCommands(guild)
+        }
+      })
+
+      client.on("guildCreate", async (guild) => {
+        await syncGuildCommands(guild)
+      })
+
+      client.on("interactionCreate", async (interaction) => {
+        if (interaction.isCommand()) {
+          await handleCommandInteraction(interaction)
+        }
+        if (interaction.isMessageComponent()) {
+          await handleMessageComponentInteraction(interaction)
+        }
+      })
+    },
+  }
+
+  return gatekeeper
 }

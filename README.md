@@ -20,7 +20,7 @@ npm install @itsmapleleaf/gatekeeper@next
 import {
   actionRowComponent,
   buttonComponent,
-  Gatekeeper,
+  createGatekeeper,
   defineSlashCommand,
 } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
@@ -50,9 +50,9 @@ const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 })
 
-const manager = Gatekeeper.create({ debug: true })
-manager.addSlashCommand(counterCommand)
-manager.useClient(client, { useGuildCommands: true })
+const gatekeeper = createGatekeeper({ debug: true })
+gatekeeper.addSlashCommand(counterCommand)
+gatekeeper.useClient(client, { useGuildCommands: true })
 
 client.login(process.env.BOT_TOKEN).catch(console.error)
 ```
