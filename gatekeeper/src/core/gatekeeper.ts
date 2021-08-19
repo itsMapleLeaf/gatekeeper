@@ -1,21 +1,17 @@
 import type * as Discord from "discord.js"
-import type { CommandInteraction } from "discord.js"
 import { relative } from "path"
-import { toError } from "../internal/helpers"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { UnknownRecord } from "../internal/types"
-import type { RenderReplyFn } from "./reply-component"
-import type { ReplyInstance } from "./reply-instance"
-import { EphemeralReplyInstance, PublicReplyInstance } from "./reply-instance"
 import type {
-  SlashCommandContext,
   SlashCommandDefinition,
   SlashCommandDefinitionWithoutType,
-  SlashCommandEphemeralReplyHandle,
   SlashCommandOptions,
-  SlashCommandReplyHandle,
 } from "./slash-command"
-import { defineSlashCommand, isSlashCommandDefinition } from "./slash-command"
+import {
+  createSlashCommandContext,
+  defineSlashCommand,
+  isSlashCommandDefinition,
+} from "./slash-command"
 
 type CommandManagerOptions = {
   /**
@@ -37,7 +33,6 @@ export function createGatekeeper({
   debug = false,
 }: CommandManagerOptions = {}) {
   const slashCommands = new Map<string, SlashCommandDefinition>()
-  const replyInstances = new Set<ReplyInstance>()
 
   const logger = debug
     ? createConsoleLogger({ name: "gatekeeper" })
@@ -91,95 +86,6 @@ export function createGatekeeper({
     if (!slashCommand) return
 
     await slashCommand.run(createSlashCommandContext(slashCommand, interaction))
-  }
-
-  function createSlashCommandContext(
-    slashCommand: SlashCommandDefinition,
-    interaction: CommandInteraction,
-  ): SlashCommandContext {
-    const options: Record<string, string | number | boolean | undefined> = {}
-
-    for (const [name, optionDefinition] of Object.entries(
-      slashCommand.options ?? {},
-    )) {
-      const value = interaction.options.get(name, optionDefinition.required)
-      if (!value) continue
-
-      options[value.name] = value.value
-    }
-
-    return {
-      channel: interaction.channel ?? undefined,
-      member: (interaction.member as Discord.GuildMember | null) ?? undefined,
-      user: interaction.user,
-      guild: interaction.guild ?? undefined,
-      options,
-      createReply: (render) => createReplyInstance(interaction, render),
-      createEphemeralReply: (render) =>
-        createEphemeralReplyInstance(interaction, render),
-    }
-  }
-
-  function handleMessageComponentInteraction(
-    interaction: Discord.MessageComponentInteraction,
-  ) {
-    interaction.deferUpdate().catch((error) => {
-      logger.warn("Failed to defer interaction update")
-      logger.warn(toError(error).stack || toError(error).message)
-    })
-
-    return Promise.all(
-      [...replyInstances].map((instance) =>
-        instance.handleMessageComponentInteraction(interaction),
-      ),
-    )
-  }
-
-  async function createReplyInstance(
-    interaction: Discord.CommandInteraction,
-    render: RenderReplyFn,
-  ): Promise<SlashCommandReplyHandle> {
-    const instance = await PublicReplyInstance.create(interaction, render)
-
-    if (!instance) {
-      return {
-        update: async () => {},
-        delete: async () => {},
-      }
-    }
-
-    replyInstances.add(instance)
-
-    return {
-      update: async () => {
-        await instance.update()
-      },
-      delete: async () => {
-        replyInstances.delete(instance)
-        await instance.cleanup()
-      },
-    }
-  }
-
-  async function createEphemeralReplyInstance(
-    interaction: Discord.CommandInteraction,
-    render: RenderReplyFn,
-  ): Promise<SlashCommandEphemeralReplyHandle> {
-    const instance = await EphemeralReplyInstance.create(interaction, render)
-
-    if (!instance) {
-      return {
-        update: async () => {},
-      }
-    }
-
-    replyInstances.add(instance)
-
-    return {
-      update: async () => {
-        await instance.update()
-      },
-    }
   }
 
   const gatekeeper = {
@@ -268,9 +174,6 @@ export function createGatekeeper({
       client.on("interactionCreate", async (interaction) => {
         if (interaction.isCommand()) {
           await handleCommandInteraction(interaction)
-        }
-        if (interaction.isMessageComponent()) {
-          await handleMessageComponentInteraction(interaction)
         }
       })
     },

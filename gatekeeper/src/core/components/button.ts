@@ -1,21 +1,23 @@
 import type { EmojiResolvable, MessageButtonStyle } from "discord.js"
 import { randomUUID } from "node:crypto"
-import type { BaseEvent } from "../reply-component"
+import type { InteractionContext } from "../interaction-context"
 
-export type ButtonComponent = {
+export type ButtonComponent<State> = {
   type: "button"
   customId: string
   style: MessageButtonStyle
   label: string
   emoji?: EmojiResolvable
-  onClick: (event: ClickEvent) => void | Promise<unknown>
+  onClick: (context: ButtonInteractionContext<State>) => void | Promise<unknown>
 }
 
-export type ClickEvent = BaseEvent
+export type ButtonInteractionContext<State> = InteractionContext & {
+  setState: (update: (prev: State) => State) => Promise<void>
+}
 
-export function buttonComponent(
-  options: Omit<ButtonComponent, "type" | "customId">,
-): ButtonComponent {
+export function buttonComponent<State>(
+  options: Omit<ButtonComponent<State>, "type" | "customId">,
+): ButtonComponent<State> {
   return {
     ...options,
     type: "button",

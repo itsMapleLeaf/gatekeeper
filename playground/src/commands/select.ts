@@ -39,8 +39,8 @@ export const selectCommand = defineSlashCommand({
                 emoji: "672311909290344478",
               },
             ],
-            onSelect: (event) => {
-              selected = event.values[0]
+            onSelect: (selectContext) => {
+              selected = selectContext.values[0]
             },
           }),
         ),

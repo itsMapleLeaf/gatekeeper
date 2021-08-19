@@ -1,7 +1,8 @@
-import type { Guild, GuildMember, TextBasedChannels, User } from "discord.js"
+import type * as Discord from "discord.js"
 import { isAnyObject } from "../internal/helpers"
 import type { OptionalKeys } from "../internal/types"
-import type { RenderReplyFn } from "./reply-component"
+import type { InteractionContext } from "./interaction-context"
+import { createInteractionContext } from "./interaction-context"
 
 export const slashCommandType = Symbol("slashCommand")
 
@@ -12,7 +13,19 @@ export type SlashCommandDefinition<
   name: string
   description: string
   options?: Options
-  run: (context: SlashCommandContext<Options>) => void | Promise<unknown>
+  run: (
+    context: SlashCommandInteractionContext<Options>,
+  ) => void | Promise<unknown>
+}
+
+export type SlashCommandInteractionContext<
+  Options extends SlashCommandOptions = SlashCommandOptions,
+> = InteractionContext & {
+  options: {
+    [Name in keyof Options]: Options[Name]["required"] extends true
+      ? SlashCommandOptionValueTypes[Options[Name]["type"]]
+      : SlashCommandOptionValueTypes[Options[Name]["type"]] | undefined
+  }
 }
 
 export type SlashCommandOptions = {
@@ -45,34 +58,6 @@ export type SlashCommandOptionValueTypes = {
   BOOLEAN: boolean
 }
 
-export type SlashCommandContext<
-  Options extends SlashCommandOptions = SlashCommandOptions,
-> = {
-  channel: TextBasedChannels | undefined
-  member: GuildMember | undefined
-  user: User
-  guild: Guild | undefined
-  options: {
-    [Name in keyof Options]: Options[Name]["required"] extends true
-      ? SlashCommandOptionValueTypes[Options[Name]["type"]]
-      : SlashCommandOptionValueTypes[Options[Name]["type"]] | undefined
-  }
-
-  createReply: (render: RenderReplyFn) => Promise<SlashCommandReplyHandle>
-
-  createEphemeralReply: (
-    render: RenderReplyFn,
-  ) => Promise<SlashCommandEphemeralReplyHandle>
-}
-
-export type SlashCommandEphemeralReplyHandle = {
-  update: () => Promise<void>
-}
-
-export type SlashCommandReplyHandle = SlashCommandEphemeralReplyHandle & {
-  delete: () => Promise<void>
-}
-
 export type SlashCommandDefinitionWithoutType<
   Options extends SlashCommandOptions,
 > = OptionalKeys<SlashCommandDefinition<Options>, "__type">
@@ -87,4 +72,25 @@ export function isSlashCommandDefinition(
   definition: unknown,
 ): definition is SlashCommandDefinition<any> {
   return isAnyObject(definition) && definition.__type === slashCommandType
+}
+
+export function createSlashCommandContext(
+  slashCommand: SlashCommandDefinition,
+  interaction: Discord.CommandInteraction,
+): SlashCommandInteractionContext {
+  const options: Record<string, string | number | boolean | undefined> = {}
+
+  for (const [name, optionDefinition] of Object.entries(
+    slashCommand.options ?? {},
+  )) {
+    const value = interaction.options.get(name, optionDefinition.required)
+    if (!value) continue
+
+    options[value.name] = value.value
+  }
+
+  return {
+    ...createInteractionContext(interaction),
+    options,
+  }
 }
