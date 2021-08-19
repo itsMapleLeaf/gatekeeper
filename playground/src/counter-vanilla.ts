@@ -60,14 +60,13 @@ client.on("interactionCreate", async (interaction) => {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const componentInteraction = await reply.awaitMessageComponent()
-    componentInteraction.deferUpdate()
 
     if (
       componentInteraction.isButton() &&
       componentInteraction.customId === countButtonId
     ) {
       count += 1
-      await reply.edit(message())
+      await componentInteraction.update(message())
     }
 
     if (
@@ -75,7 +74,10 @@ client.on("interactionCreate", async (interaction) => {
       componentInteraction.customId === doneButtonId &&
       componentInteraction.user.id === interaction.user.id
     ) {
-      await reply.delete()
+      await Promise.all([
+        componentInteraction.deferUpdate(),
+        interaction.deleteReply(),
+      ])
       break
     }
   }
