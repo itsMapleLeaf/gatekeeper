@@ -28,13 +28,23 @@ export function createConsoleLogger({ name = "" } = {}): Logger {
       console.warn(prefix, chalk.yellow`[w]`, ...args)
     },
     async promise(description, promise) {
+      const startTime = Date.now()
+
       try {
         logger.info(description, chalk.gray`...`)
         const result = await promise
-        logger.success(description, chalk.green`done`)
+        logger.success(
+          description,
+          chalk.green`done`,
+          chalk.gray`(${Date.now() - startTime}ms)`,
+        )
         return result
       } catch (error) {
-        logger.error(description, chalk.red`failed`)
+        logger.error(
+          description,
+          chalk.red`failed`,
+          chalk.gray`(${Date.now() - startTime}ms)`,
+        )
         logger.error(toError(error).stack || toError(error).message)
         throw error
       }

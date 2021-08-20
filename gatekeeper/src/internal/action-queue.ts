@@ -28,9 +28,12 @@ export function createActionQueue(logger: Logger) {
 
       for (const action of queuedActions) {
         try {
-          await action.run()
-        } catch (error) {
-          logger.error(`Error running action "${action.name}":`, error)
+          await logger.promise(
+            `Running ${action.name}`,
+            Promise.resolve(action.run()),
+          )
+        } catch {
+          // do nothing; the logger will log the error
         }
       }
     })
