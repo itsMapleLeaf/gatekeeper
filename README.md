@@ -28,10 +28,10 @@ import { Client, Intents } from "discord.js"
 const counterCommand = defineSlashCommand({
   name: "counter",
   description: "make a counter",
-  async run(context) {
+  run(context) {
     let count = 0
 
-    await context.createReply(() => [
+    context.createReply(() => [
       `button pressed ${count} times`,
       actionRowComponent(
         buttonComponent({
