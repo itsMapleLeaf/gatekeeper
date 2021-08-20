@@ -138,41 +138,6 @@ export function createInteractionContext(
   return context
 }
 
-async function addReply(
-  interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
-  options: Discord.InteractionReplyOptions,
-) {
-  if (interaction.deferred) {
-    return interaction.editReply(options) as Promise<Discord.Message>
-  }
-
-  if (interaction.replied) {
-    return interaction.followUp(options) as Promise<Discord.Message>
-  }
-
-  return interaction.reply({
-    ...options,
-    fetchReply: true,
-  }) as Promise<Discord.Message>
-}
-
-async function addEphemeralReply(
-  interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
-  options: Discord.InteractionReplyOptions,
-) {
-  if (interaction.deferred) {
-    await interaction.editReply(options)
-    return
-  }
-
-  if (interaction.replied) {
-    await interaction.followUp({ ...options, ephemeral: true })
-    return
-  }
-
-  await interaction.reply({ ...options, ephemeral: true })
-}
-
 function createMessageComponentInteractionHandler(
   interaction: Discord.Interaction,
   replyState: ReplyState,
@@ -205,7 +170,7 @@ function createMessageComponentInteractionHandler(
           replyState.components,
         )
 
-        if (!componentInteraction.replied) {
+        if (!componentInteraction.replied && !componentInteraction.deferred) {
           await componentInteraction
             .update(replyOptions)
             .catch((error) => logger.warn("Failed to call update:", error))
@@ -253,5 +218,34 @@ function createMessageComponentInteractionHandler(
     removeListener() {
       removeListenerTimeout.trigger()
     },
+  }
+}
+
+async function addReply(
+  interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
+  options: Discord.InteractionReplyOptions,
+) {
+  if (interaction.deferred) {
+    return interaction.editReply(options) as Promise<Discord.Message>
+  }
+
+  if (interaction.replied) {
+    return interaction.followUp(options) as Promise<Discord.Message>
+  }
+
+  return interaction.reply({
+    ...options,
+    fetchReply: true,
+  }) as Promise<Discord.Message>
+}
+
+async function addEphemeralReply(
+  interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
+  options: Discord.InteractionReplyOptions,
+) {
+  if (interaction.replied || interaction.deferred) {
+    await interaction.followUp({ ...options, ephemeral: true })
+  } else {
+    await interaction.reply({ ...options, ephemeral: true })
   }
 }

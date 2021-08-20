@@ -1,4 +1,8 @@
-import { defineSlashCommand } from "../../../gatekeeper/src/main"
+import {
+  actionRowComponent,
+  buttonComponent,
+  defineSlashCommand,
+} from "../../../gatekeeper/src/main"
 import { wait } from "../wait"
 
 export const deferCommand = defineSlashCommand({
@@ -6,7 +10,24 @@ export const deferCommand = defineSlashCommand({
   description: "test deferring",
   async run(context) {
     context.defer()
+
     await wait(4000)
-    context.reply(() => `done! here's a cookie 🍪`)
+
+    context.reply(() =>
+      actionRowComponent(
+        buttonComponent({
+          label: "",
+          emoji: "🍪",
+          style: "SECONDARY",
+          onClick: async (context) => {
+            context.defer()
+            await wait(4000)
+            context.ephemeralReply(
+              () => `thanks for waiting, here's your cookie! 🍪`,
+            )
+          },
+        }),
+      ),
+    )
   },
 })
