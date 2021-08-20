@@ -1,5 +1,6 @@
 import type * as Discord from "discord.js"
 import { isAnyObject } from "../internal/helpers"
+import type { Logger } from "../internal/logger"
 import type { OptionalKeys } from "../internal/types"
 import type { InteractionContext } from "./interaction-context"
 import { createInteractionContext } from "./interaction-context"
@@ -77,6 +78,7 @@ export function isSlashCommandDefinition(
 export function createSlashCommandContext(
   slashCommand: SlashCommandDefinition,
   interaction: Discord.CommandInteraction,
+  logger: Logger,
 ): SlashCommandInteractionContext {
   const options: Record<string, string | number | boolean | undefined> = {}
 
@@ -90,7 +92,7 @@ export function createSlashCommandContext(
   }
 
   return {
-    ...createInteractionContext(interaction),
+    ...createInteractionContext(interaction, logger),
     options,
   }
 }

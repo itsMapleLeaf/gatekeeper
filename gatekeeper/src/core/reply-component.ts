@@ -15,26 +15,23 @@ import type {
 } from "./components/action-row"
 import type { EmbedComponent } from "./components/embed"
 
-export type ReplyComponent<State> =
-  | TextComponent
-  | EmbedComponent
-  | ActionRowComponent<State>
+export type ReplyComponent = TextComponent | EmbedComponent | ActionRowComponent
 
 export type TextComponent = {
   type: "text"
   text: string
 }
 
-export type RenderReplyFn<State> = (state: State) => RenderResult<State>
+export type RenderReplyFn = () => RenderResult
 
-export type RenderResult<State> =
-  | ReplyComponent<State>
+export type RenderResult =
+  | ReplyComponent
   | string
   | number
   | boolean
   | undefined
   | null
-  | RenderResult<State>[]
+  | RenderResult[]
 
 export type BaseEvent = {
   channel: TextBasedChannels | undefined
@@ -43,9 +40,7 @@ export type BaseEvent = {
   guild: Guild | undefined
 }
 
-export function flattenRenderResult<State>(
-  result: RenderResult<State>,
-): ReplyComponent<State>[] {
+export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
   if (Array.isArray(result)) return result.flatMap(flattenRenderResult)
   if (isObject(result)) return [result]
   if (isString(result)) return [{ type: "text", text: result }]
@@ -54,16 +49,16 @@ export function flattenRenderResult<State>(
   return []
 }
 
-export function getInteractiveComponents<State>(
-  result: RenderResult<State>,
-): ActionRowChild<State>[] {
+export function getInteractiveComponents(
+  result: RenderResult,
+): ActionRowChild[] {
   return flattenRenderResult(result).flatMap((actionRow) =>
     actionRow.type === "actionRow" ? actionRow.children : [],
   )
 }
 
-export function createInteractionReplyOptions<State>(
-  components: ReplyComponent<State>[],
+export function createInteractionReplyOptions(
+  components: ReplyComponent[],
 ): InteractionReplyOptions {
   const content = components
     .map((component) => component.type === "text" && component.text)

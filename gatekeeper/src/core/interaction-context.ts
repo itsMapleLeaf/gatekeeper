@@ -1,5 +1,6 @@
 import type * as Discord from "discord.js"
-import type { RenderResult } from "./reply-component"
+import type { Logger } from "../internal/logger"
+import type { RenderReplyFn } from "./reply-component"
 import {
   createInteractionReplyOptions,
   flattenRenderResult,
@@ -12,65 +13,148 @@ export type InteractionContext = {
   user: Discord.User
   guild: Discord.Guild | undefined
 
-  reply: (content: RenderResult<unknown>) => Promise<{
-    edit: (content: RenderResult<unknown>) => Promise<void>
+  reply: (render: RenderReplyFn) => Promise<{
+    refresh: () => Promise<void>
     delete: () => Promise<void>
   }>
 
-  ephemeralReply: (content: RenderResult<unknown>) => Promise<void>
+  ephemeralReply: (render: RenderReplyFn) => Promise<void>
 
-  statefulReply: <State>(options: {
-    state: State
-    render: (state: State) => RenderResult<State>
-  }) => Promise<void>
+  /**
+   * internal do not use
+   */
+  flushReplyQueue: () => Promise<void>
 }
 
 export function createInteractionContext(
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
+  logger: Logger,
 ): InteractionContext {
+  // this reply queue exists so we can control _when_ reply messages are actually created
+  // this is useful for message interactions:
+  // replies count as an update, therefore we can't actually call update() after making a reply
+  // so in order to accomplish that, we'll queue the replies we want to make,
+  // then flush them all after the update
+  const replyQueue: Discord.InteractionReplyOptions[] = []
+
   const context: InteractionContext = {
     channel: interaction.channel ?? undefined,
     member: (interaction.member as Discord.GuildMember | null) ?? undefined,
     user: interaction.user,
     guild: interaction.guild ?? undefined,
 
-    reply: async (result: RenderResult<unknown>) => {
-      const options = createInteractionReplyOptions(flattenRenderResult(result))
-      const message = await addReply(interaction, options)
+    flushReplyQueue: async () => {
+      let replyOptions = replyQueue.shift()
+      while (replyOptions) {
+        await addReply(interaction, replyOptions)
+        replyOptions = replyQueue.shift()
+      }
+    },
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    reply: async (render) => {
+      let components = flattenRenderResult(render())
+
+      const message = replyQueue.push(createInteractionReplyOptions(components))
+
+      const handleComponentInteraction = async (
+        componentInteraction: Discord.Interaction,
+      ) => {
+        if (!componentInteraction.isMessageComponent()) return
+
+        const component = getInteractiveComponents(components).find(
+          (component) => component.customId === componentInteraction.customId,
+        )
+        if (!component) return
+
+        const componentContext = createInteractionContext(
+          componentInteraction,
+          logger,
+        )
+
+        if (component.type === "button") {
+          await component.onClick(componentContext)
+        }
+
+        if (
+          component.type === "selectMenu" &&
+          componentInteraction.isSelectMenu()
+        ) {
+          await component.onSelect({
+            ...componentContext,
+            values: componentInteraction.values,
+          })
+        }
+
+        components = flattenRenderResult(render())
+        const replyOptions = createInteractionReplyOptions(components)
+
+        if (!componentInteraction.replied) {
+          await componentInteraction
+            .update(replyOptions)
+            .catch((error) => logger.warn("Failed to add reply:", error))
+          return
+        }
+
+        const componentMessage = componentInteraction.message as Discord.Message
+        if (!componentMessage.editable) {
+          logger.warn(
+            `Could not edit message ${componentMessage.id} because it is not editable`,
+          )
+          return
+        }
+
+        await componentMessage.edit(replyOptions).catch((error) => {
+          logger.warn("Failed to edit message:", error)
+        })
+
+        await componentContext.flushReplyQueue()
+      }
+
+      interaction.client.on("interactionCreate", handleComponentInteraction)
 
       return {
-        edit: async (newResult: RenderResult<unknown>) => {
-          await message.edit(
-            createInteractionReplyOptions(flattenRenderResult(newResult)),
-          )
+        refresh: async () => {
+          components = flattenRenderResult(render())
+          const replyOptions = createInteractionReplyOptions(components)
+          if (interaction.isCommand()) {
+            await interaction.editReply(replyOptions)
+          }
+          if (interaction.isMessageComponent()) {
+            await (interaction.message as Discord.Message).edit(replyOptions)
+          }
         },
-        async delete() {
-          await message.delete()
+
+        delete: async () => {
+          interaction.client.off(
+            "interactionCreate",
+            handleComponentInteraction,
+          )
+          if (interaction.isCommand()) {
+            await interaction.deleteReply()
+          }
+          if (interaction.isMessageComponent()) {
+            await (interaction.message as Discord.Message).delete()
+          }
         },
       }
     },
 
-    ephemeralReply: async (result) => {
-      await addEphemeralReply(result, interaction)
-    },
+    ephemeralReply: async (render) => {
+      let components = flattenRenderResult(render())
 
-    statefulReply: async (options) => {
-      let state = options.state
-      let components = flattenRenderResult(options.render(state))
+      replyQueue.push({
+        ...createInteractionReplyOptions(components),
+      })
 
-      const replyOptions = createInteractionReplyOptions(components)
-      await addReply(interaction, replyOptions)
+      await addEphemeralReply(
+        interaction,
+        createInteractionReplyOptions(components),
+      )
 
-      const handleComponentInteraction = (
+      const handleComponentInteraction = async (
         componentInteraction: Discord.Interaction,
       ) => {
-        console.log(
-          `received interaction from ${
-            (componentInteraction.member as Discord.GuildMember).displayName ||
-            componentInteraction.user.username
-          }`,
-        )
-
         if (!componentInteraction.isMessageComponent()) return
 
         const component = getInteractiveComponents(components).find(
@@ -79,24 +163,32 @@ export function createInteractionContext(
         if (!component) return
 
         if (component.type === "button") {
-          component.onClick({
-            ...createInteractionContext(componentInteraction),
-
-            setState: async (getNewState) => {
-              state = getNewState(state)
-              components = flattenRenderResult(options.render(state))
-              const replyOptions = createInteractionReplyOptions(components)
-
-              if (!componentInteraction.replied) {
-                await componentInteraction
-                  .update(replyOptions)
-                  .catch(console.warn)
-              } else {
-                await interaction.editReply(replyOptions).catch(console.warn)
-              }
-            },
-          })
+          await component.onClick(
+            createInteractionContext(componentInteraction, logger),
+          )
         }
+
+        components = flattenRenderResult(render())
+        const replyOptions = createInteractionReplyOptions(components)
+
+        if (!componentInteraction.replied) {
+          await componentInteraction
+            .update(replyOptions)
+            .catch((error) => logger.warn("Failed to add reply:", error))
+          return
+        }
+
+        const componentMessage = componentInteraction.message as Discord.Message
+        if (!componentMessage.editable) {
+          logger.warn(
+            `Could not edit message ${componentMessage.id} because it is not editable`,
+          )
+          return
+        }
+
+        logger.warn(
+          "Attempted to edit an ephemeral message after sending a reply. Discord doesn't allow this 🙃",
+        )
       }
 
       interaction.client.on("interactionCreate", handleComponentInteraction)
@@ -118,15 +210,10 @@ async function addReply(
 }
 
 async function addEphemeralReply(
-  result: RenderResult<unknown>,
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
+  options: Discord.InteractionReplyOptions,
 ) {
-  const options = {
-    ...createInteractionReplyOptions(flattenRenderResult(result)),
-    ephemeral: true,
-  }
-
   interaction.replied
-    ? await interaction.followUp(options)
-    : await interaction.reply(options)
+    ? await interaction.followUp({ ...options, ephemeral: true })
+    : await interaction.reply({ ...options, ephemeral: true })
 }

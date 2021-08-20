@@ -1,18 +1,16 @@
 import type { ButtonComponent } from "./button"
 import type { SelectMenuComponent } from "./select-menu"
 
-export type ActionRowComponent<State> = {
+export type ActionRowComponent = {
   type: "actionRow"
-  children: ActionRowChild<State>[]
+  children: ActionRowChild[]
 }
 
-export type ActionRowChild<State> =
-  | SelectMenuComponent<State>
-  | ButtonComponent<State>
+export type ActionRowChild = SelectMenuComponent | ButtonComponent
 
-export function actionRowComponent<State>(
-  ...children: Array<ActionRowChild<State> | ActionRowChild<State>[]>
-): ActionRowComponent<State> {
+export function actionRowComponent(
+  ...children: Array<ActionRowChild | ActionRowChild[]>
+): ActionRowComponent {
   return {
     type: "actionRow",
     children: children.flat(),

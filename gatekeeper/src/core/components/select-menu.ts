@@ -1,23 +1,20 @@
 import type { MessageSelectOptionData } from "discord.js"
 import { randomUUID } from "node:crypto"
-import type { MessageComponentInteractionContext } from "../interaction-context"
+import type { InteractionContext } from "../interaction-context"
 
-export type SelectMenuComponent<State> = {
+export type SelectMenuComponent = {
   type: "selectMenu"
   customId: string
   options: MessageSelectOptionData[]
   placeholder?: string | undefined
   minValues?: number | undefined
   maxValues?: number | undefined
-  onSelect: (
-    context: SelectInteractionContext<State>,
-  ) => void | Promise<unknown>
+  onSelect: (context: SelectInteractionContext) => void | Promise<unknown>
 }
 
-export type SelectInteractionContext<State> =
-  MessageComponentInteractionContext<State> & { values: string[] }
+export type SelectInteractionContext = InteractionContext & { values: string[] }
 
-export function selectMenuComponent<State>({
+export function selectMenuComponent({
   options,
   selected,
   ...args
@@ -27,10 +24,8 @@ export function selectMenuComponent<State>({
   placeholder?: string | undefined
   minValues?: number | undefined
   maxValues?: number | undefined
-  onSelect: (
-    context: SelectInteractionContext<State>,
-  ) => void | Promise<unknown>
-}): SelectMenuComponent<State> {
+  onSelect: (context: SelectInteractionContext) => void | Promise<unknown>
+}): SelectMenuComponent {
   const selectedOptions =
     typeof selected === "string"
       ? new Set([selected])
