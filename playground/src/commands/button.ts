@@ -7,10 +7,10 @@ import {
 export const buttonCommand = defineSlashCommand({
   name: "button",
   description: "testing a button",
-  async run(context) {
+  run(context) {
     let result = ""
 
-    await context.createReply(() => {
+    context.reply(() => {
       if (result) {
         return [result]
       }

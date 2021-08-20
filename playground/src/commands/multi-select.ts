@@ -9,11 +9,11 @@ import {
 export const multiSelectCommand = defineSlashCommand({
   name: "multi-select",
   description: "multiple selections",
-  async run(context) {
+  run(context) {
     let selected = new Set<string>()
     let result = new Set<string>()
 
-    await context.createReply(() => {
+    context.reply(() => {
       if (result.size) {
         return [`you picked: ${[...result].join(", ")}`]
       }

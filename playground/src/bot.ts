@@ -1,8 +1,8 @@
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
+import glob from "fast-glob"
 import { createConsoleLogger } from "../../gatekeeper/src/internal/logger"
 import { createGatekeeper } from "../../gatekeeper/src/main"
-import { kitchenSinkCommand } from "./commands/kitchen-sink"
 
 const logger = createConsoleLogger({ name: "bot" })
 
@@ -17,7 +17,9 @@ client.on("ready", () => {
 async function main() {
   const gatekeeper = createGatekeeper({ debug: true })
 
-  gatekeeper.addSlashCommand(kitchenSinkCommand)
+  await gatekeeper.loadCommands(
+    await glob("./commands/**/*.ts", { cwd: __dirname, absolute: true }),
+  )
 
   gatekeeper.useClient(client, {
     useGlobalCommands: false,

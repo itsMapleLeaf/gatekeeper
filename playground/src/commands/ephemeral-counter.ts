@@ -7,10 +7,10 @@ import {
 export const ephemeralCounterCommand = defineSlashCommand({
   name: "ephemeral-counter",
   description: "a counter, but private",
-  async run(context) {
+  run(context) {
     let count = 0
 
-    await context.createEphemeralReply(() => [
+    context.ephemeralReply(() => [
       actionRowComponent(
         buttonComponent({
           label: `increment (${count})`,

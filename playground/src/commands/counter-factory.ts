@@ -1,7 +1,4 @@
-import type {
-  SlashCommandContext,
-  SlashCommandReplyHandle,
-} from "../../../gatekeeper/src/main"
+import type { InteractionContext } from "../../../gatekeeper/src/core/interaction-context"
 import {
   actionRowComponent,
   buttonComponent,
@@ -9,27 +6,29 @@ import {
 } from "../../../gatekeeper/src/main"
 import { wait } from "../wait"
 
-export const multiCounterCommand = defineSlashCommand({
-  name: "multi-counter",
+export const counterFactory = defineSlashCommand({
+  name: "counter-factory",
   description: "a counter on sterroids",
-  async run(context) {
-    const replies: SlashCommandReplyHandle[] = []
+  run(context) {
+    const replies: { refresh: () => void; delete: () => void }[] = []
 
     let state: "active" | "cleaningUp" | "done" = "active"
-    const reply = await context.createReply(() => {
+    const reply = context.reply(() => {
       const cleanup = async () => {
         state = "cleaningUp"
-        await reply.update()
+        reply.refresh()
 
         for (const counterReply of replies) {
-          await counterReply.delete()
+          counterReply.delete()
         }
 
+        await wait(1000)
+
         state = "done"
-        await reply.update()
+        reply.refresh()
 
         await wait(1000)
-        await reply.delete()
+        reply.delete()
       }
 
       if (state === "cleaningUp") {
@@ -45,8 +44,8 @@ export const multiCounterCommand = defineSlashCommand({
           buttonComponent({
             label: "create counter",
             style: "PRIMARY",
-            onClick: async () => {
-              replies.push(await createCounterReply(context))
+            onClick: () => {
+              replies.push(createCounterReply(context))
             },
           }),
           buttonComponent({
@@ -60,15 +59,10 @@ export const multiCounterCommand = defineSlashCommand({
   },
 })
 
-async function createCounterReply(context: SlashCommandContext<any>) {
+function createCounterReply(context: InteractionContext) {
   let count = 0
-  let finished = false
 
-  return context.createReply(() => {
-    if (finished) {
-      return
-    }
-
+  const reply = context.reply(() => {
     return [
       actionRowComponent(
         buttonComponent({
@@ -82,10 +76,11 @@ async function createCounterReply(context: SlashCommandContext<any>) {
           label: "done",
           style: "SECONDARY",
           onClick: () => {
-            finished = true
+            reply.delete()
           },
         }),
       ),
     ]
   })
+  return reply
 }

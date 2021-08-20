@@ -10,8 +10,8 @@ export const doubleCommand = defineSlashCommand({
       required: true,
     },
   },
-  async run(context) {
+  run(context) {
     const { number } = context.options
-    await context.createReply(() => `${number} × 2 = **${number * 2}**`)
+    context.reply(() => `${number} × 2 = **${number * 2}**`)
   },
 })

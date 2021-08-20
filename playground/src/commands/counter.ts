@@ -7,10 +7,10 @@ import {
 export const counterCommand = defineSlashCommand({
   name: "counter",
   description: "make a counter",
-  async run(context) {
+  run(context) {
     let count = 0
 
-    const reply = await context.createReply(() => [
+    const reply = context.reply(() => [
       `button pressed ${count} times`,
       actionRowComponent(
         buttonComponent({
@@ -23,9 +23,9 @@ export const counterCommand = defineSlashCommand({
         buttonComponent({
           style: "PRIMARY",
           label: "done",
-          onClick: async (event) => {
+          onClick: (event) => {
             if (event.user.id === context.user.id) {
-              await reply.delete()
+              reply.delete()
             }
           },
         }),

@@ -9,11 +9,11 @@ import {
 export const selectCommand = defineSlashCommand({
   name: "select",
   description: "testing a select",
-  async run(context) {
+  run(context) {
     let selected: string | undefined
     let result: string | undefined
 
-    await context.createReply(() => {
+    context.reply(() => {
       if (result) {
         return [`yeah, i'm a ${result}`]
       }

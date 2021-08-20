@@ -7,10 +7,10 @@ import {
 export const callbackInfoCommand = defineSlashCommand({
   name: "callback-info",
   description: "test component callback info",
-  async run(context) {
+  run(context) {
     const clickCounts = new Map<string, number>()
 
-    return context.createReply(() => {
+    context.reply(() => {
       const content = [...clickCounts]
         .map(([userId, count]) => `<@!${userId}> clicked ${count} times`)
         .join("\n")
