@@ -35,11 +35,15 @@ export function createInteractionContext(
 
     reply: (render) => {
       let components = flattenRenderResult(render())
+      let message: Discord.Message | undefined
 
       actionQueue.push({
         name: "createMessage",
         async run() {
-          await addReply(interaction, createInteractionReplyOptions(components))
+          message = await addReply(
+            interaction,
+            createInteractionReplyOptions(components),
+          )
         },
       })
 
@@ -73,39 +77,23 @@ export function createInteractionContext(
           })
         }
 
-        components = flattenRenderResult(render())
-        const replyOptions = createInteractionReplyOptions(components)
+        // replies count as an update, therefore we can't actually call update() after making a reply
+        // in order to ensure updates happen, we queue them as priority 0
+        // so they happen first, before replies
+        actionQueue.push({
+          name: "updateAfterInteraction",
+          priority: 0,
+          async run() {
+            components = flattenRenderResult(render())
+            const replyOptions = createInteractionReplyOptions(components)
 
-        if (!componentInteraction.replied) {
-          // replies count as an update, therefore we can't actually call update() after making a reply
-          // in order to ensure updates happen, we queue them as priority 0
-          // so they happen first, before replies
-          actionQueue.push({
-            name: "updateComponentInteraction",
-            priority: 0,
-            async run() {
+            if (!componentInteraction.replied) {
               await componentInteraction
                 .update(replyOptions)
-                .catch((error) => logger.warn("Failed to add reply:", error))
-            },
-          })
-          return
-        }
-
-        const componentMessage = componentInteraction.message as Discord.Message
-        if (!componentMessage.editable) {
-          logger.warn(
-            `Could not edit message ${componentMessage.id} because it is not editable`,
-          )
-          return
-        }
-
-        actionQueue.push({
-          name: "editComponentMessage",
-          async run() {
-            await componentMessage.edit(replyOptions).catch((error) => {
-              logger.warn("Failed to edit message:", error)
-            })
+                .catch((error) => logger.warn("Failed to call update:", error))
+            } else {
+              message?.edit(replyOptions)
+            }
           },
         })
       }
@@ -114,20 +102,13 @@ export function createInteractionContext(
 
       return {
         refresh: () => {
-          components = flattenRenderResult(render())
-          const replyOptions = createInteractionReplyOptions(components)
-
           actionQueue.push({
             name: "refreshMessage",
             async run() {
-              if (interaction.isCommand()) {
-                await interaction.editReply(replyOptions)
-              }
-              if (interaction.isMessageComponent()) {
-                await (interaction.message as Discord.Message).edit(
-                  replyOptions,
-                )
-              }
+              components = flattenRenderResult(render())
+              const replyOptions = createInteractionReplyOptions(components)
+
+              await message?.edit(replyOptions)
             },
           })
         },
@@ -141,12 +122,7 @@ export function createInteractionContext(
           actionQueue.push({
             name: "deleteInteractionReply",
             async run() {
-              if (interaction.isCommand()) {
-                await interaction.deleteReply()
-              }
-              if (interaction.isMessageComponent()) {
-                await (interaction.message as Discord.Message).delete()
-              }
+              await message?.delete()
             },
           })
         },
