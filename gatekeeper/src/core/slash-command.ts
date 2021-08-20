@@ -1,4 +1,5 @@
 import type * as Discord from "discord.js"
+import { createActionQueue } from "../internal/action-queue"
 import { isAnyObject } from "../internal/helpers"
 import type { Logger } from "../internal/logger"
 import type { OptionalKeys } from "../internal/types"
@@ -91,8 +92,10 @@ export function createSlashCommandContext(
     options[value.name] = value.value
   }
 
+  const actionQueue = createActionQueue(logger)
+
   return {
-    ...createInteractionContext(interaction, logger),
+    ...createInteractionContext(interaction, logger, actionQueue),
     options,
   }
 }

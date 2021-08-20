@@ -87,7 +87,6 @@ export function createGatekeeper({
 
     const context = createSlashCommandContext(slashCommand, interaction, logger)
     await slashCommand.run(context)
-    await context.flushReplyQueue()
   }
 
   const gatekeeper = {

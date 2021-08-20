@@ -8,7 +8,7 @@ export type ButtonComponent = {
   style: MessageButtonStyle
   label: string
   emoji?: EmojiResolvable
-  onClick: (context: InteractionContext) => void | Promise<unknown>
+  onClick: (context: InteractionContext) => void
 }
 
 export type ButtonInteractionContext = InteractionContext

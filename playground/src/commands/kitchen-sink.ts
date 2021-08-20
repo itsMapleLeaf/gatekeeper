@@ -7,8 +7,15 @@ import {
 export const kitchenSinkCommand = defineSlashCommand({
   name: "kitchen-sink",
   description: "stress testing",
-  async run(context) {
+  run(context) {
+    const replies: { refresh: () => void }[] = []
+
     let count = 0
+
+    function increment() {
+      count++
+      replies.forEach((reply) => reply.refresh())
+    }
 
     const counterComponent = () => [
       `count: ${count}`,
@@ -16,17 +23,15 @@ export const kitchenSinkCommand = defineSlashCommand({
         buttonComponent({
           label: "click me",
           style: "PRIMARY",
-          onClick: async (buttonContext) => {
-            count++
-            await buttonContext.ephemeralReply(
-              () => "cool, you clicked the button!",
-            )
+          onClick: (buttonContext) => {
+            increment()
+            buttonContext.ephemeralReply(() => "cool, you clicked the button!")
           },
         }),
       ),
     ]
 
-    await context.reply(counterComponent)
-    await context.ephemeralReply(counterComponent)
+    replies.push(context.reply(counterComponent))
+    context.ephemeralReply(counterComponent)
   },
 })

@@ -9,7 +9,7 @@ export type SelectMenuComponent = {
   placeholder?: string | undefined
   minValues?: number | undefined
   maxValues?: number | undefined
-  onSelect: (context: SelectInteractionContext) => void | Promise<unknown>
+  onSelect: (context: SelectInteractionContext) => void
 }
 
 export type SelectInteractionContext = InteractionContext & { values: string[] }
@@ -24,7 +24,7 @@ export function selectMenuComponent({
   placeholder?: string | undefined
   minValues?: number | undefined
   maxValues?: number | undefined
-  onSelect: (context: SelectInteractionContext) => void | Promise<unknown>
+  onSelect: (context: SelectInteractionContext) => void
 }): SelectMenuComponent {
   const selectedOptions =
     typeof selected === "string"
