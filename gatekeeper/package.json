@@ -29,7 +29,7 @@
   "scripts": {
     "clean": "trash dist",
     "build": "pnpm run clean && tsc --project ./tsconfig.build.json",
-    "release": "pnpm run build && cpy ../README.md . && np --no-cleanup --no-tests --no-release-draft --message '%s'"
+    "release": "pnpm run build && cpy ../README.md . && np --no-cleanup --no-tests"
   },
   "peerDependencies": {
     "discord.js": ">=13"
