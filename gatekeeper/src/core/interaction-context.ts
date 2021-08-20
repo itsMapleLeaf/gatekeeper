@@ -21,6 +21,8 @@ export type InteractionContext = {
   }
 
   ephemeralReply: (render: RenderReplyFn) => void
+
+  defer: () => void
 }
 
 type ReplyState = {
@@ -28,6 +30,9 @@ type ReplyState = {
   components: ReplyComponent[]
   message: Discord.Message | undefined
 }
+
+const deferPriority = 0
+const updatePriority = 1
 
 export function createInteractionContext(
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
@@ -39,6 +44,18 @@ export function createInteractionContext(
     member: (interaction.member as Discord.GuildMember | null) ?? undefined,
     user: interaction.user,
     guild: interaction.guild ?? undefined,
+
+    defer: () => {
+      actionQueue.push({
+        name: "defer",
+        priority: deferPriority,
+        run: async () => {
+          if (interaction.deferred) return
+          if (interaction.isCommand()) await interaction.deferReply()
+          if (interaction.isMessageComponent()) await interaction.deferUpdate()
+        },
+      })
+    },
 
     reply: (render) => {
       const state: ReplyState = {
@@ -125,20 +142,35 @@ async function addReply(
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
   options: Discord.InteractionReplyOptions,
 ) {
-  return (
-    interaction.replied
-      ? await interaction.followUp(options)
-      : await interaction.reply({ ...options, fetchReply: true })
-  ) as Discord.Message
+  if (interaction.deferred) {
+    return interaction.editReply(options) as Promise<Discord.Message>
+  }
+
+  if (interaction.replied) {
+    return interaction.followUp(options) as Promise<Discord.Message>
+  }
+
+  return interaction.reply({
+    ...options,
+    fetchReply: true,
+  }) as Promise<Discord.Message>
 }
 
 async function addEphemeralReply(
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
   options: Discord.InteractionReplyOptions,
 ) {
-  interaction.replied
-    ? await interaction.followUp({ ...options, ephemeral: true })
-    : await interaction.reply({ ...options, ephemeral: true })
+  if (interaction.deferred) {
+    await interaction.editReply(options)
+    return
+  }
+
+  if (interaction.replied) {
+    await interaction.followUp({ ...options, ephemeral: true })
+    return
+  }
+
+  await interaction.reply({ ...options, ephemeral: true })
 }
 
 function createMessageComponentInteractionHandler(
@@ -166,7 +198,7 @@ function createMessageComponentInteractionHandler(
     // so they happen first, before replies
     actionQueue.push({
       name: "updateAfterInteraction",
-      priority: 0,
+      priority: updatePriority,
       async run() {
         replyState.components = flattenRenderResult(replyState.render())
         const replyOptions = createInteractionReplyOptions(

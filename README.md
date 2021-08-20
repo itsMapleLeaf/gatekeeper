@@ -65,7 +65,7 @@ client.login(process.env.BOT_TOKEN).catch(console.error)
 - ~~pass more info to onClick/onSelect handlers, e.g. member~~
 - ~~allow publishing global commands _and_ guild commands~~
 - automatic actionRow placement
-- deferred reply
+- ~~deferred reply~~
 - cleanup of inactive command instances after 15 mins
 - context menu stuff (?)
 - deterministic component IDs per command (?)
