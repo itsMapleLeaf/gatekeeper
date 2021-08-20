@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "dev": "pnpm run --filter ./playground dev",
+    "dev": "pnpm -C playground run dev",
     "build": "pnpm run --parallel build",
-    "release": "pnpm run --parallel release",
+    "release": "pnpm -C gatekeeper run release",
     "lint": "eslint --ext js,ts,tsx ."
   },
   "devDependencies": {
