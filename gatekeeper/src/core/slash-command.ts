@@ -6,8 +6,6 @@ import type { OptionalKeys } from "../internal/types"
 import type { InteractionContext } from "./interaction-context"
 import { createInteractionContext } from "./interaction-context"
 
-export const slashCommandType = Symbol("slashCommand")
-
 export type SlashCommandDefinition<
   Options extends SlashCommandOptions = SlashCommandOptions,
 > = {
@@ -60,9 +58,10 @@ export type SlashCommandOptionValueTypes = {
   BOOLEAN: boolean
 }
 
-export type SlashCommandDefinitionWithoutType<
-  Options extends SlashCommandOptions,
-> = OptionalKeys<SlashCommandDefinition<Options>, "__type">
+type SlashCommandDefinitionWithoutType<Options extends SlashCommandOptions> =
+  OptionalKeys<SlashCommandDefinition<Options>, "__type">
+
+const slashCommandType = Symbol("slashCommand")
 
 export function defineSlashCommand<Options extends SlashCommandOptions>(
   definition: SlashCommandDefinitionWithoutType<Options>,

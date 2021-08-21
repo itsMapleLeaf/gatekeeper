@@ -4,7 +4,6 @@ import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { UnknownRecord } from "../internal/types"
 import type {
   SlashCommandDefinition,
-  SlashCommandDefinitionWithoutType,
   SlashCommandOptions,
 } from "./slash-command"
 import {
@@ -12,6 +11,12 @@ import {
   defineSlashCommand,
   isSlashCommandDefinition,
 } from "./slash-command"
+import type { UserCommandDefinition } from "./user-command"
+import {
+  createUserCommandContext,
+  defineUserCommand,
+  isUserCommandDefinition,
+} from "./user-command"
 
 type CommandManagerOptions = {
   /**
@@ -29,10 +34,15 @@ type DiscordCommandManager =
   | Discord.ApplicationCommandManager
   | Discord.GuildApplicationCommandManager
 
+type AnyCommandDefinition<
+  Options extends SlashCommandOptions = SlashCommandOptions,
+> = SlashCommandDefinition<Options> | UserCommandDefinition
+
 export function createGatekeeper({
   debug = false,
 }: CommandManagerOptions = {}) {
   const slashCommands = new Map<string, SlashCommandDefinition>()
+  const userCommands = new Map<string, UserCommandDefinition>()
 
   const logger = debug
     ? createConsoleLogger({ name: "gatekeeper" })
@@ -51,7 +61,7 @@ export function createGatekeeper({
       }))
 
       await logger.promise(
-        `Creating command "${command.name}"`,
+        `Updating slash command "${command.name}"`,
         manager.create({
           name: command.name,
           description: command.description,
@@ -60,8 +70,23 @@ export function createGatekeeper({
       )
     }
 
+    for (const command of userCommands.values()) {
+      await logger.promise(
+        `Updating user command "${command.name}"`,
+        manager.create({
+          type: "USER",
+          name: command.name,
+        }),
+      )
+    }
+
+    const allCommandNames = new Set([
+      ...slashCommands.keys(),
+      ...userCommands.keys(),
+    ])
+
     for (const appCommand of manager.cache.values()) {
-      if (!slashCommands.has(appCommand.name)) {
+      if (!allCommandNames.has(appCommand.name)) {
         await logger.promise(
           `Removing unused command "${appCommand.name}"`,
           manager.delete(appCommand.id),
@@ -89,15 +114,32 @@ export function createGatekeeper({
     await slashCommand.run(context)
   }
 
+  async function handleContextMenuInteraction(
+    interaction: Discord.ContextMenuInteraction,
+  ) {
+    const userCommand = userCommands.get(interaction.commandName)
+    if (interaction.targetType === "USER" && userCommand) {
+      const context = await createUserCommandContext(interaction, logger)
+      await userCommand.run(context)
+    }
+  }
+
   const gatekeeper = {
-    addSlashCommand<Options extends SlashCommandOptions>(
-      definition: SlashCommandDefinitionWithoutType<Options>,
+    addCommand<Options extends SlashCommandOptions>(
+      definition: AnyCommandDefinition<Options>,
     ) {
-      slashCommands.set(
-        definition.name,
-        defineSlashCommand(definition) as SlashCommandDefinition,
-      )
-      logger.info(`Added slash command "${definition.name}"`)
+      if (isSlashCommandDefinition(definition)) {
+        slashCommands.set(
+          definition.name,
+          defineSlashCommand(definition) as SlashCommandDefinition,
+        )
+        logger.info(`Added slash command "${definition.name}"`)
+      }
+
+      if (isUserCommandDefinition(definition)) {
+        userCommands.set(definition.name, defineUserCommand(definition))
+        logger.info(`Added user command "${definition.name}"`)
+      }
     },
 
     async loadCommands(filePaths: ArrayLike<string>) {
@@ -116,8 +158,11 @@ export function createGatekeeper({
       )
 
       for (const command of commandModules.flatMap<unknown>(Object.values)) {
-        if (isSlashCommandDefinition(command)) {
-          gatekeeper.addSlashCommand(command)
+        if (
+          isSlashCommandDefinition(command) ||
+          isUserCommandDefinition(command)
+        ) {
+          gatekeeper.addCommand(command)
         }
       }
     },
@@ -175,6 +220,9 @@ export function createGatekeeper({
       client.on("interactionCreate", async (interaction) => {
         if (interaction.isCommand()) {
           await handleCommandInteraction(interaction)
+        }
+        if (interaction.isContextMenu()) {
+          await handleContextMenuInteraction(interaction)
         }
       })
     },
