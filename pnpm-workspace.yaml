@@ -1,1 +1,1 @@
-workspaces: [gatekeeper, playground]
+workspaces: [packages/*]
