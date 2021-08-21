@@ -206,8 +206,8 @@ export function createGatekeeper({
     useClient(
       client: Discord.Client,
       {
-        useGlobalCommands = true,
-        useGuildCommands = false,
+        useGlobalCommands = false,
+        useGuildCommands = true,
       }: UseClientOptions = {},
     ) {
       async function syncGuildCommands(guild: Discord.Guild) {
