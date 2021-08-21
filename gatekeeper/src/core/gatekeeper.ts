@@ -2,6 +2,12 @@ import type * as Discord from "discord.js"
 import { relative } from "path"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { UnknownRecord } from "../internal/types"
+import type { MessageCommandDefinition } from "./message-command"
+import {
+  createMessageCommandContext,
+  defineMessageCommand,
+  isMessageCommandDefinition,
+} from "./message-command"
 import type {
   SlashCommandDefinition,
   SlashCommandOptions,
@@ -36,13 +42,17 @@ type DiscordCommandManager =
 
 type AnyCommandDefinition<
   Options extends SlashCommandOptions = SlashCommandOptions,
-> = SlashCommandDefinition<Options> | UserCommandDefinition
+> =
+  | SlashCommandDefinition<Options>
+  | UserCommandDefinition
+  | MessageCommandDefinition
 
 export function createGatekeeper({
   debug = false,
 }: CommandManagerOptions = {}) {
   const slashCommands = new Map<string, SlashCommandDefinition>()
   const userCommands = new Map<string, UserCommandDefinition>()
+  const messageCommands = new Map<string, MessageCommandDefinition>()
 
   const logger = debug
     ? createConsoleLogger({ name: "gatekeeper" })
@@ -80,9 +90,20 @@ export function createGatekeeper({
       )
     }
 
+    for (const command of messageCommands.values()) {
+      await logger.promise(
+        `Updating message command "${command.name}"`,
+        manager.create({
+          type: "MESSAGE",
+          name: command.name,
+        }),
+      )
+    }
+
     const allCommandNames = new Set([
       ...slashCommands.keys(),
       ...userCommands.keys(),
+      ...messageCommands.keys(),
     ])
 
     for (const appCommand of manager.cache.values()) {
@@ -122,6 +143,12 @@ export function createGatekeeper({
       const context = await createUserCommandContext(interaction, logger)
       await userCommand.run(context)
     }
+
+    const messageCommand = messageCommands.get(interaction.commandName)
+    if (interaction.targetType === "MESSAGE" && messageCommand) {
+      const context = await createMessageCommandContext(interaction, logger)
+      await messageCommand.run(context)
+    }
   }
 
   const gatekeeper = {
@@ -139,6 +166,11 @@ export function createGatekeeper({
       if (isUserCommandDefinition(definition)) {
         userCommands.set(definition.name, defineUserCommand(definition))
         logger.info(`Added user command "${definition.name}"`)
+      }
+
+      if (isMessageCommandDefinition(definition)) {
+        messageCommands.set(definition.name, defineMessageCommand(definition))
+        logger.info(`Added message command "${definition.name}"`)
       }
     },
 
@@ -160,7 +192,8 @@ export function createGatekeeper({
       for (const command of commandModules.flatMap<unknown>(Object.values)) {
         if (
           isSlashCommandDefinition(command) ||
-          isUserCommandDefinition(command)
+          isUserCommandDefinition(command) ||
+          isMessageCommandDefinition(command)
         ) {
           gatekeeper.addCommand(command)
         }
