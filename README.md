@@ -57,7 +57,7 @@ gatekeeper.useClient(client, { useGuildCommands: true })
 client.login(process.env.BOT_TOKEN).catch(console.error)
 ```
 
-## [examples](./playground/src)
+## [examples](./packages/playground/src/commands)
 
 ## todo
 
