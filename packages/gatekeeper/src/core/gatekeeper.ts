@@ -131,6 +131,7 @@ export function createGatekeeper({
     const slashCommand = slashCommands.get(interaction.commandName)
     if (!slashCommand) return
 
+    logger.info(`Running slash command "${interaction.commandName}"`)
     const context = createSlashCommandContext(slashCommand, interaction, logger)
     await slashCommand.run(context)
   }
@@ -140,12 +141,14 @@ export function createGatekeeper({
   ) {
     const userCommand = userCommands.get(interaction.commandName)
     if (interaction.targetType === "USER" && userCommand) {
+      logger.info(`Running user command "${userCommand.name}"`)
       const context = await createUserCommandContext(interaction, logger)
       await userCommand.run(context)
     }
 
     const messageCommand = messageCommands.get(interaction.commandName)
     if (interaction.targetType === "MESSAGE" && messageCommand) {
+      logger.info(`Running message command "${messageCommand.name}"`)
       const context = await createMessageCommandContext(interaction, logger)
       await messageCommand.run(context)
     }
