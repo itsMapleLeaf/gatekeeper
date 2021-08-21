@@ -52,7 +52,7 @@ const client = new Client({
 
 const gatekeeper = createGatekeeper({ debug: true })
 gatekeeper.addSlashCommand(counterCommand)
-gatekeeper.useClient(client, { useGuildCommands: true })
+gatekeeper.useClient(client)
 
 client.login(process.env.BOT_TOKEN).catch(console.error)
 ```

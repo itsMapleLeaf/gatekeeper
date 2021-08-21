@@ -21,10 +21,7 @@ async function main() {
     await glob("./commands/**/*.ts", { cwd: __dirname, absolute: true }),
   )
 
-  gatekeeper.useClient(client, {
-    useGlobalCommands: false,
-    useGuildCommands: true,
-  })
+  gatekeeper.useClient(client)
 
   await client.login(process.env.BOT_TOKEN)
 }
