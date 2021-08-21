@@ -6,13 +6,13 @@
     "start": "ts-node --transpile-only ./src/bot"
   },
   "dependencies": {
-    "ts-node": "10.2.0",
+    "ts-node": "10.2.1",
     "discord.js": "13.1.0",
     "dotenv": "10.0.0",
     "fast-glob": "3.2.7"
   },
   "devDependencies": {
     "nodemon": "2.0.12",
-    "@types/node": "16.6.1"
+    "@types/node": "16.7.1"
   }
 }
