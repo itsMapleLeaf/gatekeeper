@@ -1,22 +1,4 @@
-# gatekeeper
-
-gatekeeper is a ✨reactive✨ interaction framework for discord.js!
-
-it's a rough work in progress; things will probably change a lot before an actual release. but feel free to try it out and give feedback!
-
-![showcase](./showcase.gif)
-
-## install
-
-```sh
-npm install @itsmapleleaf/gatekeeper@next
-```
-
-(or with your favorite package manager)
-
-## usage
-
-```ts
+/* eslint-disable no-console */
 import {
   actionRowComponent,
   buttonComponent,
@@ -55,17 +37,3 @@ gatekeeper.addCommand(counterCommand)
 gatekeeper.useClient(client)
 
 client.login(process.env.BOT_TOKEN).catch(console.error)
-```
-
-## [examples](./packages/playground/src/commands)
-
-## todo
-
-- ~~command arguments~~
-- ~~pass more info to onClick/onSelect handlers, e.g. member~~
-- ~~allow publishing global commands _and_ guild commands~~
-- ~~deferred reply~~
-- ~~cleanup of inactive command instances after 15 mins~~
-- ~~context menu stuff~~
-- automatic actionRow placement
-- persistent reply instances? e.g. have a command still work after a bot restart

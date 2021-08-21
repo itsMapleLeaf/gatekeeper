@@ -43,6 +43,7 @@ importers:
 
   packages/playground:
     specifiers:
+      '@itsmapleleaf/gatekeeper': workspace:*
       '@types/node': 16.7.1
       discord.js: 13.1.0
       dotenv: 10.0.0
@@ -50,6 +51,7 @@ importers:
       nodemon: 2.0.12
       ts-node: 10.2.1
     dependencies:
+      '@itsmapleleaf/gatekeeper': link:../gatekeeper
       discord.js: 13.1.0
       dotenv: 10.0.0
       fast-glob: 3.2.7
