@@ -66,6 +66,6 @@ client.login(process.env.BOT_TOKEN).catch(console.error)
 - ~~allow publishing global commands _and_ guild commands~~
 - ~~deferred reply~~
 - ~~cleanup of inactive command instances after 15 mins~~
-- context menu stuff (?)
+- ~~context menu stuff~~
 - automatic actionRow placement
 - persistent reply instances? e.g. have a command still work after a bot restart
