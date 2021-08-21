@@ -1,4 +1,5 @@
 import type * as Discord from "discord.js"
+import { isEqual } from "lodash"
 import { relative } from "path"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { UnknownRecord } from "../internal/types"
@@ -58,7 +59,10 @@ export function createGatekeeper({
     ? createConsoleLogger({ name: "gatekeeper" })
     : createNoopLogger()
 
-  async function syncCommands(manager: DiscordCommandManager) {
+  async function syncCommands(
+    manager: DiscordCommandManager,
+    existingCommands: Discord.Collection<string, Discord.ApplicationCommand>,
+  ) {
     for (const command of slashCommands.values()) {
       const options = Object.entries(
         command.options ?? {},
@@ -68,21 +72,34 @@ export function createGatekeeper({
         type: option.type,
         required: option.required,
         choices: "choices" in option ? option.choices : undefined,
+        options: undefined,
       }))
 
+      const commandData: Discord.ApplicationCommandData = {
+        name: command.name,
+        description: command.description,
+        options,
+      }
+
+      const existing = existingCommands.find((c) => c.name === command.name)
+      const existingCommandData = existing && {
+        name: existing.name,
+        description: existing.description,
+        options: existing.options,
+      }
+
+      if (isEqual(commandData, existingCommandData)) continue
+
       await logger.promise(
-        `Updating slash command "${command.name}"`,
-        manager.create({
-          name: command.name,
-          description: command.description,
-          options,
-        }),
+        `Registering slash command "${command.name}"`,
+        manager.create(commandData),
       )
     }
 
     for (const command of userCommands.values()) {
+      if (existingCommands.some((c) => c.name === command.name)) continue
       await logger.promise(
-        `Updating user command "${command.name}"`,
+        `Registering user command "${command.name}"`,
         manager.create({
           type: "USER",
           name: command.name,
@@ -91,8 +108,9 @@ export function createGatekeeper({
     }
 
     for (const command of messageCommands.values()) {
+      if (existingCommands.some((c) => c.name === command.name)) continue
       await logger.promise(
-        `Updating message command "${command.name}"`,
+        `Registering message command "${command.name}"`,
         manager.create({
           type: "MESSAGE",
           name: command.name,
@@ -106,7 +124,7 @@ export function createGatekeeper({
       ...messageCommands.keys(),
     ])
 
-    for (const appCommand of manager.cache.values()) {
+    for (const appCommand of existingCommands.values()) {
       if (!allCommandNames.has(appCommand.name)) {
         await logger.promise(
           `Removing unused command "${appCommand.name}"`,
@@ -116,8 +134,11 @@ export function createGatekeeper({
     }
   }
 
-  async function removeAllCommands(manager: DiscordCommandManager) {
-    for (const command of manager.cache.values()) {
+  async function removeAllCommands(
+    manager: DiscordCommandManager,
+    commands: Discord.Collection<string, Discord.ApplicationCommand>,
+  ) {
+    for (const command of commands.values()) {
       await logger.promise(
         `Removing command "${command.name}"`,
         manager.delete(command.id),
@@ -211,17 +232,15 @@ export function createGatekeeper({
       }: UseClientOptions = {},
     ) {
       async function syncGuildCommands(guild: Discord.Guild) {
-        await guild.commands.fetch()
+        const existingCommands = await logger.promise(
+          `Fetching existing commands for guild "${guild.name}"`,
+          guild.commands.fetch(),
+        )
+
         if (useGuildCommands) {
-          await logger.promise(
-            `Syncing guild commands for "${guild.name}"`,
-            syncCommands(guild.commands),
-          )
+          await syncCommands(guild.commands, existingCommands)
         } else {
-          await logger.promise(
-            `Removing commands for guild "${guild.name}"`,
-            removeAllCommands(guild.commands),
-          )
+          await removeAllCommands(guild.commands, existingCommands)
         }
       }
 
@@ -230,17 +249,14 @@ export function createGatekeeper({
 
         const { application } = client
         if (application) {
+          const existingCommands = await logger.promise(
+            `Fetching all global commands...`,
+            application.commands.fetch(),
+          )
           if (useGlobalCommands) {
-            await application.commands.fetch()
-            await logger.promise(
-              "Syncing global commands",
-              syncCommands(application.commands),
-            )
+            await syncCommands(application.commands, existingCommands)
           } else {
-            await logger.promise(
-              "Removing global commands",
-              removeAllCommands(application.commands),
-            )
+            await removeAllCommands(application.commands, existingCommands)
           }
         }
 

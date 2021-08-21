@@ -24,16 +24,20 @@ importers:
 
   packages/gatekeeper:
     specifiers:
+      '@types/lodash': 4.14.172
       '@types/node': 16.7.1
       chalk: 4.1.2
       cpy-cli: 3.1.1
       discord.js: ^13.1.0
+      lodash: 4.17.21
       release-it: 14.11.5
       trash-cli: 4.0.0
       typescript: 4.4.1-rc
     dependencies:
       chalk: 4.1.2
+      lodash: 4.17.21
     devDependencies:
+      '@types/lodash': 4.14.172
       '@types/node': 16.7.1
       cpy-cli: 3.1.1
       discord.js: 13.1.0
@@ -385,6 +389,10 @@ packages:
     resolution: {integrity: sha512-/FvAK2p4jQOaJ6CGDHJTqZcUtbZe820qIeTg7o0Shg7drB4JHeL+V/dhSaly7NXx6u8eSee+r7coT+yuJEvDLg==}
     dependencies:
       '@types/node': 16.6.1
+    dev: true
+
+  /@types/lodash/4.14.172:
+    resolution: {integrity: sha512-/BHF5HAx3em7/KkzVKm3LrsD6HZAXuXO1AJZQ3cRRBZj4oHZDviWPYu0aEplAqDFNHZPW6d3G7KN+ONcCCC7pw==}
     dev: true
 
   /@types/minimatch/3.0.5:
@@ -2720,7 +2728,6 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-symbols/4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
