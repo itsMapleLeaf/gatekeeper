@@ -18,7 +18,6 @@ npm install @itsmapleleaf/gatekeeper@next
 
 ```ts
 import {
-  actionRowComponent,
   buttonComponent,
   createGatekeeper,
   defineSlashCommand,
@@ -33,15 +32,13 @@ const counterCommand = defineSlashCommand({
 
     context.reply(() => [
       `button pressed ${count} times`,
-      actionRowComponent(
-        buttonComponent({
-          style: "PRIMARY",
-          label: "press it",
-          onClick: () => {
-            count += 1
-          },
-        }),
-      ),
+      buttonComponent({
+        style: "PRIMARY",
+        label: "press it",
+        onClick: () => {
+          count += 1
+        },
+      }),
     ])
   },
 })

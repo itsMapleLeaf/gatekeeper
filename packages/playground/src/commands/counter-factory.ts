@@ -1,6 +1,5 @@
 import type { InteractionContext } from "../../../gatekeeper/src/core/interaction-context"
 import {
-  actionRowComponent,
   buttonComponent,
   defineSlashCommand,
 } from "../../../gatekeeper/src/main"
@@ -40,20 +39,18 @@ export const counterFactory = defineSlashCommand({
       }
 
       return [
-        actionRowComponent(
-          buttonComponent({
-            label: "create counter",
-            style: "PRIMARY",
-            onClick: () => {
-              replies.push(createCounterReply(context))
-            },
-          }),
-          buttonComponent({
-            label: "clean up",
-            style: "SECONDARY",
-            onClick: cleanup,
-          }),
-        ),
+        buttonComponent({
+          label: "create counter",
+          style: "PRIMARY",
+          onClick: () => {
+            replies.push(createCounterReply(context))
+          },
+        }),
+        buttonComponent({
+          label: "clean up",
+          style: "SECONDARY",
+          onClick: cleanup,
+        }),
       ]
     })
   },
@@ -64,22 +61,20 @@ function createCounterReply(context: InteractionContext) {
 
   const reply = context.reply(() => {
     return [
-      actionRowComponent(
-        buttonComponent({
-          label: `increment (${count})`,
-          style: "PRIMARY",
-          onClick: () => {
-            count++
-          },
-        }),
-        buttonComponent({
-          label: "done",
-          style: "SECONDARY",
-          onClick: () => {
-            reply.delete()
-          },
-        }),
-      ),
+      buttonComponent({
+        label: `increment (${count})`,
+        style: "PRIMARY",
+        onClick: () => {
+          count++
+        },
+      }),
+      buttonComponent({
+        label: "done",
+        style: "SECONDARY",
+        onClick: () => {
+          reply.delete()
+        },
+      }),
     ]
   })
   return reply

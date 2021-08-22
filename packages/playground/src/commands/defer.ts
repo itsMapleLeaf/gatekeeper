@@ -1,5 +1,4 @@
 import {
-  actionRowComponent,
   buttonComponent,
   defineSlashCommand,
 } from "../../../gatekeeper/src/main"
@@ -14,20 +13,18 @@ export const deferCommand = defineSlashCommand({
     await wait(4000)
 
     context.reply(() =>
-      actionRowComponent(
-        buttonComponent({
-          label: "",
-          emoji: "🍪",
-          style: "SECONDARY",
-          onClick: async (context) => {
-            context.defer()
-            await wait(4000)
-            context.ephemeralReply(
-              () => `thanks for waiting, here's your cookie! 🍪`,
-            )
-          },
-        }),
-      ),
+      buttonComponent({
+        label: "",
+        emoji: "🍪",
+        style: "SECONDARY",
+        onClick: async (context) => {
+          context.defer()
+          await wait(4000)
+          context.ephemeralReply(
+            () => `thanks for waiting, here's your cookie! 🍪`,
+          )
+        },
+      }),
     )
   },
 })

@@ -1,5 +1,4 @@
 import {
-  actionRowComponent,
   buttonComponent,
   defineSlashCommand,
 } from "../../../gatekeeper/src/main"
@@ -17,22 +16,20 @@ export const buttonCommand = defineSlashCommand({
 
       return [
         "button",
-        actionRowComponent(
-          buttonComponent({
-            style: "PRIMARY",
-            label: "first",
-            onClick: () => {
-              result = "you clicked the first"
-            },
-          }),
-          buttonComponent({
-            style: "SECONDARY",
-            label: "second",
-            onClick: () => {
-              result = "you clicked the second"
-            },
-          }),
-        ),
+        buttonComponent({
+          style: "PRIMARY",
+          label: "first",
+          onClick: () => {
+            result = "you clicked the first"
+          },
+        }),
+        buttonComponent({
+          style: "SECONDARY",
+          label: "second",
+          onClick: () => {
+            result = "you clicked the second"
+          },
+        }),
       ]
     })
   },

@@ -1,5 +1,4 @@
 import {
-  actionRowComponent,
   buttonComponent,
   defineSlashCommand,
 } from "../../../gatekeeper/src/main"
@@ -17,16 +16,14 @@ export const callbackInfoCommand = defineSlashCommand({
 
       return [
         content,
-        actionRowComponent(
-          buttonComponent({
-            label: "click it you won't",
-            style: "SUCCESS",
-            onClick: (event) => {
-              const count = clickCounts.get(event.user.id) ?? 0
-              clickCounts.set(event.user.id, count + 1)
-            },
-          }),
-        ),
+        buttonComponent({
+          label: "click it you won't",
+          style: "SUCCESS",
+          onClick: (event) => {
+            const count = clickCounts.get(event.user.id) ?? 0
+            clickCounts.set(event.user.id, count + 1)
+          },
+        }),
       ]
     })
   },

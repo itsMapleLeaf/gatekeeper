@@ -1,6 +1,5 @@
 // @ts-check
 import {
-  actionRowComponent,
   buttonComponent,
   defineSlashCommand,
   selectMenuComponent,
@@ -15,44 +14,40 @@ export const selectCommand = defineSlashCommand({
 
     context.reply(() => {
       if (result) {
-        return [`yeah, i'm a ${result}`]
+        return `yeah, i'm a ${result}`
       }
 
       return [
-        actionRowComponent(
-          selectMenuComponent({
-            selected: selected || undefined,
-            options: [
-              {
-                label: "die",
-                value: ":game_die:",
-                emoji: "🎲",
-              },
-              {
-                label: "strawberry",
-                value: ":strawberry:",
-                emoji: "🍓",
-              },
-              {
-                label: "bird",
-                value: "<:hmph:672311909290344478>",
-                emoji: "672311909290344478",
-              },
-            ],
-            onSelect: (selectContext) => {
-              selected = selectContext.values[0]
+        selectMenuComponent({
+          selected: selected || undefined,
+          options: [
+            {
+              label: "die",
+              value: ":game_die:",
+              emoji: "🎲",
             },
-          }),
-        ),
-        actionRowComponent(
-          buttonComponent({
-            style: "SECONDARY",
-            label: "done",
-            onClick: () => {
-              result = selected
+            {
+              label: "strawberry",
+              value: ":strawberry:",
+              emoji: "🍓",
             },
-          }),
-        ),
+            {
+              label: "bird",
+              value: "<:hmph:672311909290344478>",
+              emoji: "672311909290344478",
+            },
+          ],
+          onSelect: (selectContext) => {
+            selected = selectContext.values[0]
+          },
+        }),
+        buttonComponent({
+          style: "SECONDARY",
+          label: "done",
+          onClick: () => {
+            result = selected
+          },
+        }),
       ]
     })
   },
