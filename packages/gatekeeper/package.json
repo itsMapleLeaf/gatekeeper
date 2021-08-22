@@ -29,26 +29,37 @@
   "scripts": {
     "clean": "trash dist",
     "build": "pnpm run clean && tsc --project ./tsconfig.build.json",
-    "release": "pnpm run build && cpy ../../README.md . && release-it"
+    "release": "pnpm run build && cpy ../../README.md . && release-it",
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
   "peerDependencies": {
     "discord.js": ">=13"
   },
   "dependencies": {
     "chalk": "4.1.2",
+    "jest": "27.0.6",
     "lodash": "4.17.21"
   },
   "devDependencies": {
+    "@types/jest": "27.0.1",
     "@types/lodash": "4.14.172",
     "@types/node": "16.7.1",
     "cpy-cli": "3.1.1",
     "discord.js": "^13.1.0",
+    "esbuild": "0.12.22",
+    "esbuild-jest": "0.5.0",
     "release-it": "14.11.5",
     "trash-cli": "4.0.0",
     "typescript": "4.4.1-rc"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "esbuild-jest"
+    }
   },
   "release-it": {}
 }
