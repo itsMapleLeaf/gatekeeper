@@ -86,12 +86,14 @@ export function createInteractionContext(
           actionQueue.push({
             name: "refreshMessage",
             async run() {
+              if (!state.message) return
+
               state.components = flattenRenderResult(render())
               const replyOptions = createInteractionReplyOptions(
                 state.components,
               )
 
-              await state.message?.edit(replyOptions)
+              await state.message.edit(replyOptions)
             },
           })
         },
@@ -102,7 +104,11 @@ export function createInteractionContext(
           actionQueue.push({
             name: "deleteInteractionReply",
             async run() {
-              await state.message?.delete()
+              if (!state.message) return
+
+              const message = state.message
+              state.message = undefined
+              await message.delete()
             },
           })
         },
