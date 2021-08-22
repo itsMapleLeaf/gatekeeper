@@ -15,14 +15,16 @@ export type InteractionContext = {
   user: Discord.User
   guild: Discord.Guild | undefined
 
-  reply: (render: RenderReplyFn) => {
-    refresh: () => void
-    delete: () => void
-  }
+  reply: (render: RenderReplyFn) => ReplyHandle
 
   ephemeralReply: (render: RenderReplyFn) => void
 
   defer: () => void
+}
+
+export type ReplyHandle = {
+  refresh: () => void
+  delete: () => void
 }
 
 type ReplyState = {

@@ -1,4 +1,7 @@
-import type { InteractionContext } from "../../../gatekeeper/src/core/interaction-context"
+import type {
+  InteractionContext,
+  ReplyHandle,
+} from "../../../gatekeeper/src/main"
 import {
   buttonComponent,
   defineSlashCommand,
@@ -9,7 +12,7 @@ export const counterFactory = defineSlashCommand({
   name: "counter-factory",
   description: "a counter on sterroids",
   run(context) {
-    const replies: { refresh: () => void; delete: () => void }[] = []
+    const replies: ReplyHandle[] = []
 
     let state: "active" | "cleaningUp" | "done" = "active"
     const reply = context.reply(() => {
