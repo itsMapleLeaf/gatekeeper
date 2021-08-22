@@ -1,3 +1,3 @@
-import { promisify } from "node:util"
+import { promisify } from "util"
 
 export const wait = promisify(setTimeout)

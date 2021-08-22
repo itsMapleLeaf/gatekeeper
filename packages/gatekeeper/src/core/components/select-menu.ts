@@ -1,5 +1,5 @@
+import { randomUUID } from "crypto"
 import type { MessageSelectOptionData } from "discord.js"
-import { randomUUID } from "node:crypto"
 import type { InteractionContext } from "../interaction-context"
 
 export type SelectMenuComponent = {

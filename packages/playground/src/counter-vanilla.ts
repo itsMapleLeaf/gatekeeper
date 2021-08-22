@@ -1,9 +1,9 @@
 // for comparison, this is an example of the code required
 // to write a counter command with vanilla DJS
+import { randomUUID } from "crypto"
 import type { InteractionReplyOptions, Message } from "discord.js"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
-import { randomUUID } from "node:crypto"
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
