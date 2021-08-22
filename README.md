@@ -67,5 +67,5 @@ client.login(process.env.BOT_TOKEN).catch(console.error)
 - ~~deferred reply~~
 - ~~cleanup of inactive command instances after 15 mins~~
 - ~~context menu stuff~~
-- automatic actionRow placement
+- ~~automatic actionRow placement~~
 - persistent reply instances? e.g. have a command still work after a bot restart

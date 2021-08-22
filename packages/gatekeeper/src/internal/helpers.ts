@@ -54,3 +54,7 @@ export function isAnyObject(value: unknown): value is UnknownRecord {
 export function isString(value: unknown): value is string {
   return typeof value === "string"
 }
+
+export function isNonNil<T>(value: T | undefined | null): value is T {
+  return value != null
+}
