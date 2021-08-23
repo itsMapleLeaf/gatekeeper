@@ -339,10 +339,10 @@ And with that, you should have a good baseline understanding of how Gatekeeper w
 
 This guide should cover other topics in the future, but for now, here are some examples:
 
-- [Slash command arguments](/packages\playground\src\commands\double.ts)
-- [Select menu (single selection)](/packages\playground\src\commands\select.ts)
-- [Select menu (multiple selection)](/packages\playground\src\commands\multi-select.ts)
-- [Using info from `onClick`](/packages\playground\src\commands\callback-info.ts)
-- [Context menu commands for user](/packages\playground\src\commands\hug.ts)
-- [Context menu commands for messages](/packages\playground\src\commands\spongebob.ts)
-- [Deferring messages and/or clicks](/packages\playground\src\commands\defer.ts)
+- [Slash command arguments](/packages/playground/src/commands/double.ts)
+- [Select menu (single selection)](/packages/playground/src/commands/select.ts)
+- [Select menu (multiple selection)](/packages/playground/src/commands/multi-select.ts)
+- [Using info from `onClick`](/packages/playground/src/commands/callback-info.ts)
+- [Context menu commands for user](/packages/playground/src/commands/hug.ts)
+- [Context menu commands for messages](/packages/playground/src/commands/spongebob.ts)
+- [Deferring messages and/or clicks](/packages/playground/src/commands/defer.ts)
