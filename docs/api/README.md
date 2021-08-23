@@ -62,7 +62,7 @@ API
 
 #### Defined in
 
-[core/components/action-row.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/action-row.ts#L9)
+[core/components/action-row.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/action-row.ts#L9)
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 #### Defined in
 
-[core/components/action-row.ts:4](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/action-row.ts#L4)
+[core/components/action-row.ts:4](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/action-row.ts#L4)
 
 ___
 
@@ -97,7 +97,7 @@ A command definition
 
 #### Defined in
 
-[core/gatekeeper.ts:67](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/gatekeeper.ts#L67)
+[core/gatekeeper.ts:67](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/gatekeeper.ts#L67)
 
 ___
 
@@ -118,7 +118,7 @@ ___
 
 #### Defined in
 
-[core/components/button.ts:5](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/button.ts#L5)
+[core/components/button.ts:5](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/button.ts#L5)
 
 ___
 
@@ -128,7 +128,7 @@ ___
 
 #### Defined in
 
-[core/components/button.ts:14](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/button.ts#L14)
+[core/components/button.ts:14](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/button.ts#L14)
 
 ___
 
@@ -138,7 +138,7 @@ ___
 
 #### Defined in
 
-[core/components/embed.ts:3](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/embed.ts#L3)
+[core/components/embed.ts:3](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/embed.ts#L3)
 
 ___
 
@@ -158,7 +158,7 @@ Manages commands and handles interactions.
 
 #### Defined in
 
-[core/gatekeeper.ts:77](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/gatekeeper.ts#L77)
+[core/gatekeeper.ts:77](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/gatekeeper.ts#L77)
 
 ___
 
@@ -176,7 +176,7 @@ Options for creating a gatekeeper instance.
 
 #### Defined in
 
-[core/gatekeeper.ts:35](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/gatekeeper.ts#L35)
+[core/gatekeeper.ts:35](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/gatekeeper.ts#L35)
 
 ___
 
@@ -198,7 +198,7 @@ ___
 
 #### Defined in
 
-[core/interaction-context.ts:12](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/interaction-context.ts#L12)
+[core/interaction-context.ts:12](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/interaction-context.ts#L12)
 
 ___
 
@@ -216,7 +216,7 @@ ___
 
 #### Defined in
 
-[core/message-command.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/message-command.ts#L9)
+[core/message-command.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/message-command.ts#L9)
 
 ___
 
@@ -226,7 +226,7 @@ ___
 
 #### Defined in
 
-[core/message-command.ts:20](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/message-command.ts#L20)
+[core/message-command.ts:20](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/message-command.ts#L20)
 
 ___
 
@@ -244,7 +244,7 @@ ___
 
 #### Defined in
 
-[core/reply-component.ts:24](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/reply-component.ts#L24)
+[core/reply-component.ts:24](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/reply-component.ts#L24)
 
 ___
 
@@ -254,7 +254,7 @@ ___
 
 #### Defined in
 
-[core/reply-component.ts:26](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/reply-component.ts#L26)
+[core/reply-component.ts:26](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/reply-component.ts#L26)
 
 ___
 
@@ -264,7 +264,7 @@ ___
 
 #### Defined in
 
-[core/reply-component.ts:17](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/reply-component.ts#L17)
+[core/reply-component.ts:17](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/reply-component.ts#L17)
 
 ___
 
@@ -281,7 +281,7 @@ ___
 
 #### Defined in
 
-[core/interaction-context.ts:25](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/interaction-context.ts#L25)
+[core/interaction-context.ts:25](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/interaction-context.ts#L25)
 
 ___
 
@@ -291,7 +291,7 @@ ___
 
 #### Defined in
 
-[core/components/select-menu.ts:15](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/select-menu.ts#L15)
+[core/components/select-menu.ts:15](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/select-menu.ts#L15)
 
 ___
 
@@ -313,7 +313,7 @@ ___
 
 #### Defined in
 
-[core/components/select-menu.ts:5](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/select-menu.ts#L5)
+[core/components/select-menu.ts:5](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/select-menu.ts#L5)
 
 ___
 
@@ -339,7 +339,7 @@ ___
 
 #### Defined in
 
-[core/slash-command.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L9)
+[core/slash-command.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L9)
 
 ___
 
@@ -355,7 +355,7 @@ ___
 
 #### Defined in
 
-[core/slash-command.ts:21](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L21)
+[core/slash-command.ts:21](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L21)
 
 ___
 
@@ -365,7 +365,7 @@ ___
 
 #### Defined in
 
-[core/slash-command.ts:35](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L35)
+[core/slash-command.ts:35](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L35)
 
 ___
 
@@ -384,7 +384,7 @@ ___
 
 #### Defined in
 
-[core/slash-command.ts:54](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L54)
+[core/slash-command.ts:54](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L54)
 
 ___
 
@@ -398,7 +398,7 @@ ___
 
 #### Defined in
 
-[core/slash-command.ts:31](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L31)
+[core/slash-command.ts:31](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L31)
 
 ___
 
@@ -415,7 +415,7 @@ ___
 
 #### Defined in
 
-[core/reply-component.ts:19](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/reply-component.ts#L19)
+[core/reply-component.ts:19](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/reply-component.ts#L19)
 
 ___
 
@@ -434,7 +434,7 @@ Options for attaching a client to a gatekeeper instance.
 
 #### Defined in
 
-[core/gatekeeper.ts:45](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/gatekeeper.ts#L45)
+[core/gatekeeper.ts:45](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/gatekeeper.ts#L45)
 
 ___
 
@@ -452,7 +452,7 @@ ___
 
 #### Defined in
 
-[core/user-command.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/user-command.ts#L9)
+[core/user-command.ts:9](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/user-command.ts#L9)
 
 ___
 
@@ -462,7 +462,7 @@ ___
 
 #### Defined in
 
-[core/user-command.ts:20](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/user-command.ts#L20)
+[core/user-command.ts:20](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/user-command.ts#L20)
 
 ## Functions
 
@@ -482,7 +482,7 @@ ___
 
 #### Defined in
 
-[core/components/action-row.ts:11](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/action-row.ts#L11)
+[core/components/action-row.ts:11](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/action-row.ts#L11)
 
 ___
 
@@ -502,7 +502,7 @@ ___
 
 #### Defined in
 
-[core/components/button.ts:16](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/button.ts#L16)
+[core/components/button.ts:16](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/button.ts#L16)
 
 ___
 
@@ -524,7 +524,7 @@ Create a gatekeeper instance.
 
 #### Defined in
 
-[core/gatekeeper.ts:99](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/gatekeeper.ts#L99)
+[core/gatekeeper.ts:99](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/gatekeeper.ts#L99)
 
 ___
 
@@ -546,7 +546,7 @@ ___
 
 #### Defined in
 
-[core/interaction-context.ts:39](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/interaction-context.ts#L39)
+[core/interaction-context.ts:39](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/interaction-context.ts#L39)
 
 ___
 
@@ -566,7 +566,7 @@ ___
 
 #### Defined in
 
-[core/reply-component.ts:119](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/reply-component.ts#L119)
+[core/reply-component.ts:119](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/reply-component.ts#L119)
 
 ___
 
@@ -587,7 +587,7 @@ ___
 
 #### Defined in
 
-[core/message-command.ts:38](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/message-command.ts#L38)
+[core/message-command.ts:38](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/message-command.ts#L38)
 
 ___
 
@@ -609,7 +609,7 @@ ___
 
 #### Defined in
 
-[core/slash-command.ts:78](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L78)
+[core/slash-command.ts:78](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L78)
 
 ___
 
@@ -630,7 +630,7 @@ ___
 
 #### Defined in
 
-[core/user-command.ts:39](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/user-command.ts#L39)
+[core/user-command.ts:39](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/user-command.ts#L39)
 
 ___
 
@@ -650,7 +650,7 @@ ___
 
 #### Defined in
 
-[core/message-command.ts:26](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/message-command.ts#L26)
+[core/message-command.ts:26](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/message-command.ts#L26)
 
 ___
 
@@ -676,7 +676,7 @@ ___
 
 #### Defined in
 
-[core/slash-command.ts:66](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L66)
+[core/slash-command.ts:66](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L66)
 
 ___
 
@@ -696,7 +696,7 @@ ___
 
 #### Defined in
 
-[core/user-command.ts:27](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/user-command.ts#L27)
+[core/user-command.ts:27](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/user-command.ts#L27)
 
 ___
 
@@ -721,7 +721,7 @@ ___
 
 #### Defined in
 
-[core/components/embed.ts:5](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/embed.ts#L5)
+[core/components/embed.ts:5](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/embed.ts#L5)
 
 ___
 
@@ -741,7 +741,7 @@ ___
 
 #### Defined in
 
-[core/reply-component.ts:60](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/reply-component.ts#L60)
+[core/reply-component.ts:60](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/reply-component.ts#L60)
 
 ___
 
@@ -761,7 +761,7 @@ ___
 
 #### Defined in
 
-[core/reply-component.ts:111](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/reply-component.ts#L111)
+[core/reply-component.ts:111](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/reply-component.ts#L111)
 
 ___
 
@@ -781,7 +781,7 @@ definition is MessageCommandDefinition
 
 #### Defined in
 
-[core/message-command.ts:32](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/message-command.ts#L32)
+[core/message-command.ts:32](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/message-command.ts#L32)
 
 ___
 
@@ -801,7 +801,7 @@ definition is SlashCommandDefinition<any\>
 
 #### Defined in
 
-[core/slash-command.ts:72](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/slash-command.ts#L72)
+[core/slash-command.ts:72](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/slash-command.ts#L72)
 
 ___
 
@@ -821,7 +821,7 @@ definition is UserCommandDefinition
 
 #### Defined in
 
-[core/user-command.ts:33](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/user-command.ts#L33)
+[core/user-command.ts:33](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/user-command.ts#L33)
 
 ___
 
@@ -847,4 +847,4 @@ ___
 
 #### Defined in
 
-[core/components/select-menu.ts:17](https://github.com/itsMapleLeaf/gatekeeper/blob/4fc1716/packages/gatekeeper/src/core/components/select-menu.ts#L17)
+[core/components/select-menu.ts:17](https://github.com/itsMapleLeaf/gatekeeper/blob/de77082/packages/gatekeeper/src/core/components/select-menu.ts#L17)
