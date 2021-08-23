@@ -1,11 +1,7 @@
 import type {
-  Guild,
-  GuildMember,
   InteractionReplyOptions,
   MessageActionRowOptions,
   MessageSelectMenuOptions,
-  TextBasedChannels,
-  User,
 } from "discord.js"
 import { last } from "lodash"
 import { isNonNil, isTruthy } from "../internal/helpers"
@@ -37,13 +33,6 @@ export type RenderResult =
   | undefined
   | null
   | RenderResult[]
-
-export type BaseEvent = {
-  channel: TextBasedChannels | undefined
-  member: GuildMember | undefined
-  user: User
-  guild: Guild | undefined
-}
 
 function collectFlatReplyComponents(items: RenderResult[]) {
   const components: (ReplyComponent | ButtonComponent | SelectMenuComponent)[] =
