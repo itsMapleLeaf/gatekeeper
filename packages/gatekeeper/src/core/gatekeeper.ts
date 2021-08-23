@@ -25,32 +25,80 @@ import {
   isUserCommandDefinition,
 } from "./user-command"
 
-type CommandManagerOptions = {
-  /**
-   * Enables debug logging. This will literally spam your console.
-   */
-  debug?: boolean
-}
-
-type UseClientOptions = {
-  useGlobalCommands?: boolean
-  useGuildCommands?: boolean
-}
-
 type DiscordCommandManager =
   | Discord.ApplicationCommandManager
   | Discord.GuildApplicationCommandManager
 
-type AnyCommandDefinition<
+/**
+ * Options for creating a gatekeeper instance.
+ */
+export type GatekeeperOptions = {
+  /**
+   * Enables debug logging. Shows when commands are created, activated, registered, etc.
+   */
+  debug?: boolean
+}
+
+/**
+ * Options for attaching a client to a gatekeeper instance.
+ */
+export type UseClientOptions = {
+  /**
+   * Registers commands per guild.
+   *
+   * The commands are immediately available for use, which makes this much better for development, and works fine for small bots that are only used in a few servers.
+   *
+   * @default true
+   */
+  useGuildCommands?: boolean
+
+  /**
+   * Register global commands.
+   *
+   * Global commands can be used from any server, and take a while to show up, so this isn't great for testing. I'd recommend only enabling this if you're scaling the bot up to many servers/channels, when using guild commands reaches the 100 total command limit for a bot.
+   * @default false
+   */
+  useGlobalCommands?: boolean
+}
+
+/**
+ * A command definition
+ */
+export type AnyCommandDefinition<
   Options extends SlashCommandOptions = SlashCommandOptions,
 > =
   | SlashCommandDefinition<Options>
   | UserCommandDefinition
   | MessageCommandDefinition
 
+/**
+ * Manages commands and handles interactions.
+ */
+export type GatekeeperInstance = {
+  /**
+   * Add a command. Commands should be created using `defineSlashCommand` and friends
+   */
+  addCommand<Options extends SlashCommandOptions>(
+    definition: AnyCommandDefinition<Options>,
+  ): void
+
+  /**
+   * Load commands from a list of **absolute** file paths
+   */
+  loadCommands(filePaths: ArrayLike<string>): Promise<void>
+
+  /**
+   * Bind event listeners to a discord client, for registering commands on ready, and for handling interactions.
+   */
+  useClient(client: Discord.Client, options?: UseClientOptions): void
+}
+
+/**
+ * Create a gatekeeper instance.
+ */
 export function createGatekeeper({
   debug = false,
-}: CommandManagerOptions = {}) {
+}: GatekeeperOptions = {}): GatekeeperInstance {
   const slashCommands = new Map<string, SlashCommandDefinition>()
   const userCommands = new Map<string, UserCommandDefinition>()
   const messageCommands = new Map<string, MessageCommandDefinition>()
@@ -58,6 +106,116 @@ export function createGatekeeper({
   const logger = debug
     ? createConsoleLogger({ name: "gatekeeper" })
     : createNoopLogger()
+
+  const gatekeeper = {
+    addCommand<Options extends SlashCommandOptions>(
+      definition: AnyCommandDefinition<Options>,
+    ) {
+      if (isSlashCommandDefinition(definition)) {
+        slashCommands.set(
+          definition.name,
+          defineSlashCommand(definition) as SlashCommandDefinition,
+        )
+        logger.info(`Added slash command "${definition.name}"`)
+      }
+
+      if (isUserCommandDefinition(definition)) {
+        userCommands.set(definition.name, defineUserCommand(definition))
+        logger.info(`Added user command "${definition.name}"`)
+      }
+
+      if (isMessageCommandDefinition(definition)) {
+        messageCommands.set(definition.name, defineMessageCommand(definition))
+        logger.info(`Added message command "${definition.name}"`)
+      }
+    },
+
+    async loadCommands(filePaths: ArrayLike<string>) {
+      const commandModulePromises = Array.from(filePaths)
+        .map((path) => path.replace(/\.[a-z]+$/i, ""))
+        .map((path) =>
+          logger.promise<UnknownRecord>(
+            `Loading command module "${relative(process.cwd(), path)}"`,
+            import(path),
+          ),
+        )
+
+      const commandModules = await logger.promise(
+        `Loading ${filePaths.length} commands`,
+        Promise.all(commandModulePromises),
+      )
+
+      for (const command of commandModules.flatMap<unknown>(Object.values)) {
+        if (
+          isSlashCommandDefinition(command) ||
+          isUserCommandDefinition(command) ||
+          isMessageCommandDefinition(command)
+        ) {
+          gatekeeper.addCommand(command)
+        }
+      }
+    },
+
+    /**
+     * Bind event listeners to a discord client, for registering commands on ready, and for handling interactions.
+     *
+     * @param client The discord client to bind to
+     */
+    useClient(
+      client: Discord.Client,
+      {
+        useGlobalCommands = false,
+        useGuildCommands = true,
+      }: UseClientOptions = {},
+    ) {
+      async function syncGuildCommands(guild: Discord.Guild) {
+        const existingCommands = await logger.promise(
+          `Fetching existing commands for guild "${guild.name}"`,
+          guild.commands.fetch(),
+        )
+
+        if (useGuildCommands) {
+          await syncCommands(guild.commands, existingCommands)
+        } else {
+          await removeAllCommands(guild.commands, existingCommands)
+        }
+      }
+
+      client.on("ready", async () => {
+        logger.info("Client ready")
+
+        const { application } = client
+        if (application) {
+          const existingCommands = await logger.promise(
+            `Fetching all global commands...`,
+            application.commands.fetch(),
+          )
+          if (useGlobalCommands) {
+            await syncCommands(application.commands, existingCommands)
+          } else {
+            await removeAllCommands(application.commands, existingCommands)
+          }
+        }
+
+        for (const guild of client.guilds.cache.values()) {
+          await syncGuildCommands(guild)
+        }
+      })
+
+      client.on("guildCreate", async (guild) => {
+        await syncGuildCommands(guild)
+      })
+
+      client.on("interactionCreate", async (interaction) => {
+        if (interaction.isCommand()) {
+          await handleCommandInteraction(interaction)
+        }
+        if (interaction.isContextMenu()) {
+          await handleContextMenuInteraction(interaction)
+        }
+      })
+    },
+  }
 
   async function syncCommands(
     manager: DiscordCommandManager,
@@ -173,111 +331,6 @@ export function createGatekeeper({
       const context = await createMessageCommandContext(interaction, logger)
       await messageCommand.run(context)
     }
-  }
-
-  const gatekeeper = {
-    addCommand<Options extends SlashCommandOptions>(
-      definition: AnyCommandDefinition<Options>,
-    ) {
-      if (isSlashCommandDefinition(definition)) {
-        slashCommands.set(
-          definition.name,
-          defineSlashCommand(definition) as SlashCommandDefinition,
-        )
-        logger.info(`Added slash command "${definition.name}"`)
-      }
-
-      if (isUserCommandDefinition(definition)) {
-        userCommands.set(definition.name, defineUserCommand(definition))
-        logger.info(`Added user command "${definition.name}"`)
-      }
-
-      if (isMessageCommandDefinition(definition)) {
-        messageCommands.set(definition.name, defineMessageCommand(definition))
-        logger.info(`Added message command "${definition.name}"`)
-      }
-    },
-
-    async loadCommands(filePaths: ArrayLike<string>) {
-      const commandModulePromises = Array.from(filePaths)
-        .map((path) => path.replace(/\.[a-z]+$/i, ""))
-        .map((path) =>
-          logger.promise<UnknownRecord>(
-            `Loading command module "${relative(process.cwd(), path)}"`,
-            import(path),
-          ),
-        )
-
-      const commandModules = await logger.promise(
-        `Loading ${filePaths.length} commands`,
-        Promise.all(commandModulePromises),
-      )
-
-      for (const command of commandModules.flatMap<unknown>(Object.values)) {
-        if (
-          isSlashCommandDefinition(command) ||
-          isUserCommandDefinition(command) ||
-          isMessageCommandDefinition(command)
-        ) {
-          gatekeeper.addCommand(command)
-        }
-      }
-    },
-
-    useClient(
-      client: Discord.Client,
-      {
-        useGlobalCommands = false,
-        useGuildCommands = true,
-      }: UseClientOptions = {},
-    ) {
-      async function syncGuildCommands(guild: Discord.Guild) {
-        const existingCommands = await logger.promise(
-          `Fetching existing commands for guild "${guild.name}"`,
-          guild.commands.fetch(),
-        )
-
-        if (useGuildCommands) {
-          await syncCommands(guild.commands, existingCommands)
-        } else {
-          await removeAllCommands(guild.commands, existingCommands)
-        }
-      }
-
-      client.on("ready", async () => {
-        logger.info("Client ready")
-
-        const { application } = client
-        if (application) {
-          const existingCommands = await logger.promise(
-            `Fetching all global commands...`,
-            application.commands.fetch(),
-          )
-          if (useGlobalCommands) {
-            await syncCommands(application.commands, existingCommands)
-          } else {
-            await removeAllCommands(application.commands, existingCommands)
-          }
-        }
-
-        for (const guild of client.guilds.cache.values()) {
-          await syncGuildCommands(guild)
-        }
-      })
-
-      client.on("guildCreate", async (guild) => {
-        await syncGuildCommands(guild)
-      })
-
-      client.on("interactionCreate", async (interaction) => {
-        if (interaction.isCommand()) {
-          await handleCommandInteraction(interaction)
-        }
-        if (interaction.isContextMenu()) {
-          await handleContextMenuInteraction(interaction)
-        }
-      })
-    },
   }
 
   return gatekeeper

@@ -1,0 +1,7 @@
+{
+  "out": "docs/api",
+  "name": "API",
+  "readme": "none",
+  "excludeNotDocumented": false,
+  "sort": ["alphabetical"]
+}
