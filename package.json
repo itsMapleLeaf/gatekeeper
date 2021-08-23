@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "pnpm -C packages/playground run dev",
     "build": "pnpm run --parallel build",
-    "release": "pnpm -C packages/gatekeeper run release",
+    "release": "pnpm run docs && pnpm -C packages/gatekeeper run release",
     "lint": "eslint --ext js,ts,tsx .",
     "typecheck": "tsc --noEmit",
     "docs": "typedoc packages/gatekeeper/src/main.ts"
