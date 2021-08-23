@@ -11,6 +11,7 @@ function spongebobify(text: string): string {
     .join("")
 }
 
+// this defines a context menu command when you right-click on a message
 export const spongebobMessageCommand = defineMessageCommand({
   name: "spongebob",
   run(context) {

@@ -12,6 +12,7 @@ const emojis = [
   "<:btmcHug:814621172611940352>",
 ]
 
+// this defines a context menu command when you right-click on a user
 export const hugCommand = defineUserCommand({
   name: "hug",
   run(context) {
