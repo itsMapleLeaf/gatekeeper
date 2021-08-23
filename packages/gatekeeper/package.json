@@ -61,5 +61,9 @@
       "^.+\\.tsx?$": "esbuild-jest"
     }
   },
-  "release-it": {}
+  "release-it": {
+    "github": {
+      "release": true
+    }
+  }
 }
