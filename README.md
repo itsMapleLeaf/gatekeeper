@@ -4,7 +4,7 @@ Gatekeeper is a ✨reactive✨ interaction framework for discord.js!
 
 It's a work in progress, but feel free to try it out and give feedback!
 
-- [Getting Started](./docs/getting-started.md)
+- [Guide](./docs/guide.md)
 - [Examples](./packages/playground/src/commands)
 - [API Docs](./docs/api)
 

@@ -1,6 +1,6 @@
-# Getting Started
+# Guide
 
-This guide assumes some familiarity with JavaScript (or TypeScript!), Node.JS, and Discord.JS.
+This guide should cover most of the things you'll want to do with Gatekeeper. It assumes some familiarity with JavaScript (or TypeScript!), Node.JS, and Discord.JS. Consult the [API reference](./api).
 
 ## Setup
 
