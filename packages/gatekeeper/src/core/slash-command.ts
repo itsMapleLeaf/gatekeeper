@@ -215,15 +215,3 @@ export function createSlashCommandContext(
     options,
   }
 }
-
-defineSlashCommand({
-  name: "help",
-  description: "show help",
-  options: {
-    name: {
-      type: "STRING",
-      description: "",
-    },
-  },
-  run(context) {},
-})
