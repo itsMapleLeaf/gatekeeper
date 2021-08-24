@@ -325,7 +325,9 @@ instance.addCommand(counterCommand)
 
 ## Slash Command Options
 
-Options are also called "arguments" or "parameters". Define them alongside the other basic command options:
+Options are also called "arguments" or "parameters". You can use them to let users provide additional input to a command. Any option can be marked as `required: true`. For TypeScript users, this will make the type non-undefined.
+
+### Basic types: string, number, boolean
 
 ```js
 const nameCommand = defineSlashCommand({
@@ -341,13 +343,114 @@ const nameCommand = defineSlashCommand({
       type: "STRING",
       description: "your last name (optional)",
     },
+    cool: {
+      type: "BOOLEAN",
+      description: "are you cool?",
+    },
   },
   run(context) {
-    const { firstName, lastName } = context.options
+    const { firstName, lastName, cool } = context.options
     const displayName = [firstName, lastName].filter(Boolean).join(" ")
+    const displayCool = cool ? `you are cool` : `you are not cool`
 
-    // then use it
-    context.reply(() => `Your name is ${displayName}`)
+    context.reply(() => `Your name is ${displayName} and ${displayCool}`)
+  },
+})
+```
+
+For strings and numbers, you can define a limited set of values to choose from:
+
+```js
+defineSlashCommand({
+  // ...
+  options: {
+    color: {
+      type: "STRING",
+      description: "pick a color",
+      required: true,
+      choices: [
+        { name: "🔴", value: "red" },
+        { name: "🔵", value: "blue" },
+        { name: "🟢", value: "green" },
+      ],
+    },
+    number: {
+      type: "NUMBER",
+      description: "pick a number",
+      required: true,
+      choices: [
+        { name: "1️⃣", value: 1 },
+        { name: "2️⃣", value: 2 },
+        { name: "3️⃣", value: 3 },
+        { name: "4️⃣", value: 4 },
+        { name: "5️⃣", value: 5 },
+      ],
+    },
+  },
+})
+```
+
+### Advanced types: user, role, channel
+
+```js
+defineSlashCommand({
+  // ...
+  options: {
+    color: {
+      type: "USER",
+      description: "some user",
+    },
+    number: {
+      type: "ROLE",
+      description: "some role",
+    },
+    channel: {
+      type: "CHANNEL",
+      description: "some channel",
+    },
+  },
+  run(context) {
+    context.reply(() => [
+      // resolves to DiscordJS User
+      `user: ${context.options.user.name}`,
+
+      // resolves to DiscordJS Role
+      `role: ${context.options.role.name}`,
+
+      // resolves to DiscordJS GuildChannel
+      `channel: ${context.options.channel.name}`,
+    ])
+  },
+})
+```
+
+### Advanced types: mentionable
+
+```js
+defineSlashCommand({
+  // ...
+  options: {
+    target: {
+      type: "MENTIONABLE",
+      description: "a mentionable target",
+    },
+  },
+  run(context) {
+    if (target.isUser) {
+      context.reply(() => [
+        // convenience shorthand to show a mention in the message (pings the user/role)
+        target.mention,
+        `name: ${target.user.name}`,
+        // guildMember is only available when invoked from guilds
+        target.guildMember && `color: ${target.guildMember.displayHexColor}`,
+      ])
+    } else {
+      context.reply(() => [
+        target.mention,
+        `name: ${target.role.name}`,
+        `color: ${target.role.color}`,
+      ])
+    }
   },
 })
 ```
