@@ -1,6 +1,6 @@
 # Guide
 
-This guide should cover most of the things you'll want to do with Gatekeeper. It assumes some familiarity with JavaScript (or TypeScript!), Node.JS, and Discord.JS. Consult the [API reference](https://itsmapleleaf.github.io/gatekeeper/api/).
+This guide should cover most of the things you'll want to do with Gatekeeper. It assumes some familiarity with JavaScript (or TypeScript!), Node.JS, and Discord.JS. Consult the [API reference](https://itsmapleleaf.github.io/gatekeeper/api/) for more in-depth information.
 
 ## Motivation
 
