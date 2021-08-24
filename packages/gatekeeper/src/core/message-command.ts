@@ -28,8 +28,18 @@ const messageCommandType = Symbol("messageCommand")
 
 /**
  * Define a context menu command, available when right clicking on messages.
- * You still need to add it yourself:
- * @see GatekeeperInstance.addCommand
+ * You still need to add it yourself: {@link GatekeeperInstance.addCommand}
+ *
+ * ```js
+ * const reverseCommand = defineMessageCommand({
+ *   name: "reverse message content",
+ *   run(context) {
+ *     context.reply(() =>
+ *       context.targetMessage.content.split("").reverse().join(""),
+ *     )
+ *   },
+ * })
+ * ```
  */
 export function defineMessageCommand(
   definition: MessageCommandDefinitionWithoutType,
