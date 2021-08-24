@@ -3,5 +3,7 @@
   "name": "API",
   "readme": "none",
   "excludeNotDocumented": false,
-  "sort": ["alphabetical"]
+  "sort": ["alphabetical"],
+  "hideBreadcrumbs": true,
+  "hideInPageTOC": true
 }
