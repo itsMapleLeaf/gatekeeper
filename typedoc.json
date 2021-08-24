@@ -1,6 +1,5 @@
 {
   "out": "docs/api",
-  "theme": "minimal",
   "name": "Gatekeeper API",
   "readme": "none",
   "excludeNotDocumented": false,
