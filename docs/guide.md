@@ -369,9 +369,9 @@ defineSlashCommand({
       description: "pick a color",
       required: true,
       choices: [
-        { name: "🔴", value: "red" },
-        { name: "🔵", value: "blue" },
-        { name: "🟢", value: "green" },
+        { name: "🔴 Red", value: "red" },
+        { name: "🔵 Blue", value: "blue" },
+        { name: "🟢 Green", value: "green" },
       ],
     },
     number: {
@@ -379,16 +379,18 @@ defineSlashCommand({
       description: "pick a number",
       required: true,
       choices: [
-        { name: "1️⃣", value: 1 },
-        { name: "2️⃣", value: 2 },
-        { name: "3️⃣", value: 3 },
-        { name: "4️⃣", value: 4 },
-        { name: "5️⃣", value: 5 },
+        { name: "1️⃣ One", value: 1 },
+        { name: "2️⃣ Two", value: 2 },
+        { name: "3️⃣ Three", value: 3 },
+        { name: "4️⃣ Four", value: 4 },
+        { name: "5️⃣ Five", value: 5 },
       ],
     },
   },
 })
 ```
+
+> ⚠ As of writing, Discord errors on emoji-only choice names, and can sometimes bug out if you try to provide multiple options with choices
 
 ### Advanced types: user, role, channel
 
