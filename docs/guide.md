@@ -2,110 +2,13 @@
 
 This guide should cover most of the things you'll want to do with Gatekeeper. It assumes some familiarity with JavaScript (or TypeScript!), Node.JS, and Discord.JS. Consult the [API reference](./api).
 
-## Setup
+## Motivation
 
-1. [Create a bot application.](https://discordjs.guide/preparations/setting-up-a-bot-application.html)
-
-1. [Invite your bot to a server.](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links)
-
-1. Create a folder for your project, then install Gatekeeper alongside Discord.JS:
-
-   ```bash
-   mkdir my-awesome-bot
-   cd my-awesome-bot
-   npm init -y
-   npm install discord.js @itsmapleleaf/gatekeeper
-   ```
-
-1. Create a new file `bot.js` and set up Discord.JS with the library:
-
-   ```js
-   const Discord = require("discord.js")
-   const gatekeeper = require("@itsmapleleaf/gatekeeper")
-
-   const client = new Discord.Client({
-     intents: [Discord.Intents.FLAGS.GUILDS],
-   })
-
-   const instance = gatekeeper.createGatekeeper({ debug: true })
-   instance.useClient(client)
-
-   // replace this with the bot token from your Discord application
-   const botToken = "..."
-   client.login(botToken).catch(console.error)
-   ```
-
-   > This is fine just for getting started, but if your project is a git repo, **do not** commit the bot token! Use a package like [dotenv](https://npm.im/dotenv), and put your token in the `.env` file:
-   >
-   > ```env
-   > BOT_TOKEN="abcdef123"
-   > ```
-   >
-   > Then add the file to your `.gitignore`. Reference the token with `process.env.BOT_TOKEN`.
-
-1. Run the bot: `node bot.js`
-
-If all went well, your bot should be up and running, and you should see some colorful debug messages in the console! If you find them distracting, you can always disable it by setting `debug: false`.
-
-For a fast dev workflow, you can also use [node-dev](https://npm.im/node-dev):
-
-```sh
-npx node-dev bot.js
-```
-
-## Your first slash command
-
-To start things off, we'll write the classic `/ping` command, which responds with "pong!"
-
-Use `defineSlashCommand` to define the command. A name and description for the command is required.
-
-```js
-const pingCommand = gatekeeper.defineSlashCommand({
-  name: "ping",
-  description: "Pong!",
-  run(context) {
-    context.reply(() => "Pong!")
-  },
-})
-```
-
-> You'll notice we're passing a function here, instead of just calling `context.reply("Pong!")`. This is important, but we'll go over that later. Passing just the string will **not** work.
-
-We use the `context` to reply to commands, and it also comes with some other info, like the guild where the command was ran, and the user that ran the command.
-
-`context.reply(...)` sends out a message to everyone in the channel. If you only want the activating user to see the command, use `context.ephemeralReply(...)` instead.
-
-```js
-const pingCommand = gatekeeper.defineSlashCommand({
-  name: "ping",
-  description: "Pong!",
-  run(context) {
-    context.ephemeralReply(() => "Pong! (but only for you 💕)")
-  },
-})
-```
-
-Now add the command:
-
-```js
-instance.addCommand(pingCommand)
-```
-
-When you rerun the bot, you should see 'Registering slash command "ping"' in the console. Run the command, and you should get a `"Pong!"` back from the bot.
-
-Congrats, you've just written your first command with Gatekeeper! 🎉
-
-## Buttons!
-
-Now, you might be wondering why you need a framework just for that. You'd be right, thinking that you could probably do this yourself, with not that much more code.
-
-Gatekeeper really shines when making much more robustly interactive commands, using Discord's message component feature.
-
-Let's take a `/counter` command, for example. It shows a button, tells you how many times you've clicked it, then gives another button to remove the message.
+Discord's message components (buttons, selects, etc.) are a really neat feature you can use to do some pretty crazy and wild things you couldn't before. However, working with them directly can feel a bit cumbersome.
 
 <details>
-
-  <summary>Without gatekeeper, here's what you'd write. (click to expand)</summary>
+  <summary>For example, let's take a messsage which counts the number of times you click a button, and another button to remove the message. This is the vanilla DJS code required for that. (click to expand)
+    </summary>
 
 ```js
 client.on("ready", async () => {
@@ -183,13 +86,100 @@ client.on("interactionCreate", async (interaction) => {
 
 </details>
 
-There's a lot going on, and it's very easy to make a mistake here.
+That's not to blame Discord.JS; I would say DJS is appropriately low-level here. But we can make this a little nicer, and that's where Gatekeeper comes in.
 
-With gatekeeper, let's start out by **declaratively** describing what UI we want.
+Gatekeeper leverages a **declarative UI** paradigm: you can describe what you want the view to look like, and it automatically manages creating and editing messages for you. Complex interactions become a lot more readable and easy to follow. Want to see how? Let's get started!
 
-Instead of just a string, we'll use an array. The string will be the content of the message.
+## Getting Started
 
-We'll use `buttonComponent` to tell gatekeeper we want our message to have buttons. We define a `label` for the button text, a `style` for the color and intent the button should have, then an `onClick` function, which gets called when the button is clicked.
+1. [Create a bot application.](https://discordjs.guide/preparations/setting-up-a-bot-application.html)
+
+1. [Invite your bot to a server.](https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links)
+
+1. Create a folder for your project, then install Gatekeeper alongside Discord.JS:
+
+   ```bash
+   mkdir my-awesome-bot
+   cd my-awesome-bot
+   npm init -y
+   npm install discord.js @itsmapleleaf/gatekeeper
+   ```
+
+1. Create a new file `bot.js` and set up Discord.JS with the library:
+
+   ```js
+   const Discord = require("discord.js")
+   const gatekeeper = require("@itsmapleleaf/gatekeeper")
+
+   const client = new Discord.Client({
+     intents: [Discord.Intents.FLAGS.GUILDS],
+   })
+
+   const instance = gatekeeper.createGatekeeper({ debug: true })
+   instance.useClient(client)
+
+   // replace this with the bot token from your Discord application
+   const botToken = "..."
+   client.login(botToken).catch(console.error)
+   ```
+
+   > This is fine just for getting started, but if your project is a git repo, **do not** commit the bot token! Use a package like [dotenv](https://npm.im/dotenv), and put your token in the `.env` file:
+   >
+   > ```env
+   > BOT_TOKEN="abcdef123"
+   > ```
+   >
+   > Then add the file to your `.gitignore`. Reference the token with `process.env.BOT_TOKEN`.
+
+1. Run the bot: `node bot.js`
+
+If all went well, your bot should be up and running, and you should see some colorful debug messages in the console! If you find them distracting, you can always disable it by setting `debug: false`.
+
+For a fast dev workflow, consider using [node-dev](https://npm.im/node-dev), which reruns your code on changes.
+
+```sh
+npx node-dev bot.js
+```
+
+## Tutorial - Your first slash command
+
+To start things off, we'll write the classic `/ping` command, which responds with "pong!"
+
+Use `defineSlashCommand` to define the command. A name and description for the command is required.
+
+```js
+const pingCommand = gatekeeper.defineSlashCommand({
+  name: "ping",
+  description: "Pong!",
+  run(context) {
+    context.reply(() => "Pong!")
+  },
+})
+```
+
+> You'll notice we're passing a function here, instead of just calling `context.reply("Pong!")`. This is important, but we'll go over that later. Passing just the string will **not** work.
+
+We use the `context` to reply to commands, and it also comes with some other info, like the guild where the command was ran, and the user that ran the command.
+
+Now add the command:
+
+```js
+instance.addCommand(pingCommand)
+```
+
+When you rerun the bot, you should see 'Registering slash command "ping"' in the console. Run the command, and you should get a `"Pong!"` back from the bot.
+
+Congrats, you've just written your first command with Gatekeeper! 🎉
+
+## Tutorial - Buttons
+
+Let's start out by **declaratively** describing what UI we want.
+
+Return an array to specify multiple components to the message: message content, and two buttons. Use `buttonComponent` to define a button, and a few properties on each one:
+
+- `label` - the text that shows on the button
+- `style` - the intent of the button, or how it should look
+- `onClick` - code to run when the button gets clicked
 
 ```js
 const counterCommand = gatekeeper.defineSlashCommand({
@@ -298,8 +288,6 @@ const counterCommand = gatekeeper.defineSlashCommand({
 
 Click "done", and the message should go away.
 
-> **Note:** Ephemeral (private) replies can't be edited or deleted by the bot, so they _won't_ return reply handles. But they can still be updated from clicks.
-
 <details>
 
   <summary>Here's the final code. (click to expand)</summary>
@@ -335,11 +323,37 @@ instance.addCommand(counterCommand)
 
 </details>
 
-And with that, you should have a good baseline understanding of how Gatekeeper works. It's a flow of "receive command, create reply, update state". If you've used a frontend framework like React or Vue, you'll probably feel right at home.
+## Slash Command Options
 
-This guide should cover other topics in the future, but for now, here are some examples:
+Options are also called "arguments" or "parameters". Define them alongside the other basic command options:
 
-- [Slash command arguments](/packages/playground/src/commands/double.ts)
+```js
+const nameCommand = defineSlashCommand({
+  name: "name",
+  description: "what's your name?",
+  options: {
+    firstName: {
+      type: "STRING",
+      description: "your first name",
+      required: true,
+    },
+    lastName: {
+      type: "STRING",
+      description: "your last name (optional)",
+    },
+  },
+  run(context) {
+    const { firstName, lastName } = context.options
+    const displayName = [firstName, lastName].filter(Boolean).join(" ")
+
+    // then use it
+    context.reply(() => `Your name is ${displayName}`)
+  },
+})
+```
+
+## More examples
+
 - [Select menu (single selection)](/packages/playground/src/commands/select.ts)
 - [Select menu (multiple selection)](/packages/playground/src/commands/multi-select.ts)
 - [Using info from `onClick`](/packages/playground/src/commands/callback-info.ts)

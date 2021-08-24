@@ -107,10 +107,8 @@ export function createGatekeeper({
     ? createConsoleLogger({ name: "gatekeeper" })
     : createNoopLogger()
 
-  const gatekeeper = {
-    addCommand<Options extends SlashCommandOptions>(
-      definition: AnyCommandDefinition<Options>,
-    ) {
+  const gatekeeper: GatekeeperInstance = {
+    addCommand(definition) {
       if (isSlashCommandDefinition(definition)) {
         slashCommands.set(
           definition.name,
@@ -130,7 +128,7 @@ export function createGatekeeper({
       }
     },
 
-    async loadCommands(filePaths: ArrayLike<string>) {
+    async loadCommands(filePaths) {
       const commandModulePromises = Array.from(filePaths)
         .map((path) => path.replace(/\.[a-z]+$/i, ""))
         .map((path) =>
@@ -156,17 +154,9 @@ export function createGatekeeper({
       }
     },
 
-    /**
-     * Bind event listeners to a discord client, for registering commands on ready, and for handling interactions.
-     *
-     * @param client The discord client to bind to
-     */
     useClient(
-      client: Discord.Client,
-      {
-        useGlobalCommands = false,
-        useGuildCommands = true,
-      }: UseClientOptions = {},
+      client,
+      { useGlobalCommands = false, useGuildCommands = true } = {},
     ) {
       async function syncGuildCommands(guild: Discord.Guild) {
         const existingCommands = await logger.promise(

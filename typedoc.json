@@ -1,9 +1,8 @@
 {
   "out": "docs/api",
-  "name": "API",
+  "theme": "minimal",
+  "name": "Gatekeeper API",
   "readme": "none",
   "excludeNotDocumented": false,
-  "sort": ["alphabetical"],
-  "hideBreadcrumbs": true,
-  "hideInPageTOC": true
+  "sort": ["alphabetical"]
 }

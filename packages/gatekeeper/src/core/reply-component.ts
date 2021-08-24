@@ -6,23 +6,37 @@ import type {
 import { last } from "lodash"
 import { isNonNil, isTruthy } from "../internal/helpers"
 import type { Falsy } from "../internal/types"
-import type {
-  ActionRowChild,
-  ActionRowComponent,
-} from "./components/action-row"
-import type { ButtonComponent } from "./components/button"
-import type { EmbedComponent } from "./components/embed"
-import type { SelectMenuComponent } from "./components/select-menu"
+import type { ActionRowComponent } from "./action-row"
+import type { ButtonComponent } from "./button"
+import type { EmbedComponent } from "./embed"
+import type { SelectMenuComponent } from "./select-menu"
 
+/**
+ * A gatekeeper-specific type representing something that can be rendered in a discord message
+ */
 export type ReplyComponent = TextComponent | EmbedComponent | ActionRowComponent
 
+/**
+ * Represents the text in a message
+ */
 export type TextComponent = {
   type: "text"
   text: string
 }
 
+/**
+ * The function passed to `context.reply`
+ */
 export type RenderReplyFn = () => RenderResult
 
+/**
+ * Anything that can be rendered in a reply.
+ *   - Embed components, action row components, and text components are accepted as-is
+ *   - Button and select menu components are automatically placed in action rows, respecting discord's restrictions
+ *   - Strings and numbers become text components. Empty strings can be used to add empty lines in the message. `\n` will also add a new line.
+ *   - Nested arrays are flattened
+ *   - Everything else (booleans, `undefined`, `null`) is ignored
+ */
 export type RenderResult =
   | ReplyComponent
   | ButtonComponent
@@ -57,6 +71,10 @@ function collectFlatReplyComponents(items: RenderResult[]) {
   return components
 }
 
+/**
+ * Flattens a {@link RenderResult} into a list of {@link ReplyComponent}s,
+ * with buttons and selects automatically placed in action rows.
+ */
 export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
   const ungroupedComponents = collectFlatReplyComponents([result].flat())
 
@@ -108,14 +126,9 @@ export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
   })
 }
 
-export function getInteractiveComponents(
-  result: RenderResult,
-): ActionRowChild[] {
-  return flattenRenderResult(result).flatMap((actionRow) =>
-    actionRow.type === "actionRow" ? actionRow.children : [],
-  )
-}
-
+/**
+ * @internal
+ */
 export function createInteractionReplyOptions(
   components: ReplyComponent[],
 ): InteractionReplyOptions {

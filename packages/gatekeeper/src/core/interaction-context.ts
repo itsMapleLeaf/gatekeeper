@@ -2,27 +2,107 @@ import type * as Discord from "discord.js"
 import type { ActionQueue, createActionQueue } from "../internal/action-queue"
 import type { Logger } from "../internal/logger"
 import { createTimeout } from "../internal/timeout"
-import type { RenderReplyFn, ReplyComponent } from "./reply-component"
+import type { ActionRowChild } from "./action-row"
+import type {
+  RenderReplyFn,
+  RenderResult,
+  ReplyComponent,
+} from "./reply-component"
 import {
   createInteractionReplyOptions,
   flattenRenderResult,
-  getInteractiveComponents,
 } from "./reply-component"
 
+/**
+ * An interaction can happen in multiple ways:
+ * - A command is ran
+ * - A button is clicked
+ * - A select menu option is selected
+ *
+ * This object provides info on that interaction,
+ * as well as functions to handle it.
+ */
 export type InteractionContext = {
+  /**
+   * The channel the interaction happened in
+   */
   channel: Discord.TextBasedChannels | undefined
-  member: Discord.GuildMember | undefined
+
+  /**
+   * The user that performed the interaction.
+   * For slash commands, this is the user that ran the command.
+   * For buttons, this is the user that clicked the button.
+   */
   user: Discord.User
+
+  /**
+   * The guild (server) the interaction happened in.
+   * If not in a guild (e.g. a DM), this is undefined.
+   */
   guild: Discord.Guild | undefined
 
+  /**
+   * The guild member that performed the interaction.
+   * If outside of a guild (e.g. in a DM), this will be undefined.
+   */
+  member: Discord.GuildMember | undefined
+
+  /**
+   * Create a new message in response to the interaction.
+   * This message can be seen by everyone in the corresponding channel.
+   *
+   * @return A {@link ReplyHandle handle} that can be used delete the message,
+   * or refresh its contents.
+   */
   reply: (render: RenderReplyFn) => ReplyHandle
 
+  /**
+   * Create an ephemeral message in response to the interaction.
+   * This message can only be seen by the user that performed the interaction.
+   *
+   * Does not return a {@link ReplyHandle handle};
+   * ephemeral messages can't be arbitrarily updated or deleted
+   * outside of interactions updates.
+   */
   ephemeralReply: (render: RenderReplyFn) => void
 
+  /**
+   * Defer a response, which shows a loading message until reply() is called.
+   * Call this if your command might take longer than 3 seconds to reply.
+   * More details: https://discordjs.guide/interactions/replying-to-slash-commands.html#deferred-responses
+   */
   defer: () => void
 }
 
+/**
+ * Returned from {@link InteractionContext.reply}.
+ * Use this to manually refresh or delete a reply.
+ *
+ * ```js
+ * let seconds = 0
+ *
+ * const reply = context.reply(() => [
+ *   `${seconds} seconds have passed`,
+ *   buttonComponent({
+ *     label: "stop",
+ *     style: "SECONDARY",
+ *     onClick: () => {
+ *       reply.delete()
+ *       clearInterval(interval)
+ *     },
+ *   }),
+ * ])
+ *
+ * const interval = setInterval(() => {
+ *   seconds += 1
+ *   reply.refresh()
+ * }, 1000)
+ * ```
+ */
 export type ReplyHandle = {
+  /**
+   * Refresh the reply. Useful for updates outside of button/select interactions.
+   */
   refresh: () => void
   delete: () => void
 }
@@ -36,6 +116,9 @@ type ReplyState = {
 const deferPriority = 0
 const updatePriority = 1
 
+/**
+ * @internal
+ */
 export function createInteractionContext(
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
   logger: Logger,
@@ -256,4 +339,10 @@ async function addEphemeralReply(
   } else {
     await interaction.reply({ ...options, ephemeral: true })
   }
+}
+
+function getInteractiveComponents(result: RenderResult): ActionRowChild[] {
+  return flattenRenderResult(result).flatMap((actionRow) =>
+    actionRow.type === "actionRow" ? actionRow.children : [],
+  )
 }

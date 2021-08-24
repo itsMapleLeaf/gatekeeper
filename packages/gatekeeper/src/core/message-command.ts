@@ -6,6 +6,9 @@ import type { OptionalKeys } from "../internal/types"
 import type { InteractionContext } from "./interaction-context"
 import { createInteractionContext } from "./interaction-context"
 
+/**
+ * @see defineMessageCommand
+ */
 export type MessageCommandDefinition = {
   __type: typeof messageCommandType
   name: string
@@ -23,18 +26,29 @@ export type MessageCommandInteractionContext = InteractionContext & {
 
 const messageCommandType = Symbol("messageCommand")
 
+/**
+ * Define a context menu command, available when right clicking on messages.
+ * You still need to add it yourself:
+ * @see GatekeeperInstance.addCommand
+ */
 export function defineMessageCommand(
   definition: MessageCommandDefinitionWithoutType,
 ): MessageCommandDefinition {
   return { ...definition, __type: messageCommandType }
 }
 
+/**
+ * @internal
+ */
 export function isMessageCommandDefinition(
   definition: unknown,
 ): definition is MessageCommandDefinition {
   return isAnyObject(definition) && definition.__type === messageCommandType
 }
 
+/**
+ * @internal
+ */
 export async function createMessageCommandContext(
   interaction: Discord.ContextMenuInteraction,
   logger: Logger,
