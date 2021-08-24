@@ -1,3 +1,4 @@
+import { defineSlashCommand } from "@itsmapleleaf/gatekeeper/src/main"
 import { defineUserCommand } from "../../../gatekeeper/src/core/user-command"
 
 const emojis = [
@@ -13,12 +14,30 @@ const emojis = [
 ]
 
 // this defines a context menu command when you right-click on a user
-export const hugCommand = defineUserCommand({
+export const hugUserCommand = defineUserCommand({
   name: "hug",
   run(context) {
     const user = `<@${context.user.id}>`
     const target = `<@${context.targetUser.id}>`
     const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
     context.reply(() => `${user} gave ${target} a hug! ${emoji}`)
+  },
+})
+
+export const hugSlashCommand = defineSlashCommand({
+  name: "hug",
+  description: "give someone a hug ♥",
+  options: {
+    target: {
+      type: "MENTIONABLE",
+      description: "the target to hug",
+      required: true,
+    },
+  },
+  run(context) {
+    const { target } = context.options
+    const user = `<@!${context.user.id}>`
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
+    context.reply(() => `${user} gave ${target.mention} a hug! ${emoji}`)
   },
 })
