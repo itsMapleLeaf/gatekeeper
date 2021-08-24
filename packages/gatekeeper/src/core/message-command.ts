@@ -2,25 +2,39 @@ import type * as Discord from "discord.js"
 import { createActionQueue } from "../internal/action-queue"
 import { isAnyObject, raise } from "../internal/helpers"
 import type { Logger } from "../internal/logger"
-import type { OptionalKeys } from "../internal/types"
 import type { InteractionContext } from "./interaction-context"
 import { createInteractionContext } from "./interaction-context"
 
 /**
- * @see defineMessageCommand
+ * Options for defining a message context menu command.
  */
-export type MessageCommandDefinition = {
-  __type: typeof messageCommandType
+export type MessageCommandDefinitionOptions = {
+  /**
+   * Name of the message command, shows up when you right-click on a message in Discord.
+   */
   name: string
+
+  /**
+   * Function to run when the command is invoked.
+   */
   run: (context: MessageCommandInteractionContext) => void | Promise<unknown>
 }
 
-type MessageCommandDefinitionWithoutType = OptionalKeys<
-  MessageCommandDefinition,
-  "__type"
->
+/**
+ * @see defineMessageCommand
+ */
+export type MessageCommandDefinition = MessageCommandDefinitionOptions & {
+  __type: typeof messageCommandType
+}
 
+/**
+ * Interaction context for a message context menu command.
+ */
 export type MessageCommandInteractionContext = InteractionContext & {
+  /**
+   * The message that the command was run on.
+   * @see defineMessageCommand
+   */
   targetMessage: Discord.Message
 }
 
@@ -42,7 +56,7 @@ const messageCommandType = Symbol("messageCommand")
  * ```
  */
 export function defineMessageCommand(
-  definition: MessageCommandDefinitionWithoutType,
+  definition: MessageCommandDefinitionOptions,
 ): MessageCommandDefinition {
   return { ...definition, __type: messageCommandType }
 }
