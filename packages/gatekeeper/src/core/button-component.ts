@@ -25,6 +25,13 @@ export type ButtonComponentOptions = {
   style: MessageButtonStyle
 
   /**
+   * Whether the button is disabled.
+   * This can be anti-accessibility, so consider an alternative,
+   * like showing an error on click, or hiding the button entirely.
+   */
+  disabled?: boolean
+
+  /**
    * Called when the button is clicked
    */
   onClick: (context: ButtonInteractionContext) => void

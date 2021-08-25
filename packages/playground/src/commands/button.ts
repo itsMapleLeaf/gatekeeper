@@ -26,6 +26,12 @@ export const buttonCommand = defineSlashCommand({
           result = "you clicked the second"
         },
       }),
+      buttonComponent({
+        style: "SECONDARY",
+        label: "can't click this lol",
+        disabled: true,
+        onClick: () => {},
+      }),
       linkComponent({
         label: "hi",
         url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
