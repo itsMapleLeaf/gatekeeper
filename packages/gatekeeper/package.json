@@ -63,7 +63,8 @@
   },
   "release-it": {
     "github": {
-      "release": true
+      "release": true,
+      "web": true
     }
   }
 }
