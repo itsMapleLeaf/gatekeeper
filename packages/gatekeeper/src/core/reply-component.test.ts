@@ -4,6 +4,7 @@ import {
   embedComponent,
   selectMenuComponent,
 } from "../main"
+import { linkComponent } from "./link-component"
 import type { RenderResult, TopLevelComponent } from "./reply-component"
 import { flattenRenderResult } from "./reply-component"
 
@@ -12,6 +13,11 @@ test("flattenRenderResult", () => {
     label: "button",
     style: "PRIMARY",
     onClick: () => {},
+  })
+
+  const link = linkComponent({
+    label: "hi",
+    url: "https://example.com",
   })
 
   const select = selectMenuComponent({
@@ -89,6 +95,15 @@ test("flattenRenderResult", () => {
             description: "b",
           },
         },
+        actionRowComponent(select),
+        actionRowComponent(button),
+      ],
+    },
+    {
+      input: [button, button, button, link, button, button, select, button],
+      expected: [
+        actionRowComponent(button, button, button, link, button),
+        actionRowComponent(button),
         actionRowComponent(select),
         actionRowComponent(button),
       ],
