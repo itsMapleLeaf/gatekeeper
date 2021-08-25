@@ -1,5 +1,5 @@
-import type { ButtonComponent } from "./button"
-import type { SelectMenuComponent } from "./select-menu"
+import type { ButtonComponent } from "./button-component"
+import type { SelectMenuComponent } from "./select-menu-component"
 
 /**
  * Returned from {@link actionRowComponent}

@@ -6,10 +6,10 @@ import type {
 import { last } from "lodash"
 import { isNonNil, isTruthy } from "../internal/helpers"
 import type { Falsy } from "../internal/types"
-import type { ActionRowComponent } from "./action-row"
-import type { ButtonComponent } from "./button"
+import type { ActionRowComponent } from "./action-row-component"
+import type { ButtonComponent } from "./button-component"
 import type { EmbedComponent } from "./embed"
-import type { SelectMenuComponent } from "./select-menu"
+import type { SelectMenuComponent } from "./select-menu-component"
 
 /**
  * A gatekeeper-specific type representing something that can be rendered in a discord message

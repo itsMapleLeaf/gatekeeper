@@ -2,7 +2,7 @@ import type * as Discord from "discord.js"
 import type { ActionQueue, createActionQueue } from "../internal/action-queue"
 import type { Logger } from "../internal/logger"
 import { createTimeout } from "../internal/timeout"
-import type { ActionRowChild } from "./action-row"
+import type { ActionRowChild } from "./action-row-component"
 import type {
   RenderReplyFn,
   RenderResult,
