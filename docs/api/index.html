@@ -93,6 +93,7 @@
 								<li class="tsd-kind-type-alias"><a href="index.html#SlashCommandOptionValueMap" class="tsd-kind-icon">Slash<wbr>Command<wbr>Option<wbr>Value<wbr>Map</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#SlashCommandOptions" class="tsd-kind-icon">Slash<wbr>Command<wbr>Options</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#TextComponent" class="tsd-kind-icon">Text<wbr>Component</a></li>
+								<li class="tsd-kind-type-alias"><a href="index.html#TopLevelComponent" class="tsd-kind-icon">Top<wbr>Level<wbr>Component</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#UseClientOptions" class="tsd-kind-icon">Use<wbr>Client<wbr>Options</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#UserCommandDefinition" class="tsd-kind-icon">User<wbr>Command<wbr>Definition</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#UserCommandDefinitionOptions" class="tsd-kind-icon">User<wbr>Command<wbr>Definition<wbr>Options</a></li>
@@ -121,10 +122,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="ActionRowChild" class="tsd-anchor"></a>
 					<h3>Action<wbr>Row<wbr>Child</h3>
-					<div class="tsd-signature tsd-kind-icon">Action<wbr>Row<wbr>Child<span class="tsd-signature-symbol">:</span> <a href="index.html#SelectMenuComponent" class="tsd-signature-type" data-tsd-kind="Type alias">SelectMenuComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#ButtonComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ButtonComponent</a></div>
+					<div class="tsd-signature tsd-kind-icon">Action<wbr>Row<wbr>Child<span class="tsd-signature-symbol">:</span> <a href="index.html#SelectMenuComponent" class="tsd-signature-type" data-tsd-kind="Type alias">SelectMenuComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#ButtonComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ButtonComponent</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">LinkComponent</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/action-row.ts#L15">core/action-row.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/action-row-component.ts#L16">core/action-row-component.ts:16</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -139,7 +140,7 @@
 					<div class="tsd-signature tsd-kind-icon">Action<wbr>Row<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>children<span class="tsd-signature-symbol">: </span><a href="index.html#ActionRowChild" class="tsd-signature-type" data-tsd-kind="Type alias">ActionRowChild</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;actionRow&quot;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/action-row.ts#L7">core/action-row.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/action-row-component.ts#L8">core/action-row-component.ts:8</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -165,7 +166,7 @@
 					<div class="tsd-signature tsd-kind-icon">Any<wbr>Command<wbr>Definition&lt;Options&gt;<span class="tsd-signature-symbol">:</span> <a href="index.html#SlashCommandDefinition" class="tsd-signature-type" data-tsd-kind="Type alias">SlashCommandDefinition</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Options</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="index.html#UserCommandDefinition" class="tsd-signature-type" data-tsd-kind="Type alias">UserCommandDefinition</a><span class="tsd-signature-symbol"> | </span><a href="index.html#MessageCommandDefinition" class="tsd-signature-type" data-tsd-kind="Type alias">MessageCommandDefinition</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L67">core/gatekeeper.ts:67</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L67">core/gatekeeper.ts:67</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -183,10 +184,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="ButtonComponent" class="tsd-anchor"></a>
 					<h3>Button<wbr>Component</h3>
-					<div class="tsd-signature tsd-kind-icon">Button<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>customId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>emoji<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">EmojiResolvable</span><span class="tsd-signature-symbol">; </span>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>onClick<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>style<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageButtonStyle</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;button&quot;</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">Button<wbr>Component<span class="tsd-signature-symbol">:</span> <a href="index.html#ButtonComponentOptions" class="tsd-signature-type" data-tsd-kind="Type alias">ButtonComponentOptions</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>customId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;button&quot;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/button.ts#L8">core/button.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/button-component.ts#L43">core/button-component.ts:43</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -194,56 +195,14 @@
 							<p>Returned from <a href="index.html#buttonComponent">buttonComponent</a></p>
 						</div>
 					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>custom<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> emoji<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">EmojiResolvable</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>on<wbr>Click<span class="tsd-signature-symbol">: </span>function</h5>
-								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
-									<li class="tsd-signature tsd-kind-icon">on<wbr>Click<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="index.html#InteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">InteractionContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<aside class="tsd-sources">
-											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/button.ts#L14">core/button.ts:14</a></li>
-											</ul>
-										</aside>
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>context: <a href="index.html#InteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">InteractionContext</a></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>style<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageButtonStyle</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;button&quot;</span></h5>
-							</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="ButtonComponentOptions" class="tsd-anchor"></a>
 					<h3>Button<wbr>Component<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">Button<wbr>Component<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>emoji<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">EmojiResolvable</span><span class="tsd-signature-symbol">; </span>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>onClick<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>style<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageButtonStyle</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">Button<wbr>Component<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>disabled<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>emoji<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">EmojiResolvable</span><span class="tsd-signature-symbol">; </span>label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>onClick<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>style<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Exclude</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">MessageButtonStyle</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;LINK&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/button.ts#L25">core/button.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/button-component.ts#L8">core/button-component.ts:8</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -255,10 +214,21 @@
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> disabled<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Whether the button is disabled.
+											This can be anti-accessibility, so consider an alternative,
+										like showing an error on click, or hiding the button entirely.</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
 								<h5><span class="tsd-flag ts-flagOptional">Optional</span> emoji<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">EmojiResolvable</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
-										<p>An emoji displayed on the left of the button.</p>
+										<p>An emoji displayed on the button.
+										If you only want to show an emoji, pass an empty string for the label.</p>
 									</div>
 									<dl class="tsd-comment-tags">
 										<dt>see</dt>
@@ -284,7 +254,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/button.ts#L46">core/button.ts:46</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/button-component.ts#L37">core/button-component.ts:37</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -303,7 +273,7 @@
 								</ul>
 							</li>
 							<li class="tsd-parameter">
-								<h5>style<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageButtonStyle</span></h5>
+								<h5>style<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Exclude</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">MessageButtonStyle</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;LINK&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<div class="lead">
 										<p>The color and intent of the button.</p>
@@ -324,13 +294,18 @@
 					<div class="tsd-signature tsd-kind-icon">Button<wbr>Interaction<wbr>Context<span class="tsd-signature-symbol">:</span> <a href="index.html#InteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">InteractionContext</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/button.ts#L20">core/button.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/button-component.ts#L52">core/button-component.ts:52</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The context object received by button onClick handlers. See <a href="index.html#buttonComponent">buttonComponent</a></p>
+							<p>The context object received by button onClick handlers.</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>see</dt>
+							<dd><p>buttonComponent</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
@@ -339,7 +314,7 @@
 					<div class="tsd-signature tsd-kind-icon">Embed<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>embed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageEmbed</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MessageEmbedOptions</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;embed&quot;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/embed.ts#L6">core/embed.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/embed.ts#L6">core/embed.ts:6</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -365,7 +340,7 @@
 					<div class="tsd-signature tsd-kind-icon">Gatekeeper<wbr>Instance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>addCommand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>loadCommands<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>useClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L77">core/gatekeeper.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L77">core/gatekeeper.ts:77</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -385,7 +360,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L81">core/gatekeeper.ts:81</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L81">core/gatekeeper.ts:81</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -418,7 +393,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L88">core/gatekeeper.ts:88</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L88">core/gatekeeper.ts:88</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -445,7 +420,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L93">core/gatekeeper.ts:93</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L93">core/gatekeeper.ts:93</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -475,7 +450,7 @@
 					<div class="tsd-signature tsd-kind-icon">Gatekeeper<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>debug<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L35">core/gatekeeper.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L35">core/gatekeeper.ts:35</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -503,7 +478,7 @@
 					<div class="tsd-signature tsd-kind-icon">Interaction<wbr>Context<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>channel<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.TextBasedChannels</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>defer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>ephemeralReply<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>guild<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.Guild</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>member<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.GuildMember</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>reply<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.User</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/interaction-context.ts#L25">core/interaction-context.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/interaction-context.ts#L26">core/interaction-context.ts:26</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -538,7 +513,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/interaction-context.ts#L74">core/interaction-context.ts:74</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/interaction-context.ts#L75">core/interaction-context.ts:75</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -561,7 +536,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/interaction-context.ts#L67">core/interaction-context.ts:67</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/interaction-context.ts#L68">core/interaction-context.ts:68</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -610,7 +585,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/interaction-context.ts#L57">core/interaction-context.ts:57</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/interaction-context.ts#L58">core/interaction-context.ts:58</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -650,7 +625,7 @@
 					<div class="tsd-signature tsd-kind-icon">Message<wbr>Command<wbr>Definition<span class="tsd-signature-symbol">:</span> <a href="index.html#MessageCommandDefinitionOptions" class="tsd-signature-type" data-tsd-kind="Type alias">MessageCommandDefinitionOptions</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>__type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">messageCommandType</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/message-command.ts#L26">core/message-command.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/message-command.ts#L26">core/message-command.ts:26</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -667,7 +642,7 @@
 					<div class="tsd-signature tsd-kind-icon">Message<wbr>Command<wbr>Definition<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>run<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/message-command.ts#L11">core/message-command.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/message-command.ts#L11">core/message-command.ts:11</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -695,7 +670,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/message-command.ts#L20">core/message-command.ts:20</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/message-command.ts#L20">core/message-command.ts:20</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -722,7 +697,7 @@
 					<div class="tsd-signature tsd-kind-icon">Message<wbr>Command<wbr>Interaction<wbr>Context<span class="tsd-signature-symbol">:</span> <a href="index.html#InteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">InteractionContext</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>targetMessage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.Message</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/message-command.ts#L33">core/message-command.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/message-command.ts#L33">core/message-command.ts:33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -737,7 +712,7 @@
 					<div class="tsd-signature tsd-kind-icon">Render<wbr>Reply<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="index.html#RenderResult" class="tsd-signature-type" data-tsd-kind="Type alias">RenderResult</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/reply-component.ts#L30">core/reply-component.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/reply-component.ts#L49">core/reply-component.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -764,10 +739,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="RenderResult" class="tsd-anchor"></a>
 					<h3>Render<wbr>Result</h3>
-					<div class="tsd-signature tsd-kind-icon">Render<wbr>Result<span class="tsd-signature-symbol">:</span> <a href="index.html#ReplyComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ReplyComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#ButtonComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ButtonComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#SelectMenuComponent" class="tsd-signature-type" data-tsd-kind="Type alias">SelectMenuComponent</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="index.html#RenderResult" class="tsd-signature-type" data-tsd-kind="Type alias">RenderResult</a><span class="tsd-signature-symbol">[]</span></div>
+					<div class="tsd-signature tsd-kind-icon">Render<wbr>Result<span class="tsd-signature-symbol">:</span> <a href="index.html#ReplyComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ReplyComponent</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="index.html#RenderResult" class="tsd-signature-type" data-tsd-kind="Type alias">RenderResult</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/reply-component.ts#L40">core/reply-component.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/reply-component.ts#L59">core/reply-component.ts:59</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -786,15 +761,15 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="ReplyComponent" class="tsd-anchor"></a>
 					<h3>Reply<wbr>Component</h3>
-					<div class="tsd-signature tsd-kind-icon">Reply<wbr>Component<span class="tsd-signature-symbol">:</span> <a href="index.html#TextComponent" class="tsd-signature-type" data-tsd-kind="Type alias">TextComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#EmbedComponent" class="tsd-signature-type" data-tsd-kind="Type alias">EmbedComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#ActionRowComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ActionRowComponent</a></div>
+					<div class="tsd-signature tsd-kind-icon">Reply<wbr>Component<span class="tsd-signature-symbol">:</span> <a href="index.html#TextComponent" class="tsd-signature-type" data-tsd-kind="Type alias">TextComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#EmbedComponent" class="tsd-signature-type" data-tsd-kind="Type alias">EmbedComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#ActionRowComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ActionRowComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#ButtonComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ButtonComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#SelectMenuComponent" class="tsd-signature-type" data-tsd-kind="Type alias">SelectMenuComponent</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">LinkComponent</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/reply-component.ts#L17">core/reply-component.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/reply-component.ts#L18">core/reply-component.ts:18</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>A gatekeeper-specific type representing something that can be rendered in a discord message</p>
+							<p>Any reply component object</p>
 						</div>
 					</div>
 				</section>
@@ -804,7 +779,7 @@
 					<div class="tsd-signature tsd-kind-icon">Reply<wbr>Handle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>delete<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>refresh<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/interaction-context.ts#L102">core/interaction-context.ts:102</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/interaction-context.ts#L103">core/interaction-context.ts:103</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -844,7 +819,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/interaction-context.ts#L107">core/interaction-context.ts:107</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/interaction-context.ts#L108">core/interaction-context.ts:108</a></li>
 											</ul>
 										</aside>
 										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -860,7 +835,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/interaction-context.ts#L106">core/interaction-context.ts:106</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/interaction-context.ts#L107">core/interaction-context.ts:107</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -881,7 +856,7 @@
 					<div class="tsd-signature tsd-kind-icon">Select<wbr>Interaction<wbr>Context<span class="tsd-signature-symbol">:</span> <a href="index.html#InteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">InteractionContext</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/select-menu.ts#L21">core/select-menu.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/select-menu-component.ts#L65">core/select-menu-component.ts:65</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -893,61 +868,16 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="SelectMenuComponent" class="tsd-anchor"></a>
 					<h3>Select<wbr>Menu<wbr>Component</h3>
-					<div class="tsd-signature tsd-kind-icon">Select<wbr>Menu<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>customId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>maxValues<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minValues<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>onSelect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageSelectOptionData</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>placeholder<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;selectMenu&quot;</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">Select<wbr>Menu<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Omit</span><span class="tsd-signature-symbol">&lt;</span><a href="index.html#SelectMenuComponentOptions" class="tsd-signature-type" data-tsd-kind="Type alias">SelectMenuComponentOptions</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;selected&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>customId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;selectMenu&quot;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/select-menu.ts#L8">core/select-menu.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/select-menu-component.ts#L54">core/select-menu-component.ts:54</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Returned from <a href="index.html#selectMenuComponent">selectMenuComponent</a></p>
 						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter">
-								<h5>custom<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> max<wbr>Values<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> min<wbr>Values<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>on<wbr>Select<span class="tsd-signature-symbol">: </span>function</h5>
-								<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
-									<li class="tsd-signature tsd-kind-icon">on<wbr>Select<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="index.html#SelectInteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">SelectInteractionContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<aside class="tsd-sources">
-											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/select-menu.ts#L15">core/select-menu.ts:15</a></li>
-											</ul>
-										</aside>
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>context: <a href="index.html#SelectInteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">SelectInteractionContext</a></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-									</li>
-								</ul>
-							</li>
-							<li class="tsd-parameter">
-								<h5>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageSelectOptionData</span><span class="tsd-signature-symbol">[]</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5><span class="tsd-flag ts-flagOptional">Optional</span> placeholder<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
-							</li>
-							<li class="tsd-parameter">
-								<h5>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;selectMenu&quot;</span></h5>
-							</li>
-						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
@@ -956,7 +886,7 @@
 					<div class="tsd-signature tsd-kind-icon">Select<wbr>Menu<wbr>Component<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>maxValues<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>minValues<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>onSelect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MessageSelectOptionData</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>placeholder<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>selected<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/select-menu.ts#L33">core/select-menu.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/select-menu-component.ts#L8">core/select-menu-component.ts:8</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -994,7 +924,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/select-menu.ts#L61">core/select-menu.ts:61</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/select-menu-component.ts#L36">core/select-menu-component.ts:36</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -1066,7 +996,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Definition&lt;Options&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>__type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">slashCommandType</span><span class="tsd-signature-symbol">; </span>description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Options</span><span class="tsd-signature-symbol">; </span>run<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L12">core/slash-command.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L12">core/slash-command.ts:12</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1129,7 +1059,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L39">core/slash-command.ts:39</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L39">core/slash-command.ts:39</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -1157,7 +1087,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Interaction<wbr>Context&lt;Options&gt;<span class="tsd-signature-symbol">:</span> <a href="index.html#InteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">InteractionContext</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SlashCommandOptionValues</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Options</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L141">core/slash-command.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L141">core/slash-command.ts:141</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1178,7 +1108,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Mentionable<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>mention<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>guildMember<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.GuildMember</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>isUser<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">; </span>user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.User</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>isUser<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol">; </span>role<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.Role</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L98">core/slash-command.ts:98</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L98">core/slash-command.ts:98</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1193,7 +1123,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Option<wbr>Definition<span class="tsd-signature-symbol">:</span> <a href="index.html#SlashCommandOptionDefinitionBase" class="tsd-signature-type" data-tsd-kind="Type alias">SlashCommandOptionDefinitionBase</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>choices<span class="tsd-signature-symbol">?: </span><a href="index.html#SlashCommandOptionDefinitionChoice" class="tsd-signature-type" data-tsd-kind="Type alias">SlashCommandOptionDefinitionChoice</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;STRING&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>choices<span class="tsd-signature-symbol">?: </span><a href="index.html#SlashCommandOptionDefinitionChoice" class="tsd-signature-type" data-tsd-kind="Type alias">SlashCommandOptionDefinitionChoice</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;NUMBER&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;INTEGER&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;BOOLEAN&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;USER&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;CHANNEL&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;ROLE&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;MENTIONABLE&quot;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L49">core/slash-command.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L49">core/slash-command.ts:49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1210,7 +1140,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Option<wbr>Definition<wbr>Base<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>required<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L160">core/slash-command.ts:160</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L160">core/slash-command.ts:160</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1248,7 +1178,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Option<wbr>Definition<wbr>Choice&lt;Value&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Value</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L69">core/slash-command.ts:69</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L69">core/slash-command.ts:69</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1280,7 +1210,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Option<wbr>Value<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>BOOLEAN<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>CHANNEL<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.GuildChannel</span><span class="tsd-signature-symbol">; </span>INTEGER<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>MENTIONABLE<span class="tsd-signature-symbol">: </span><a href="index.html#SlashCommandMentionableValue" class="tsd-signature-type" data-tsd-kind="Type alias">SlashCommandMentionableValue</a><span class="tsd-signature-symbol">; </span>NUMBER<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>ROLE<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.Role</span><span class="tsd-signature-symbol">; </span>STRING<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>USER<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.User</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L84">core/slash-command.ts:84</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L84">core/slash-command.ts:84</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1325,7 +1255,7 @@
 					<div class="tsd-signature tsd-kind-icon">Slash<wbr>Command<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L153">core/slash-command.ts:153</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L153">core/slash-command.ts:153</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1348,7 +1278,7 @@
 					<div class="tsd-signature tsd-kind-icon">Text<wbr>Component<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;text&quot;</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/reply-component.ts#L22">core/reply-component.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/reply-component.ts#L41">core/reply-component.ts:41</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1369,12 +1299,30 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="TopLevelComponent" class="tsd-anchor"></a>
+					<h3>Top<wbr>Level<wbr>Component</h3>
+					<div class="tsd-signature tsd-kind-icon">Top<wbr>Level<wbr>Component<span class="tsd-signature-symbol">:</span> <a href="index.html#TextComponent" class="tsd-signature-type" data-tsd-kind="Type alias">TextComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#EmbedComponent" class="tsd-signature-type" data-tsd-kind="Type alias">EmbedComponent</a><span class="tsd-signature-symbol"> | </span><a href="index.html#ActionRowComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ActionRowComponent</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/reply-component.ts#L33">core/reply-component.ts:33</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A gatekeeper-specific type representing top-level components,
+							stuff that doesn&#39;t need an extra wrapper.</p>
+						</div>
+						<p>For example, a button isn&#39;t top level,
+						as it needs to be wrapped in an action row</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="UseClientOptions" class="tsd-anchor"></a>
 					<h3>Use<wbr>Client<wbr>Options</h3>
 					<div class="tsd-signature tsd-kind-icon">Use<wbr>Client<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>useGlobalCommands<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>useGuildCommands<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L45">core/gatekeeper.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L45">core/gatekeeper.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1422,7 +1370,7 @@
 					<div class="tsd-signature tsd-kind-icon">User<wbr>Command<wbr>Definition<span class="tsd-signature-symbol">:</span> <a href="index.html#UserCommandDefinitionOptions" class="tsd-signature-type" data-tsd-kind="Type alias">UserCommandDefinitionOptions</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{}</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/user-command.ts#L26">core/user-command.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/user-command.ts#L26">core/user-command.ts:26</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1439,7 +1387,7 @@
 					<div class="tsd-signature tsd-kind-icon">User<wbr>Command<wbr>Definition<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>run<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/user-command.ts#L12">core/user-command.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/user-command.ts#L12">core/user-command.ts:12</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1472,7 +1420,7 @@
 									<li class="tsd-description">
 										<aside class="tsd-sources">
 											<ul>
-												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/user-command.ts#L20">core/user-command.ts:20</a></li>
+												<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/user-command.ts#L20">core/user-command.ts:20</a></li>
 											</ul>
 										</aside>
 										<div class="tsd-comment tsd-typography">
@@ -1499,7 +1447,7 @@
 					<div class="tsd-signature tsd-kind-icon">User<wbr>Command<wbr>Interaction<wbr>Context<span class="tsd-signature-symbol">:</span> <a href="index.html#InteractionContext" class="tsd-signature-type" data-tsd-kind="Type alias">InteractionContext</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>targetGuildMember<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.GuildMember</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>targetUser<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Discord.User</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/user-command.ts#L33">core/user-command.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/user-command.ts#L33">core/user-command.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -1516,7 +1464,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/action-row.ts#L42">core/action-row.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/action-row-component.ts#L46">core/action-row-component.ts:46</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1563,7 +1511,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/button.ts#L64">core/button.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/button-component.ts#L69">core/button-component.ts:69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1601,7 +1549,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/gatekeeper.ts#L99">core/gatekeeper.ts:99</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/gatekeeper.ts#L99">core/gatekeeper.ts:99</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1629,7 +1577,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/message-command.ts#L58">core/message-command.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/message-command.ts#L58">core/message-command.ts:58</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1667,7 +1615,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/slash-command.ts#L204">core/slash-command.ts:204</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/slash-command.ts#L204">core/slash-command.ts:204</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1722,7 +1670,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/user-command.ts#L61">core/user-command.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/user-command.ts#L61">core/user-command.ts:61</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1759,7 +1707,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/embed.ts#L27">core/embed.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/embed.ts#L27">core/embed.ts:27</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1792,19 +1740,19 @@
 					<a name="flattenRenderResult" class="tsd-anchor"></a>
 					<h3>flatten<wbr>Render<wbr>Result</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">flatten<wbr>Render<wbr>Result<span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><a href="index.html#RenderResult" class="tsd-signature-type" data-tsd-kind="Type alias">RenderResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#ReplyComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ReplyComponent</a><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon">flatten<wbr>Render<wbr>Result<span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><a href="index.html#RenderResult" class="tsd-signature-type" data-tsd-kind="Type alias">RenderResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="index.html#TopLevelComponent" class="tsd-signature-type" data-tsd-kind="Type alias">TopLevelComponent</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/reply-component.ts#L78">core/reply-component.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/reply-component.ts#L94">core/reply-component.ts:94</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Flattens a <a href="index.html#RenderResult">RenderResult</a> into a list of <a href="index.html#ReplyComponent">ReplyComponent</a>s,
-									with buttons and selects automatically placed in action rows.</p>
+									<p>Flattens a <a href="index.html#RenderResult">RenderResult</a> into a list of <a href="index.html#TopLevelComponent">TopLevelComponent</a>s,
+									with message components automatically placed in action rows.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1813,7 +1761,7 @@
 									<h5>result: <a href="index.html#RenderResult" class="tsd-signature-type" data-tsd-kind="Type alias">RenderResult</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="index.html#ReplyComponent" class="tsd-signature-type" data-tsd-kind="Type alias">ReplyComponent</a><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="index.html#TopLevelComponent" class="tsd-signature-type" data-tsd-kind="Type alias">TopLevelComponent</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1827,7 +1775,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/119919b/packages/gatekeeper/src/core/select-menu.ts#L97">core/select-menu.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/itsMapleLeaf/gatekeeper/blob/25e4c68/packages/gatekeeper/src/core/select-menu-component.ts#L95">core/select-menu-component.ts:95</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1959,6 +1907,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#TextComponent" class="tsd-kind-icon">Text<wbr>Component</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="index.html#TopLevelComponent" class="tsd-kind-icon">Top<wbr>Level<wbr>Component</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#UseClientOptions" class="tsd-kind-icon">Use<wbr>Client<wbr>Options</a>
