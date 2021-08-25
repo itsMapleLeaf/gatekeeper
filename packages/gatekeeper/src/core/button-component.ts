@@ -22,7 +22,7 @@ export type ButtonComponentOptions = {
    * The color and intent of the button.
    * @see https://discord.js.org/#/docs/main/stable/typedef/MessageButtonStyle
    */
-  style: MessageButtonStyle
+  style: Exclude<MessageButtonStyle, "LINK">
 
   /**
    * Whether the button is disabled.
