@@ -4,7 +4,7 @@ import {
   embedComponent,
   selectMenuComponent,
 } from "../main"
-import type { RenderResult, ReplyComponent } from "./reply-component"
+import type { RenderResult, TopLevelComponent } from "./reply-component"
 import { flattenRenderResult } from "./reply-component"
 
 test("flattenRenderResult", () => {
@@ -29,7 +29,7 @@ test("flattenRenderResult", () => {
 
   type TestCase = {
     input: RenderResult
-    expected: ReplyComponent[]
+    expected: TopLevelComponent[]
   }
 
   const cases: TestCase[] = [

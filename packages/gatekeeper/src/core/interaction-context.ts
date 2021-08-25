@@ -2,16 +2,17 @@ import type * as Discord from "discord.js"
 import type { ActionQueue, createActionQueue } from "../internal/action-queue"
 import type { Logger } from "../internal/logger"
 import { createTimeout } from "../internal/timeout"
-import type { ActionRowChild } from "./action-row-component"
+import type { ButtonComponent } from "./button-component"
 import type {
   RenderReplyFn,
   RenderResult,
-  ReplyComponent,
+  TopLevelComponent,
 } from "./reply-component"
 import {
   createInteractionReplyOptions,
   flattenRenderResult,
 } from "./reply-component"
+import type { SelectMenuComponent } from "./select-menu-component"
 
 /**
  * An interaction can happen in multiple ways:
@@ -109,7 +110,7 @@ export type ReplyHandle = {
 
 type ReplyState = {
   render: RenderReplyFn
-  components: ReplyComponent[]
+  components: TopLevelComponent[]
   message: Discord.Message | undefined
 }
 
@@ -341,8 +342,15 @@ async function addEphemeralReply(
   }
 }
 
-function getInteractiveComponents(result: RenderResult): ActionRowChild[] {
-  return flattenRenderResult(result).flatMap((actionRow) =>
-    actionRow.type === "actionRow" ? actionRow.children : [],
-  )
+function getInteractiveComponents(
+  result: RenderResult,
+): Array<ButtonComponent | SelectMenuComponent> {
+  return flattenRenderResult(result)
+    .flatMap((component) =>
+      component.type === "actionRow" ? component.children : [],
+    )
+    .filter(
+      (component): component is ButtonComponent | SelectMenuComponent =>
+        component.type === "button" || component.type === "selectMenu",
+    )
 }

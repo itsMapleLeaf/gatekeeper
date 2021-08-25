@@ -1,4 +1,5 @@
 import type { ButtonComponent } from "./button-component"
+import type { LinkComponent } from "./link-component"
 import type { SelectMenuComponent } from "./select-menu-component"
 
 /**
@@ -12,7 +13,10 @@ export type ActionRowComponent = {
 /**
  * A valid child of {@link actionRowComponent}
  */
-export type ActionRowChild = SelectMenuComponent | ButtonComponent
+export type ActionRowChild =
+  | SelectMenuComponent
+  | ButtonComponent
+  | LinkComponent
 
 /**
  * A component that represents a Discord [action row](https://discord.com/developers/docs/interactions/message-components#action-rows)

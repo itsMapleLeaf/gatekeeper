@@ -1,7 +1,7 @@
 import type {
   InteractionReplyOptions,
   MessageActionRowOptions,
-  MessageSelectMenuOptions,
+  MessageComponentOptions,
 } from "discord.js"
 import { last } from "lodash"
 import { isNonNil, isTruthy } from "../internal/helpers"
@@ -9,12 +9,31 @@ import type { Falsy } from "../internal/types"
 import type { ActionRowComponent } from "./action-row-component"
 import type { ButtonComponent } from "./button-component"
 import type { EmbedComponent } from "./embed"
+import type { LinkComponent } from "./link-component"
 import type { SelectMenuComponent } from "./select-menu-component"
 
 /**
- * A gatekeeper-specific type representing something that can be rendered in a discord message
+ * Any reply component object
  */
-export type ReplyComponent = TextComponent | EmbedComponent | ActionRowComponent
+export type ReplyComponent =
+  | TextComponent
+  | EmbedComponent
+  | ActionRowComponent
+  | ButtonComponent
+  | SelectMenuComponent
+  | LinkComponent
+
+/**
+ * A gatekeeper-specific type representing top-level components,
+ * stuff that doesn't need an extra wrapper.
+ *
+ * For example, a button isn't top level,
+ * as it needs to be wrapped in an action row
+ */
+export type TopLevelComponent =
+  | TextComponent
+  | EmbedComponent
+  | ActionRowComponent
 
 /**
  * Represents the text in a message
@@ -39,8 +58,6 @@ export type RenderReplyFn = () => RenderResult
  */
 export type RenderResult =
   | ReplyComponent
-  | ButtonComponent
-  | SelectMenuComponent
   | string
   | number
   | boolean
@@ -48,9 +65,8 @@ export type RenderResult =
   | null
   | RenderResult[]
 
-function collectFlatReplyComponents(items: RenderResult[]) {
-  const components: (ReplyComponent | ButtonComponent | SelectMenuComponent)[] =
-    []
+function collectReplyComponents(items: RenderResult[]) {
+  const components: ReplyComponent[] = []
 
   for (const child of items) {
     if (typeof child === "boolean" || child == null) continue
@@ -61,7 +77,7 @@ function collectFlatReplyComponents(items: RenderResult[]) {
     }
 
     if (Array.isArray(child)) {
-      components.push(...collectFlatReplyComponents(child))
+      components.push(...collectReplyComponents(child))
       continue
     }
 
@@ -72,18 +88,18 @@ function collectFlatReplyComponents(items: RenderResult[]) {
 }
 
 /**
- * Flattens a {@link RenderResult} into a list of {@link ReplyComponent}s,
- * with buttons and selects automatically placed in action rows.
+ * Flattens a {@link RenderResult} into a list of {@link TopLevelComponent}s,
+ * with message components automatically placed in action rows.
  */
-export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
-  const ungroupedComponents = collectFlatReplyComponents([result].flat())
+export function flattenRenderResult(result: RenderResult): TopLevelComponent[] {
+  const ungroupedComponents = collectReplyComponents([result].flat())
 
-  const components: ReplyComponent[] = []
+  const components: TopLevelComponent[] = []
 
   for (const component of ungroupedComponents) {
     const lastComponent = last(components)
 
-    if (component.type === "button") {
+    if (component.type === "button" || component.type === "link") {
       if (
         lastComponent?.type === "actionRow" &&
         lastComponent.children.every((child) => child.type !== "selectMenu") &&
@@ -130,7 +146,7 @@ export function flattenRenderResult(result: RenderResult): ReplyComponent[] {
  * @internal
  */
 export function createInteractionReplyOptions(
-  components: ReplyComponent[],
+  components: TopLevelComponent[],
 ): InteractionReplyOptions {
   const content = components
     .map((component) =>
@@ -148,15 +164,16 @@ export function createInteractionReplyOptions(
       if (component.type !== "actionRow") return
       return {
         type: "ACTION_ROW",
-        components: component.children.map<MessageSelectMenuOptions>(
-          (child) => {
-            if (child.type === "selectMenu") {
+        components: component.children.map<MessageComponentOptions>((child) => {
+          switch (child.type) {
+            case "selectMenu":
               return { ...child, type: "SELECT_MENU" }
-            } else {
+            case "button":
               return { ...child, type: "BUTTON" }
-            }
-          },
-        ),
+            case "link":
+              return { ...child, style: "LINK", type: "BUTTON" }
+          }
+        }),
       }
     })
     .filter(isTruthy)
