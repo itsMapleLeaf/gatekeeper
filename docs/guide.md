@@ -323,6 +323,25 @@ instance.addCommand(counterCommand)
 
 </details>
 
+## Link Buttons
+
+You can render link buttons using `linkComponent`.
+
+```js
+defineSlashCommand({
+  name: "cool-video",
+  description: "shows a link to a cool video",
+  run(context) {
+    context.reply(() => [
+      linkComponent({
+        label: "here it is!",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      }),
+    ])
+  },
+})
+```
+
 ## Slash Command Options
 
 Options are also called "arguments" or "parameters". You can use them to let users provide additional input to a command. Any option can be marked as `required: true`. For TypeScript users, this will make the type non-undefined.
