@@ -29,7 +29,7 @@
   "scripts": {
     "clean": "trash dist",
     "build": "pnpm run clean && tsc --project ./tsconfig.build.json",
-    "release": "pnpm run build && cpy ../../README.md . && release-it",
+    "release": "pnpm run build && pnpm test && cpy ../../README.md . && release-it",
     "test": "jest",
     "test-watch": "jest --watch"
   },
