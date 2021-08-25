@@ -229,7 +229,10 @@ export function createGatekeeper({
         options,
       }
 
-      const existing = existingCommands.find((c) => c.name === command.name)
+      const existing = existingCommands.find(
+        (c) => c.name === command.name && c.type === "CHAT_INPUT",
+      )
+
       const existingCommandData = existing && {
         name: existing.name,
         description: existing.description,
@@ -245,7 +248,12 @@ export function createGatekeeper({
     }
 
     for (const command of userCommands.values()) {
-      if (existingCommands.some((c) => c.name === command.name)) continue
+      if (
+        existingCommands.some(
+          (c) => c.name === command.name && c.type === "USER",
+        )
+      )
+        continue
       await logger.promise(
         `Registering user command "${command.name}"`,
         manager.create({
@@ -256,7 +264,12 @@ export function createGatekeeper({
     }
 
     for (const command of messageCommands.values()) {
-      if (existingCommands.some((c) => c.name === command.name)) continue
+      if (
+        existingCommands.some(
+          (c) => c.name === command.name && c.type === "MESSAGE",
+        )
+      )
+        continue
       await logger.promise(
         `Registering message command "${command.name}"`,
         manager.create({
