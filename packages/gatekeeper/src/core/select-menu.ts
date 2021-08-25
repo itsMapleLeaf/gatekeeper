@@ -3,31 +3,6 @@ import type { MessageSelectOptionData } from "discord.js"
 import type { InteractionContext } from "./interaction-context"
 
 /**
- * Returned from {@link selectMenuComponent}
- */
-export type SelectMenuComponent = {
-  type: "selectMenu"
-  customId: string
-  options: MessageSelectOptionData[]
-  placeholder?: string | undefined
-  minValues?: number | undefined
-  maxValues?: number | undefined
-  onSelect: (context: SelectInteractionContext) => void
-}
-
-/**
- * Passed to the select menu `onSelect` function
- */
-export type SelectInteractionContext = InteractionContext & {
-  /**
-   * The values that the user selected.
-   * Use this to update your current selected state.
-   * @see selectMenuComponent
-   */
-  values: string[]
-}
-
-/**
  * Options passed to {@link selectMenuComponent}
  */
 export type SelectMenuComponentOptions = {
@@ -71,6 +46,29 @@ export type SelectMenuComponentOptions = {
    * and can't be greater than the number of options.
    */
   maxValues?: number | undefined
+}
+
+/**
+ * Returned from {@link selectMenuComponent}
+ */
+export type SelectMenuComponent = Omit<
+  SelectMenuComponentOptions,
+  "selected"
+> & {
+  type: "selectMenu"
+  customId: string
+}
+
+/**
+ * Passed to the select menu `onSelect` function
+ */
+export type SelectInteractionContext = InteractionContext & {
+  /**
+   * The values that the user selected.
+   * Use this to update your current selected state.
+   * @see selectMenuComponent
+   */
+  values: string[]
 }
 
 /**
