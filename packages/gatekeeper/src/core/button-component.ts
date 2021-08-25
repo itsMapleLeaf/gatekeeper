@@ -12,7 +12,8 @@ export type ButtonComponentOptions = {
   label: string
 
   /**
-   * An emoji displayed on the left of the button.
+   * An emoji displayed on the button.
+   * If you only want to show an emoji, pass an empty string for the label.
    * @see https://discord.js.org/#/docs/main/stable/typedef/EmojiResolvable
    */
   emoji?: EmojiResolvable
