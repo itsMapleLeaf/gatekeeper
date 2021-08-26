@@ -1,6 +1,7 @@
 import {
   buttonComponent,
   defineSlashCommand,
+  embedComponent,
 } from "../../../gatekeeper/src/main"
 
 export const counterCommand = defineSlashCommand({
@@ -10,10 +11,13 @@ export const counterCommand = defineSlashCommand({
     let count = 0
 
     const reply = context.reply(() => [
-      `button pressed ${count} times`,
+      embedComponent({
+        title: "Counter",
+        description: `button pressed ${count} times`,
+      }),
       buttonComponent({
         style: "PRIMARY",
-        label: "press it",
+        label: `press it`,
         onClick: () => {
           count += 1
         },

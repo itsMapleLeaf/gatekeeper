@@ -178,10 +178,23 @@ export function createInteractionReplyOptions(
     })
     .filter(isTruthy)
 
-  return {
-    // workaround: can't send components by themselves without content
-    content: content || "_ _",
+  const options: InteractionReplyOptions = {
+    content,
     embeds,
     components: replyComponents,
   }
+
+  // content can't be an empty string... at all
+  if (options.content === "") {
+    delete options.content
+  }
+
+  // workaround: you can't send just components without any other content
+  const hasComponents = options.components?.length
+  const hasContent = options.content || options.embeds?.length
+  if (hasComponents && !hasContent) {
+    options.content = "_ _"
+  }
+
+  return options
 }
