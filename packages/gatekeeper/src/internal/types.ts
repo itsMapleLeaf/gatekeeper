@@ -21,3 +21,5 @@ export type RequiredKeys<
 export type Primitive = string | number | boolean | undefined | null
 
 export type UnknownRecord = Record<string, unknown>
+
+export type Anything = Primitive | { [_ in string]: Anything }

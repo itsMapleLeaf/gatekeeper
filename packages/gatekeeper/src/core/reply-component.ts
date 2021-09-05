@@ -3,8 +3,7 @@ import type {
   MessageActionRowOptions,
   MessageComponentOptions,
 } from "discord.js"
-import { last } from "lodash"
-import { isNonNil, isTruthy } from "../internal/helpers"
+import { isNonNil, isTruthy, last } from "../internal/helpers"
 import type { Falsy } from "../internal/types"
 import type { ActionRowComponent } from "./action-row-component"
 import type { ButtonComponent } from "./button-component"

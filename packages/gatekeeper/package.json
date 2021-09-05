@@ -37,11 +37,10 @@
     "discord.js": ">=13"
   },
   "dependencies": {
-    "chalk": "4.1.2",
-    "jest": "27.0.6",
-    "lodash": "4.17.21"
+    "chalk": "4.1.2"
   },
   "devDependencies": {
+    "jest": "27.0.6",
     "@types/jest": "27.0.1",
     "@types/lodash": "4.14.172",
     "@types/node": "16.7.1",

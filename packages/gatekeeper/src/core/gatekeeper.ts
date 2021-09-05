@@ -1,6 +1,6 @@
 import type * as Discord from "discord.js"
-import { isEqual } from "lodash"
 import { relative } from "path"
+import { isDeepEqual } from "../internal/helpers"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { UnknownRecord } from "../internal/types"
 import type { MessageCommandDefinition } from "./message-command"
@@ -239,7 +239,7 @@ export function createGatekeeper({
         options: existing.options,
       }
 
-      if (isEqual(commandData, existingCommandData)) continue
+      if (isDeepEqual(commandData, existingCommandData)) continue
 
       await logger.promise(
         `Registering slash command "${command.name}"`,

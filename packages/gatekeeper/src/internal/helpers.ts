@@ -58,3 +58,20 @@ export function isString(value: unknown): value is string {
 export function isNonNil<T>(value: T | undefined | null): value is T {
   return value != null
 }
+
+export function last<T>(array: readonly T[]): T | undefined {
+  return array[array.length - 1]
+}
+
+export function isDeepEqual(a: any, b: any): boolean {
+  if (Object.is(a, b)) return true
+  if (a == null || b == null) return false
+  if (typeof a !== "object" || typeof b !== "object") return false
+  if (Object.keys(a).length !== Object.keys(b).length) return false
+
+  for (const key in a) {
+    if (!isDeepEqual(a[key], b[key])) return false
+  }
+
+  return true
+}
