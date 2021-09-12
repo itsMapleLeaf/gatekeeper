@@ -6,6 +6,19 @@ Gatekeeper is a ✨reactive✨ interaction framework for discord.js!
 - [Examples](./packages/playground/src/commands)
 - [API Docs](https://itsmapleleaf.github.io/gatekeeper/api/)
 
+Install:
+
+```sh
+# npm
+npm install @itsmapleleaf/gatekeeper discord.js
+
+# yarn
+yarn add @itsmapleleaf/gatekeeper discord.js
+
+# pnpm
+pnpm add @itsmapleleaf/gatekeeper discord.js
+```
+
 Here's a taste of what Gatekeeper looks like:
 
 ```js
