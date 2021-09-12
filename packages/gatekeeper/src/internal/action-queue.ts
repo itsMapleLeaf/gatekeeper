@@ -11,8 +11,14 @@ export type ActionQueue = ReturnType<typeof createActionQueue>
 export function createActionQueue(logger: Logger) {
   const actions: ActionQueueItem[] = []
   let immediateId: NodeJS.Immediate | undefined
+  let flushing = false
 
   function queueFlush() {
+    if (flushing) {
+      return
+    }
+    flushing = true
+
     if (immediateId) {
       clearImmediate(immediateId)
     }
@@ -23,14 +29,14 @@ export function createActionQueue(logger: Logger) {
         actions.map((a) => a.name).join(", "),
       )
 
-      const queuedActions = [...actions]
-      actions.splice(0)
-
-      for (const action of queuedActions) {
+      let action: ActionQueueItem | undefined
+      while ((action = actions.shift())) {
         await logger
           .promise(`Running ${action.name}`, Promise.resolve(action.run()))
           .catch() // do nothing; the logger will log the error
       }
+
+      flushing = false
     })
   }
 
