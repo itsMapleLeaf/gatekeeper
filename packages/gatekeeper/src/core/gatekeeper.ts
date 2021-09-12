@@ -34,6 +34,10 @@ type DiscordCommandManager =
  */
 export type GatekeeperOptions = {
   /**
+   * The name of the bot. At the moment, only used in debug logging
+   */
+  name?: string
+  /**
    * Enables debug logging. Shows when commands are created, activated, registered, etc.
    */
   debug?: boolean
@@ -97,15 +101,14 @@ export type GatekeeperInstance = {
  * Create a gatekeeper instance.
  */
 export function createGatekeeper({
+  name = "gatekeeper-bot",
   debug = false,
 }: GatekeeperOptions = {}): GatekeeperInstance {
   const slashCommands = new Map<string, SlashCommandDefinition>()
   const userCommands = new Map<string, UserCommandDefinition>()
   const messageCommands = new Map<string, MessageCommandDefinition>()
 
-  const logger = debug
-    ? createConsoleLogger({ name: "gatekeeper" })
-    : createNoopLogger()
+  const logger = debug ? createConsoleLogger({ name }) : createNoopLogger()
 
   const gatekeeper: GatekeeperInstance = {
     addCommand(definition) {
