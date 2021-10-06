@@ -10,7 +10,6 @@
     "noUncheckedIndexedAccess": true,
     "isolatedModules": true,
     "declaration": true,
-    "importsNotUsedAsValues": "error",
     "esModuleInterop": true,
     "noEmit": true
   },
