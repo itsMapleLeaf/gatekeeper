@@ -8,7 +8,8 @@ export type Logger = {
   success(...args: unknown[]): void
   error(...args: unknown[]): void
   warn(...args: unknown[]): void
-  promise<T>(description: string, promise: Promise<T>): Promise<T>
+  promise<T>(description: string, promise: Promise<T> | T): Promise<T>
+  block<T>(description: string, block: () => Promise<T> | T): Promise<T>
 }
 
 export function createConsoleLogger({ name = "" } = {}): Logger {
@@ -31,6 +32,7 @@ export function createConsoleLogger({ name = "" } = {}): Logger {
       const startTime = Date.now()
 
       try {
+        logger.info(description, chalk.gray`...`)
         const result = await promise
         logger.success(
           description,
@@ -48,6 +50,9 @@ export function createConsoleLogger({ name = "" } = {}): Logger {
         throw error
       }
     },
+    async block(description, block) {
+      return logger.promise(description, block())
+    },
   }
 
   return logger
@@ -59,8 +64,11 @@ export function createNoopLogger(): Logger {
     success() {},
     error() {},
     warn() {},
-    promise(_description, promise) {
+    async promise(_description, promise) {
       return promise
+    },
+    async block(_description, block) {
+      return block()
     },
   }
 }
