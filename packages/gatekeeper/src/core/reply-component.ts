@@ -1,10 +1,5 @@
-import type {
-  InteractionReplyOptions,
-  MessageActionRowOptions,
-  MessageComponentOptions,
-} from "discord.js"
+import type { InteractionReplyOptions } from "discord.js"
 import { isNonNil, isTruthy, last } from "../internal/helpers"
-import type { Falsy } from "../internal/types"
 import type { ActionRowComponent } from "./action-row-component"
 import type { ButtonComponent } from "./button-component"
 import type { EmbedComponent } from "./embed"
@@ -158,29 +153,26 @@ export function createInteractionReplyOptions(
     .map((component) => component.type === "embed" && component.embed)
     .filter(isTruthy)
 
-  const replyComponents: MessageActionRowOptions[] = components
-    .map<MessageActionRowOptions | Falsy>((component) => {
-      if (component.type !== "actionRow") return
-      return {
-        type: "ACTION_ROW",
-        components: component.children.map<MessageComponentOptions>((child) => {
-          switch (child.type) {
-            case "selectMenu":
-              return { ...child, type: "SELECT_MENU" }
-            case "button":
-              return { ...child, type: "BUTTON" }
-            case "link":
-              return { ...child, style: "LINK", type: "BUTTON" }
-          }
-        }),
-      }
-    })
-    .filter(isTruthy)
+  const replyComponents = components.map((component) => {
+    if (component.type !== "actionRow") return
+    return {
+      type: "ACTION_ROW" as const,
+      components: component.children.map((child) => {
+        if (child.type === "selectMenu") {
+          return { ...child, type: "SELECT_MENU" } as const
+        }
+        if (child.type === "link") {
+          return { ...child, style: "LINK", type: "BUTTON" } as const
+        }
+        return { ...child, type: "BUTTON" } as const
+      }),
+    }
+  })
 
   const options: InteractionReplyOptions = {
     content,
     embeds,
-    components: replyComponents,
+    components: replyComponents.filter(isTruthy),
   }
 
   // content can't be an empty string... at all
