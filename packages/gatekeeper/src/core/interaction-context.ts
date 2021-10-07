@@ -77,7 +77,7 @@ export type InteractionContext = {
   /**
    * Like `defer()`, but the loading message will only be shown to the user that ran the command.
    */
-  ephemeralDefer: (render: RenderReplyFn) => void
+  ephemeralDefer: () => void
 }
 
 /**
@@ -335,7 +335,16 @@ async function addReply(
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
   options: Discord.InteractionReplyOptions,
 ) {
-  if (interaction.deferred && !interaction.ephemeral) {
+  if (interaction.deferred && interaction.ephemeral) {
+    // edge case: if the reply is deferred and ephemeral,
+    // calling followUp will edit the ephemeral loading message
+    // instead of creating a new public message,
+    // so we have to create this public message manually for now
+    // instead of using reply functions
+    return interaction.channel?.send(options) as Promise<Discord.Message>
+  }
+
+  if (interaction.deferred) {
     return interaction.editReply(options) as Promise<Discord.Message>
   }
 
