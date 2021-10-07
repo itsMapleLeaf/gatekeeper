@@ -31,9 +31,14 @@ export function createActionQueue(logger: Logger) {
 
       let action: ActionQueueItem | undefined
       while ((action = actions.shift())) {
-        await logger
-          .promise(`Running ${action.name}`, Promise.resolve(action.run()))
-          .catch() // do nothing; the logger will log the error
+        try {
+          await logger.promise(
+            `Running ${action.name}`,
+            Promise.resolve(action.run()),
+          )
+        } catch {
+          // do nothing; the logger will log the error
+        }
       }
 
       flushing = false
