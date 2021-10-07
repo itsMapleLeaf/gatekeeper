@@ -31,7 +31,6 @@ export function createConsoleLogger({ name = "" } = {}): Logger {
       const startTime = Date.now()
 
       try {
-        logger.info(description, chalk.gray`...`)
         const result = await promise
         logger.success(
           description,
