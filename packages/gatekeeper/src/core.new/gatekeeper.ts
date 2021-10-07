@@ -25,25 +25,34 @@ class Gatekeeper {
   }
 
   addEventListeners(client: Client) {
-    client.on("ready", async () => {
-      const commandList = [...this.commands.keys()]
-        .map((name) => chalk.bold(name))
-        .join(", ")
+    client.on(
+      "ready",
+      this.withErrorHandler(async () => {
+        const commandList = [...this.commands.keys()]
+          .map((name) => chalk.bold(name))
+          .join(", ")
 
-      this.logger.success(`Using commands: ${commandList}`)
+        this.logger.success(`Using commands: ${commandList}`)
 
-      await Promise.all(
-        client.guilds.cache.map((guild) => this.syncGuildCommands(guild)),
-      )
-    })
+        await Promise.all(
+          client.guilds.cache.map((guild) => this.syncGuildCommands(guild)),
+        )
+      }),
+    )
 
-    client.on("guildCreate", (guild) => {
-      // sync commands
-    })
+    client.on(
+      "guildCreate",
+      this.withErrorHandler(async (guild) => {
+        await this.syncGuildCommands(guild)
+      }),
+    )
 
-    client.on("interactionCreate", (interaction) => {
-      // handle interaction
-    })
+    client.on(
+      "interactionCreate",
+      this.withErrorHandler((interaction) => {
+        // handle interaction
+      }),
+    )
   }
 
   private async syncGuildCommands(guild: Guild) {
@@ -83,6 +92,18 @@ class Gatekeeper {
         )
       }
     })
+  }
+
+  private withErrorHandler<Args extends unknown[], Return>(
+    fn: (...args: Args) => Promise<Return> | Return,
+  ) {
+    return async (...args: Args) => {
+      try {
+        return await fn(...args)
+      } catch (error) {
+        this.logger.error("An error occurred:", error)
+      }
+    }
   }
 }
 
