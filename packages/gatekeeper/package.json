@@ -45,7 +45,7 @@
     "@types/lodash": "4.14.175",
     "@types/node": "16.10.3",
     "cpy-cli": "3.1.1",
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.2.0",
     "esbuild": "0.13.4",
     "esbuild-jest": "0.5.0",
     "release-it": "14.11.6",
