@@ -73,6 +73,11 @@ export type InteractionContext = {
    * More details: https://discordjs.guide/interactions/replying-to-slash-commands.html#deferred-responses
    */
   defer: () => void
+
+  /**
+   * Like `defer()`, but the loading message will only be shown to the user that ran the command.
+   */
+  ephemeralDefer: (render: RenderReplyFn) => void
 }
 
 /**
@@ -138,6 +143,19 @@ export function createInteractionContext(
         run: async () => {
           if (interaction.deferred) return
           if (interaction.isCommand()) await interaction.deferReply()
+          if (interaction.isMessageComponent()) await interaction.deferUpdate()
+        },
+      })
+    },
+
+    ephemeralDefer: () => {
+      actionQueue.push({
+        name: "defer",
+        priority: deferPriority,
+        run: async () => {
+          if (interaction.deferred) return
+          if (interaction.isCommand())
+            await interaction.deferReply({ ephemeral: true })
           if (interaction.isMessageComponent()) await interaction.deferUpdate()
         },
       })
@@ -317,7 +335,7 @@ async function addReply(
   interaction: Discord.CommandInteraction | Discord.MessageComponentInteraction,
   options: Discord.InteractionReplyOptions,
 ) {
-  if (interaction.deferred) {
+  if (interaction.deferred && !interaction.ephemeral) {
     return interaction.editReply(options) as Promise<Discord.Message>
   }
 
