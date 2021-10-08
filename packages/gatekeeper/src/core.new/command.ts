@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import { randomUUID } from "crypto"
 import type {
   ApplicationCommand,
@@ -8,6 +9,7 @@ import type {
   MessageComponentInteraction,
 } from "discord.js"
 import { ActionQueue } from "../internal/action-queue"
+import type { Logger } from "../internal/logger"
 import type { DiscordInteraction } from "../internal/types"
 import type { RenderReplyFn } from "./reply-component"
 import type { ReplyInstance } from "./reply-instance"
@@ -33,7 +35,25 @@ const updatePriority = 1
 
 export class CommandInstance {
   private readonly replyInstances = new Map<string, ReplyInstance>()
-  private readonly queue = new ActionQueue()
+  private readonly logger: Logger
+  private readonly command: Command
+
+  private readonly queue = new ActionQueue({
+    onError: (actionName, error) => {
+      this.logger.error(
+        `An error occurred running action`,
+        chalk.bold(actionName),
+        `in command`,
+        chalk.bold(this.command.name),
+      )
+      this.logger.error(error)
+    },
+  })
+
+  constructor(command: Command, logger: Logger) {
+    this.command = command
+    this.logger = logger
+  }
 
   createReply(render: RenderReplyFn, interaction: DiscordInteraction) {
     const id = randomUUID()
@@ -44,8 +64,8 @@ export class CommandInstance {
 
     this.replyInstances.set(id, instance)
 
-    void this.queue.addAction({
-      name: "replyInstance.createMessage",
+    this.queue.addAction({
+      name: "reply",
       run: () => instance.createMessage(interaction),
     })
 
@@ -53,14 +73,14 @@ export class CommandInstance {
   }
 
   refreshReply(id: string) {
-    void this.queue.addAction({
-      name: "replyInstance.refreshMessage",
+    this.queue.addAction({
+      name: "refresh",
       run: async () => this.replyInstances.get(id)?.refreshMessage(),
     })
   }
 
   deleteReply(id: string) {
-    void this.queue.addAction({
+    this.queue.addAction({
       name: "replyInstance.deleteMessage",
       run: async () => this.replyInstances.get(id)?.deleteMessage(),
     })
@@ -71,7 +91,7 @@ export class CommandInstance {
     const instance = new EphemeralReplyInstance(render)
     this.replyInstances.set(id, instance)
 
-    void this.queue.addAction({
+    this.queue.addAction({
       name: "replyInstance.createEphemeralMessage",
       run: () => instance.createMessage(interaction),
     })
@@ -83,7 +103,7 @@ export class CommandInstance {
     for (const [, instance] of this.replyInstances) {
       const subject = instance.findInteractionSubject(interaction)
       if (subject) {
-        void this.queue.addAction({
+        this.queue.addAction({
           name: "replyInstance.handleComponentInteraction",
           priority: updatePriority,
           run: () =>
@@ -96,7 +116,7 @@ export class CommandInstance {
   }
 
   defer(interaction: DiscordInteraction) {
-    void this.queue.addAction({
+    this.queue.addAction({
       name: "defer",
       priority: deferPriority,
       run: async () => {
@@ -108,7 +128,7 @@ export class CommandInstance {
   }
 
   ephemeralDefer(interaction: DiscordInteraction) {
-    void this.queue.addAction({
+    this.queue.addAction({
       name: "ephemeralDefer",
       priority: deferPriority,
       run: async () => {

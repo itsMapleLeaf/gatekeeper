@@ -106,9 +106,15 @@ export class Gatekeeper {
 
     this.logger.info("Running command", chalk.bold(command.name))
 
-    const instance = new CommandInstance()
+    const instance = new CommandInstance(command, this.logger)
     this.commandInstances.add(instance)
-    await command.run(interaction, instance)
+
+    try {
+      await command.run(interaction, instance)
+    } catch (error) {
+      this.logger.error(`Error running command`, chalk.bold(command.name))
+      this.logger.error(error)
+    }
   }
 
   private async handleComponentInteraction(

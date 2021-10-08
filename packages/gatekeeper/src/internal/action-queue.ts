@@ -1,3 +1,7 @@
+type ActionQueueConfig = {
+  onError: (actionName: string, error: unknown) => void
+}
+
 type ActionQueueAction = {
   name: string
   priority?: number
@@ -5,8 +9,13 @@ type ActionQueueAction = {
 }
 
 export class ActionQueue {
+  private readonly config: ActionQueueConfig
   private readonly actions: ActionQueueAction[] = []
   private running = false
+
+  constructor(config: ActionQueueConfig) {
+    this.config = config
+  }
 
   addAction(action: ActionQueueAction) {
     this.actions.push(action)
@@ -31,7 +40,7 @@ export class ActionQueue {
         try {
           await action.run()
         } catch (error) {
-          console.error("error running action", action.name, error)
+          this.config.onError(action.name, error)
         }
       }
       this.running = false

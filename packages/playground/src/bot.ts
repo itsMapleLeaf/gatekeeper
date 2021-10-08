@@ -82,12 +82,19 @@ createGatekeeper({
       },
     }),
 
+    // defineUserCommand({
+    //   name: "defertest",
+    //   async run(context) {
+    //     context.ephemeralDefer()
+    //     context.reply(() => "this should be public")
+    //     context.ephemeralReply(() => "this should be private")
+    //   },
+    // }),
+
     defineUserCommand({
-      name: "defertest",
+      name: "error",
       async run(context) {
-        context.ephemeralDefer()
-        context.reply(() => "this should be public")
-        context.ephemeralReply(() => "this should be private")
+        throw new Error("lol")
       },
     }),
   ],
