@@ -90,13 +90,6 @@ createGatekeeper({
     //     context.ephemeralReply(() => "this should be private")
     //   },
     // }),
-
-    defineUserCommand({
-      name: "error",
-      async run(context) {
-        throw new Error("lol")
-      },
-    }),
   ],
 })
 

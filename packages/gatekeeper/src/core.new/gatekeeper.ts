@@ -64,21 +64,8 @@ export class Gatekeeper {
       const commandManager = guild.commands
       const existingCommands = await commandManager.fetch()
 
-      const commandsToCreate = [...this.commands.values()].filter((command) => {
-        const isExisting = existingCommands.some((appCommand) => {
-          return command.matchesExisting(appCommand)
-        })
-        return !isExisting
-      })
-      if (commandsToCreate.length > 0) {
-        this.logger.info(
-          `Creating ${commandsToCreate.length} command(s) in ${guild.name}`,
-        )
-        await Promise.all(
-          commandsToCreate.map((command) => command.register(commandManager)),
-        )
-      }
-
+      // remove commands first,
+      // just in case we've hit the max number of commands
       const commandsToRemove = existingCommands.filter((appCommand) => {
         const isUsingCommand = [...this.commands.values()].some((command) => {
           return command.matchesExisting(appCommand)
@@ -93,6 +80,21 @@ export class Gatekeeper {
           commandsToRemove.map((appCommand) =>
             commandManager.delete(appCommand.id),
           ),
+        )
+      }
+
+      const commandsToCreate = [...this.commands.values()].filter((command) => {
+        const isExisting = existingCommands.some((appCommand) => {
+          return command.matchesExisting(appCommand)
+        })
+        return !isExisting
+      })
+      if (commandsToCreate.length > 0) {
+        this.logger.info(
+          `Creating ${commandsToCreate.length} command(s) in ${guild.name}`,
+        )
+        await Promise.all(
+          commandsToCreate.map((command) => command.register(commandManager)),
         )
       }
     })
