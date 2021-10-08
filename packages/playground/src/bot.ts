@@ -1,5 +1,6 @@
 import { buttonComponent } from "@itsmapleleaf/gatekeeper/src/core.new/button-component"
 import { createGatekeeper } from "@itsmapleleaf/gatekeeper/src/core.new/gatekeeper"
+import type { InteractionContext } from "@itsmapleleaf/gatekeeper/src/core.new/interaction-context"
 import { defineUserCommand } from "@itsmapleleaf/gatekeeper/src/core.new/user-command"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
@@ -51,6 +52,32 @@ createGatekeeper({
             },
           }),
         ])
+      },
+    }),
+
+    defineUserCommand({
+      name: "message factory",
+      async run(context) {
+        function createReply(context: InteractionContext) {
+          const reply = context.reply(() => [
+            buttonComponent({
+              label: "create message",
+              style: "PRIMARY",
+              onClick: (context) => {
+                createReply(context)
+              },
+            }),
+            buttonComponent({
+              label: "delete",
+              style: "DANGER",
+              onClick: () => {
+                reply.delete()
+              },
+            }),
+          ])
+        }
+
+        createReply(context)
       },
     }),
   ],

@@ -1,9 +1,3 @@
-import type {
-  CommandInteraction,
-  InteractionReplyOptions,
-  Message,
-  MessageComponentInteraction,
-} from "discord.js"
 import type { Command } from "./command"
 import type { InteractionContext } from "./interaction-context"
 
@@ -42,35 +36,10 @@ export function defineUserCommand(config: UserCommandConfig): Command {
       interaction.targetType === "USER" &&
       interaction.commandName === config.name,
 
-    run: async (context) => {
-      await config.run(context)
+    run: async (interaction, instance) => {
+      await config.run({
+        reply: (render) => instance.createReply(render, interaction),
+      })
     },
   }
-}
-
-async function addReply(
-  interaction: CommandInteraction | MessageComponentInteraction,
-  options: InteractionReplyOptions,
-) {
-  if (interaction.deferred && interaction.ephemeral) {
-    // edge case: if the reply is deferred and ephemeral,
-    // calling followUp will edit the ephemeral loading message
-    // instead of creating a new public message,
-    // so we have to create this public message manually for now
-    // instead of using reply functions
-    return interaction.channel?.send(options) as Promise<Message>
-  }
-
-  if (interaction.deferred) {
-    return interaction.editReply(options) as Promise<Message>
-  }
-
-  if (interaction.replied) {
-    return interaction.followUp(options) as Promise<Message>
-  }
-
-  return interaction.reply({
-    ...options,
-    fetchReply: true,
-  }) as Promise<Message>
 }

@@ -4,6 +4,7 @@ import type {
   MessageComponentInteraction,
 } from "discord.js"
 import type { ButtonComponent } from "./button-component"
+import type { CommandInstance } from "./command"
 import type {
   RenderReplyFn,
   RenderResult,
@@ -32,7 +33,9 @@ export class ReplyInstance {
     this.events = events
   }
 
-  async createMessage(interaction: BaseCommandInteraction) {
+  async createMessage(
+    interaction: BaseCommandInteraction | MessageComponentInteraction,
+  ) {
     this.renderResult = flattenRenderResult(this.render())
     if (this.renderResult.length === 0) {
       await this.deleteMessage()
@@ -95,12 +98,18 @@ export class ReplyInstance {
   async handleComponentInteraction(
     interaction: MessageComponentInteraction,
     subject: InteractionSubject,
+    commandInstance: CommandInstance,
   ) {
     if (interaction.isButton() && subject?.type === "button") {
-      await subject?.onClick(/* todo */)
+      await subject?.onClick({
+        reply: (render) => commandInstance.createReply(render, interaction),
+      })
     }
     if (interaction.isSelectMenu() && subject?.type === "selectMenu") {
-      await subject?.onSelect(/* todo */)
+      await subject?.onSelect({
+        reply: (render) => commandInstance.createReply(render, interaction),
+        values: interaction.values,
+      })
     }
 
     // can't call update if it was deferred or replied to
