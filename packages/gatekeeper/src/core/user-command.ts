@@ -1,5 +1,5 @@
 import type * as Discord from "discord.js"
-import { createActionQueue } from "../internal/action-queue"
+import { createActionQueue } from "../internal/action-queue.old"
 import { isAnyObject } from "../internal/helpers"
 import type { Logger } from "../internal/logger"
 import type { InteractionContext } from "./interaction-context"

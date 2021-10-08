@@ -1,57 +1,40 @@
-import type { Logger } from "./logger"
-
-export type ActionQueueItem = {
+type ActionQueueAction = {
   name: string
   priority?: number
-  run: () => void | Promise<unknown>
+  run: () => Promise<void>
 }
 
-export type ActionQueue = ReturnType<typeof createActionQueue>
+export class ActionQueue {
+  private readonly actions: ActionQueueAction[] = []
+  private running = false
 
-export function createActionQueue(logger: Logger) {
-  const actions: ActionQueueItem[] = []
-  let immediateId: NodeJS.Immediate | undefined
-  let flushing = false
+  addAction(action: ActionQueueAction) {
+    this.actions.push(action)
 
-  function queueFlush() {
-    if (flushing) {
-      return
-    }
-    flushing = true
-
-    if (immediateId) {
-      clearImmediate(immediateId)
-    }
-
-    immediateId = setImmediate(async () => {
-      logger.info(
-        `Running ${actions.length} actions:`,
-        actions.map((a) => a.name).join(", "),
-      )
-
-      let action: ActionQueueItem | undefined
-      while ((action = actions.shift())) {
-        try {
-          await logger.promise(
-            `Running ${action.name}`,
-            Promise.resolve(action.run()),
-          )
-        } catch {
-          // do nothing; the logger will log the error
-        }
-      }
-
-      flushing = false
+    this.actions.sort((a, b) => {
+      if (a.priority == null) return 1
+      if (b.priority == null) return -1
+      return a.priority - b.priority
     })
+
+    this.runActions()
   }
 
-  return {
-    push: (action: ActionQueueItem) => {
-      actions.push(action)
-      actions.sort(
-        (a, b) => (a.priority ?? Infinity) - (b.priority ?? Infinity),
-      )
-      queueFlush()
-    },
+  private runActions() {
+    if (this.running) return
+    this.running = true
+
+    // allow multiple synchronous calls before running actions
+    queueMicrotask(async () => {
+      let action: ActionQueueAction | undefined
+      while ((action = this.actions.shift())) {
+        try {
+          await action.run()
+        } catch (error) {
+          console.error("error running action", action.name, error)
+        }
+      }
+      this.running = false
+    })
   }
 }

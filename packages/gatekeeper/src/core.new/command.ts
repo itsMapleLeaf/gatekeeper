@@ -7,8 +7,8 @@ import type {
   Interaction,
   MessageComponentInteraction,
 } from "discord.js"
+import { ActionQueue } from "../internal/action-queue"
 import type { DiscordInteraction } from "../internal/types"
-import { ActionQueue } from "./action-queue"
 import type { RenderReplyFn } from "./reply-component"
 import type { ReplyInstance } from "./reply-instance"
 import { EphemeralReplyInstance, PublicReplyInstance } from "./reply-instance"

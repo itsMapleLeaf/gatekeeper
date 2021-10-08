@@ -1,5 +1,5 @@
 import * as Discord from "discord.js"
-import { createActionQueue } from "../internal/action-queue"
+import { createActionQueue } from "../internal/action-queue.old"
 import { isAnyObject, raise } from "../internal/helpers"
 import type { Logger } from "../internal/logger"
 import type { OptionalKeys, ValueOf } from "../internal/types"
@@ -50,11 +50,11 @@ export type SlashCommandOptionDefinition = SlashCommandOptionDefinitionBase &
   (
     | {
         type: "STRING"
-        choices?: SlashCommandOptionDefinitionChoice<string>[]
+        choices?: Array<SlashCommandOptionDefinitionChoice<string>>
       }
     | {
         type: "NUMBER" | "INTEGER"
-        choices?: SlashCommandOptionDefinitionChoice<number>[]
+        choices?: Array<SlashCommandOptionDefinitionChoice<number>>
       }
     | { type: "BOOLEAN" }
     | { type: "USER" }

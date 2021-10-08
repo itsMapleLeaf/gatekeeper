@@ -1,5 +1,8 @@
 import type * as Discord from "discord.js"
-import type { ActionQueue, createActionQueue } from "../internal/action-queue"
+import type {
+  ActionQueue,
+  createActionQueue,
+} from "../internal/action-queue.old"
 import type { Logger } from "../internal/logger"
 import { createTimeout } from "../internal/timeout"
 import type { ButtonComponent } from "./button-component"
