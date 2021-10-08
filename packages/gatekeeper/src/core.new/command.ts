@@ -42,6 +42,16 @@ export class CommandInstance {
           name: "replyInstance.createMessage",
           run: () => instance.createMessage(),
         })
+
+        return {
+          refresh: () => {},
+          delete: () => {
+            void this.queue.addAction({
+              name: "replyInstance.deleteMessage",
+              run: () => instance.deleteMessage(),
+            })
+          },
+        }
       },
     }
 

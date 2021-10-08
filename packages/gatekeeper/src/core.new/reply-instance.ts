@@ -51,6 +51,14 @@ export class ReplyInstance {
       fetchReply: true,
     })) as Message
   }
+
+  async deleteMessage() {
+    if (!this.message) return
+
+    const promise = this.message.delete()
+    this.message = undefined
+    return promise
+  }
 }
 
 function getInteractiveComponents(

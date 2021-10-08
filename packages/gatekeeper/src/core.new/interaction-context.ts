@@ -5,6 +5,6 @@ export type ReplyHandle = {
   delete: () => void
 }
 
-export class InteractionContext {
-  reply(render: RenderReplyFn) {}
+export type InteractionContext = {
+  reply: (render: RenderReplyFn) => ReplyHandle
 }

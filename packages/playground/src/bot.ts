@@ -2,6 +2,7 @@ import { createGatekeeper } from "@itsmapleleaf/gatekeeper/src/core.new/gatekeep
 import { defineUserCommand } from "@itsmapleleaf/gatekeeper/src/core.new/user-command"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
+import { setTimeout } from "node:timers/promises"
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
@@ -12,8 +13,10 @@ createGatekeeper({
   commands: [
     defineUserCommand({
       name: "hug",
-      run(context) {
-        context.reply(() => "the")
+      async run(context) {
+        const reply = context.reply(() => "the")
+        await setTimeout(1000)
+        reply.delete()
       },
     }),
   ],
