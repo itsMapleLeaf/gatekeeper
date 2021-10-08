@@ -21,7 +21,21 @@ type ReplyInstanceEvents = {
 
 type InteractionSubject = ButtonComponent | SelectMenuComponent
 
-export class ReplyInstance {
+export type ReplyInstance = {
+  createMessage(interaction: DiscordInteraction): Promise<void>
+  deleteMessage(): Promise<void>
+  refreshMessage(): Promise<void>
+  findInteractionSubject(
+    interaction: MessageComponentInteraction,
+  ): InteractionSubject | undefined
+  handleComponentInteraction(
+    interaction: MessageComponentInteraction,
+    subject: InteractionSubject,
+    commandInstance: CommandInstance,
+  ): Promise<void>
+}
+
+export class PublicReplyInstance implements ReplyInstance {
   private render: RenderReplyFn
   private renderResult: TopLevelComponent[] = []
   private message?: Message
@@ -122,6 +136,78 @@ export class ReplyInstance {
     }
 
     await interaction.update(createInteractionReplyOptions(this.renderResult))
+  }
+}
+
+export class EphemeralReplyInstance implements ReplyInstance {
+  private render: RenderReplyFn
+  private renderResult: TopLevelComponent[] = []
+
+  constructor(render: RenderReplyFn) {
+    this.render = render
+  }
+
+  async createMessage(interaction: DiscordInteraction) {
+    this.renderResult = flattenRenderResult(this.render())
+    if (this.renderResult.length === 0) return
+
+    const options = createInteractionReplyOptions(this.renderResult)
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp({ ...options, ephemeral: true })
+      return
+    }
+
+    await interaction.reply({ ...options, ephemeral: true })
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async deleteMessage() {
+    // do nothing
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async refreshMessage() {
+    // do nothing
+  }
+
+  findInteractionSubject(
+    interaction: MessageComponentInteraction,
+  ): InteractionSubject | undefined {
+    return getInteractiveComponents(this.renderResult).find(
+      (it) => it.customId === interaction.customId,
+    )
+  }
+
+  async handleComponentInteraction(
+    interaction: MessageComponentInteraction,
+    subject: InteractionSubject,
+    commandInstance: CommandInstance,
+  ) {
+    if (interaction.isButton() && subject?.type === "button") {
+      await subject?.onClick(
+        new InteractionContext(interaction, commandInstance),
+      )
+    }
+
+    if (interaction.isSelectMenu() && subject?.type === "selectMenu") {
+      await subject?.onSelect(
+        new SelectMenuInteractionContext(interaction, commandInstance),
+      )
+    }
+
+    this.renderResult = flattenRenderResult(this.render())
+    if (this.renderResult.length === 0) return
+
+    const options = createInteractionReplyOptions(this.renderResult)
+
+    // need to call followup if deferred
+    if (interaction.deferred) {
+      await interaction.followUp(options)
+      return
+    }
+
+    await interaction.update(options)
   }
 }
 

@@ -41,14 +41,13 @@ createGatekeeper({
       name: "counter",
       async run(context) {
         let count = 0
-        const reply = context.reply(() => [
+        context.ephemeralReply(() => [
           `count: ${count}`,
           buttonComponent({
             label: `add 1 (${count})`,
             style: "PRIMARY",
             onClick: () => {
               count += 1
-              reply.refresh()
             },
           }),
         ])

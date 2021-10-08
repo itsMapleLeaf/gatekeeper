@@ -10,7 +10,8 @@ import type {
 import type { DiscordInteraction } from "../internal/types"
 import type { ActionQueue } from "./action-queue"
 import type { RenderReplyFn } from "./reply-component"
-import { ReplyInstance } from "./reply-instance"
+import type { ReplyInstance } from "./reply-instance"
+import { EphemeralReplyInstance, PublicReplyInstance } from "./reply-instance"
 
 type DiscordCommandManager =
   | ApplicationCommandManager
@@ -29,7 +30,7 @@ export type Command = {
 
 export class CommandInstance {
   private readonly replyInstances = new Map<string, ReplyInstance>()
-  private readonly queue: ActionQueue
+  readonly queue: ActionQueue
 
   constructor(queue: ActionQueue) {
     this.queue = queue
@@ -38,7 +39,7 @@ export class CommandInstance {
   createReply(render: RenderReplyFn, interaction: DiscordInteraction) {
     const id = randomUUID()
 
-    const instance = new ReplyInstance(render, {
+    const instance = new PublicReplyInstance(render, {
       onDelete: () => this.replyInstances.delete(id),
     })
 
@@ -66,6 +67,19 @@ export class CommandInstance {
       name: "replyInstance.deleteMessage",
       run: () => this.replyInstances.get(id)?.deleteMessage(),
     })
+  }
+
+  createEphemeralReply(render: RenderReplyFn, interaction: DiscordInteraction) {
+    const id = randomUUID()
+    const instance = new EphemeralReplyInstance(render)
+    this.replyInstances.set(id, instance)
+
+    void this.queue.addAction({
+      name: "replyInstance.createMessage",
+      run: () => instance.createMessage(interaction),
+    })
+
+    return id
   }
 
   handleComponentInteraction(interaction: MessageComponentInteraction) {

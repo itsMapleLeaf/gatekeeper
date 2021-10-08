@@ -24,4 +24,8 @@ export class InteractionContext {
       },
     }
   }
+
+  ephemeralReply(render: RenderReplyFn): void {
+    this.commandInstance.createEphemeralReply(render, this.interaction)
+  }
 }
