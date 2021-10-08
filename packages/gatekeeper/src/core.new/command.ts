@@ -101,10 +101,8 @@ export class CommandInstance {
       priority: deferPriority,
       run: async () => {
         if (interaction.deferred) return
-        if (interaction.isCommand() || interaction.isContextMenu()) {
-          return interaction.deferReply()
-        }
         if (interaction.isMessageComponent()) return interaction.deferUpdate()
+        return interaction.deferReply()
       },
     })
   }
@@ -115,12 +113,8 @@ export class CommandInstance {
       priority: deferPriority,
       run: async () => {
         if (interaction.deferred) return
-
-        if (interaction.isCommand() || interaction.isContextMenu()) {
-          return interaction.deferReply({ ephemeral: true })
-        }
-
         if (interaction.isMessageComponent()) return interaction.deferUpdate()
+        return interaction.deferReply({ ephemeral: true })
       },
     })
   }
