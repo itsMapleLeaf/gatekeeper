@@ -19,6 +19,22 @@ createGatekeeper({
         reply.delete()
       },
     }),
+    defineUserCommand({
+      name: "countdown",
+      async run(context) {
+        let count = 5
+        const reply = context.reply(() => count)
+
+        do {
+          await setTimeout(1000)
+          count -= 1
+          reply.refresh()
+        } while (count > 0)
+
+        await setTimeout(1000)
+        reply.delete()
+      },
+    }),
   ],
 })
 

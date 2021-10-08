@@ -59,6 +59,11 @@ export class ReplyInstance {
     this.message = undefined
     return promise
   }
+
+  async refreshMessage() {
+    this.renderResult = flattenRenderResult(this.render())
+    await this.message?.edit(createInteractionReplyOptions(this.renderResult))
+  }
 }
 
 function getInteractiveComponents(

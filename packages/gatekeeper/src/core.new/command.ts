@@ -44,7 +44,12 @@ export class CommandInstance {
         })
 
         return {
-          refresh: () => {},
+          refresh: () => {
+            void this.queue.addAction({
+              name: "replyInstance.refreshMessage",
+              run: () => instance.refreshMessage(),
+            })
+          },
           delete: () => {
             void this.queue.addAction({
               name: "replyInstance.deleteMessage",
