@@ -35,12 +35,12 @@ export class CommandInstance {
   async run() {
     const context: InteractionContext = {
       reply: (render) => {
-        const instance = new ReplyInstance(this.interaction, render)
+        const instance = new ReplyInstance(render)
         this.replyInstances.add(instance)
 
         void this.queue.addAction({
           name: "replyInstance.createMessage",
-          run: () => instance.createMessage(),
+          run: () => instance.createMessage(this.interaction),
         })
 
         return {
