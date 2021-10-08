@@ -12,7 +12,9 @@ createGatekeeper({
   commands: [
     defineUserCommand({
       name: "hug",
-      run(context) {},
+      run(context) {
+        context.reply(() => "the")
+      },
     }),
   ],
 })

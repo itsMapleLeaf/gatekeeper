@@ -1,27 +1,22 @@
 import chalk from "chalk"
-import type { Client, Guild } from "discord.js"
+import type { Client, Guild, Interaction } from "discord.js"
 import { createConsoleLogger } from "../internal/logger"
 import type { Command } from "./command"
+import { CommandInstance } from "./command"
 
 export type GatekeeperConfig = {
   client: Client
   commands?: Command[]
 }
 
-type ReplyInstance = {}
-
 export type { Gatekeeper }
 class Gatekeeper {
   private readonly commands = new Map<string, Command>()
-  private readonly replyInstances = new Set<ReplyInstance>()
+  private readonly commandInstances = new Set<CommandInstance>()
   private readonly logger = createConsoleLogger({ name: "gatekeeper" })
 
   addCommand(command: Command) {
     this.commands.set(command.name, command)
-  }
-
-  private addReplyInstance(instance: ReplyInstance) {
-    this.replyInstances.add(instance)
   }
 
   addEventListeners(client: Client) {
@@ -49,8 +44,8 @@ class Gatekeeper {
 
     client.on(
       "interactionCreate",
-      this.withErrorHandler((interaction) => {
-        // handle interaction
+      this.withErrorHandler(async (interaction) => {
+        await this.handleInteraction(interaction)
       }),
     )
   }
@@ -92,6 +87,23 @@ class Gatekeeper {
         )
       }
     })
+  }
+
+  private async handleInteraction(interaction: Interaction) {
+    const isCommand = interaction.isCommand() || interaction.isContextMenu()
+    if (!isCommand) return
+
+    const command = [...this.commands.values()].find((command) =>
+      command.matchesInteraction(interaction),
+    )
+    if (!command) return
+
+    this.logger.info("Running command", chalk.bold(command.name))
+
+    const instance = new CommandInstance(command, interaction)
+    this.commandInstances.add(instance)
+
+    await instance.run()
   }
 
   private withErrorHandler<Args extends unknown[], Return>(
