@@ -15,8 +15,7 @@ export type GatekeeperConfig = {
   commands?: Command[]
 }
 
-export type { Gatekeeper }
-class Gatekeeper {
+export class Gatekeeper {
   private readonly commands = new Map<string, Command>()
   private readonly commandInstances = new Set<CommandInstance>()
   private readonly logger = createConsoleLogger({ name: "gatekeeper" })

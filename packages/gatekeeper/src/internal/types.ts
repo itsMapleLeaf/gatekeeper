@@ -1,3 +1,8 @@
+import type {
+  BaseCommandInteraction,
+  MessageComponentInteraction,
+} from "discord.js"
+
 export type MaybePromise<T> = Promise<T> | T
 
 export type MaybeArray<T> = T | T[]
@@ -23,3 +28,7 @@ export type Primitive = string | number | boolean | undefined | null
 export type UnknownRecord = Record<string, unknown>
 
 export type Anything = Primitive | { [_ in string]: Anything }
+
+export type DiscordInteraction =
+  | BaseCommandInteraction
+  | MessageComponentInteraction

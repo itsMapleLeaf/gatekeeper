@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto"
-import type { MessageSelectOptionData } from "discord.js"
-import type { InteractionContext } from "./interaction-context"
+import type { MessageSelectOptionData, SelectMenuInteraction } from "discord.js"
+import type { CommandInstance } from "./command"
+import { InteractionContext } from "./interaction-context"
 
 /**
  * Options passed to {@link selectMenuComponent}
@@ -14,8 +15,8 @@ export type SelectMenuComponentOptions = {
   options: MessageSelectOptionData[]
 
   /**
-   * The currently selected option values.
-   * This accepts `Iterable`, so you can pass an array, a Set, a Map,
+   * The currently selected option value(s).
+   * This accepts `Iterable`, so you can pass an array, a Set,
    * or any other kind of iterable.
    * @see selectMenuComponent
    */
@@ -33,16 +34,18 @@ export type SelectMenuComponentOptions = {
    *
    * @see selectMenuComponent
    */
-  onSelect: (context: SelectInteractionContext) => void | Promise<unknown>
+  onSelect: (context: SelectMenuInteractionContext) => void | Promise<unknown>
 
   /**
    * The minimum number of options that can be selected.
+   * Passing this option will enable multi-select,
+   * and can't be 0.
    */
   minValues?: number | undefined
 
   /**
    * The maximum number of options that can be selected.
-   * Passing thiss option will enable multi-select,
+   * Passing this option will enable multi-select,
    * and can't be greater than the number of options.
    */
   maxValues?: number | undefined
@@ -57,18 +60,6 @@ export type SelectMenuComponent = Omit<
 > & {
   type: "selectMenu"
   customId: string
-}
-
-/**
- * Passed to the select menu `onSelect` function
- */
-export type SelectInteractionContext = InteractionContext & {
-  /**
-   * The values that the user selected.
-   * Use this to update your current selected state.
-   * @see selectMenuComponent
-   */
-  values: string[]
 }
 
 /**
@@ -112,5 +103,21 @@ export function selectMenuComponent({
       ...option,
       default: option.default ?? selectedOptions.has(option.value),
     })),
+  }
+}
+
+export class SelectMenuInteractionContext extends InteractionContext {
+  protected override interaction: SelectMenuInteraction
+
+  constructor(
+    interaction: SelectMenuInteraction,
+    commandInstance: CommandInstance,
+  ) {
+    super(interaction, commandInstance)
+    this.interaction = interaction
+  }
+
+  get values(): string[] {
+    return this.interaction.values
   }
 }

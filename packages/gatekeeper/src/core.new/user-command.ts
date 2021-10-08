@@ -1,5 +1,5 @@
 import type { Command } from "./command"
-import type { InteractionContext } from "./interaction-context"
+import { InteractionContext } from "./interaction-context"
 
 /**
  * Options for creating a user command.
@@ -37,9 +37,7 @@ export function defineUserCommand(config: UserCommandConfig): Command {
       interaction.commandName === config.name,
 
     run: async (interaction, instance) => {
-      await config.run({
-        reply: (render) => instance.createReply(render, interaction),
-      })
+      await config.run(new InteractionContext(interaction, instance))
     },
   }
 }

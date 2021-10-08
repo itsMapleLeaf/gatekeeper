@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto"
 import type {
   ApplicationCommand,
   ApplicationCommandManager,
@@ -6,6 +7,7 @@ import type {
   Interaction,
   MessageComponentInteraction,
 } from "discord.js"
+import type { DiscordInteraction } from "../internal/types"
 import type { ActionQueue } from "./action-queue"
 import type { RenderReplyFn } from "./reply-component"
 import { ReplyInstance } from "./reply-instance"
@@ -26,46 +28,48 @@ export type Command = {
 }
 
 export class CommandInstance {
-  private readonly replyInstances = new Set<ReplyInstance>()
+  private readonly replyInstances = new Map<string, ReplyInstance>()
   private readonly queue: ActionQueue
 
   constructor(queue: ActionQueue) {
     this.queue = queue
   }
 
-  createReply(
-    render: RenderReplyFn,
-    interaction: BaseCommandInteraction | MessageComponentInteraction,
-  ) {
+  createReply(render: RenderReplyFn, interaction: DiscordInteraction) {
+    const id = randomUUID()
+
     const instance = new ReplyInstance(render, {
-      onDelete: (instance) => this.replyInstances.delete(instance),
+      onDelete: () => this.replyInstances.delete(id),
     })
 
-    this.replyInstances.add(instance)
+    this.replyInstances.set(id, instance)
 
     void this.queue.addAction({
       name: "replyInstance.createMessage",
       run: () => instance.createMessage(interaction),
     })
 
-    return {
-      refresh: () => {
-        void this.queue.addAction({
-          name: "replyInstance.refreshMessage",
-          run: () => instance.refreshMessage(),
-        })
+    return id
+  }
+
+  refreshReply(id: string) {
+    void this.queue.addAction({
+      name: "replyInstance.refreshMessage",
+      run: () => {
+        return this.replyInstances.get(id)?.refreshMessage()
       },
-      delete: () => {
-        void this.queue.addAction({
-          name: "replyInstance.deleteMessage",
-          run: () => instance.deleteMessage(),
-        })
-      },
-    }
+    })
+  }
+
+  deleteReply(id: string) {
+    void this.queue.addAction({
+      name: "replyInstance.deleteMessage",
+      run: () => this.replyInstances.get(id)?.deleteMessage(),
+    })
   }
 
   handleComponentInteraction(interaction: MessageComponentInteraction) {
-    for (const instance of this.replyInstances) {
+    for (const [, instance] of this.replyInstances) {
       const subject = instance.findInteractionSubject(interaction)
       if (subject) {
         void this.queue.addAction({

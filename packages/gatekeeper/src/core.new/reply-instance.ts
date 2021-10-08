@@ -1,10 +1,8 @@
-import type {
-  BaseCommandInteraction,
-  Message,
-  MessageComponentInteraction,
-} from "discord.js"
+import type { Message, MessageComponentInteraction } from "discord.js"
+import type { DiscordInteraction } from "../internal/types"
 import type { ButtonComponent } from "./button-component"
 import type { CommandInstance } from "./command"
+import { InteractionContext } from "./interaction-context"
 import type {
   RenderReplyFn,
   RenderResult,
@@ -15,6 +13,7 @@ import {
   flattenRenderResult,
 } from "./reply-component"
 import type { SelectMenuComponent } from "./select-menu-component"
+import { SelectMenuInteractionContext } from "./select-menu-component"
 
 type ReplyInstanceEvents = {
   onDelete: (instance: ReplyInstance) => void
@@ -33,9 +32,7 @@ export class ReplyInstance {
     this.events = events
   }
 
-  async createMessage(
-    interaction: BaseCommandInteraction | MessageComponentInteraction,
-  ) {
+  async createMessage(interaction: DiscordInteraction) {
     this.renderResult = flattenRenderResult(this.render())
     if (this.renderResult.length === 0) {
       await this.deleteMessage()
@@ -101,15 +98,15 @@ export class ReplyInstance {
     commandInstance: CommandInstance,
   ) {
     if (interaction.isButton() && subject?.type === "button") {
-      await subject?.onClick({
-        reply: (render) => commandInstance.createReply(render, interaction),
-      })
+      await subject?.onClick(
+        new InteractionContext(interaction, commandInstance),
+      )
     }
+
     if (interaction.isSelectMenu() && subject?.type === "selectMenu") {
-      await subject?.onSelect({
-        reply: (render) => commandInstance.createReply(render, interaction),
-        values: interaction.values,
-      })
+      await subject?.onSelect(
+        new SelectMenuInteractionContext(interaction, commandInstance),
+      )
     }
 
     // can't call update if it was deferred or replied to
