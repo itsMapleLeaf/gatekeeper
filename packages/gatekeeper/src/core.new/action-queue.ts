@@ -1,27 +1,15 @@
-type ActionQueueAction<Result> = {
+type ActionQueueAction = {
   name: string
   priority?: number
-  run: () => Result | Promise<Result>
+  run: () => Promise<void>
 }
 
 export class ActionQueue {
-  private readonly actions: Array<ActionQueueAction<unknown>> = []
+  private readonly actions: ActionQueueAction[] = []
   private running = false
 
-  addAction<Result>(action: ActionQueueAction<Result>): Promise<Result> {
-    const promise = new Promise<Result>((resolve, reject) => {
-      this.actions.push({
-        ...action,
-        run: async () => {
-          try {
-            resolve(await action.run())
-          } catch (error) {
-            reject(error)
-            throw error
-          }
-        },
-      })
-    })
+  addAction(action: ActionQueueAction) {
+    this.actions.push(action)
 
     this.actions.sort((a, b) => {
       if (a.priority == null) return 1
@@ -29,24 +17,24 @@ export class ActionQueue {
       return a.priority - b.priority
     })
 
-    void this.runActions()
-
-    return promise
+    this.runActions()
   }
 
-  private async runActions() {
+  private runActions() {
     if (this.running) return
     this.running = true
 
-    let action: ActionQueueAction<unknown> | undefined
-    while ((action = this.actions.shift())) {
-      try {
-        await action.run()
-      } catch (error) {
-        console.error("error running action", action.name, error)
+    // allow multiple synchronous calls before running actions
+    queueMicrotask(async () => {
+      let action: ActionQueueAction | undefined
+      while ((action = this.actions.shift())) {
+        try {
+          await action.run()
+        } catch (error) {
+          console.error("error running action", action.name, error)
+        }
       }
-    }
-
-    this.running = false
+      this.running = false
+    })
   }
 }

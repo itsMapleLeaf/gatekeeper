@@ -28,4 +28,12 @@ export class InteractionContext {
   ephemeralReply(render: RenderReplyFn): void {
     this.commandInstance.createEphemeralReply(render, this.interaction)
   }
+
+  defer() {
+    this.commandInstance.defer(this.interaction)
+  }
+
+  ephemeralDefer() {
+    this.commandInstance.ephemeralDefer(this.interaction)
+  }
 }

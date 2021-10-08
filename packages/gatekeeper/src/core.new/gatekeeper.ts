@@ -6,7 +6,6 @@ import type {
   MessageComponentInteraction,
 } from "discord.js"
 import { createConsoleLogger } from "../internal/logger"
-import { ActionQueue } from "./action-queue"
 import type { Command } from "./command"
 import { CommandInstance } from "./command"
 
@@ -107,7 +106,7 @@ export class Gatekeeper {
 
     this.logger.info("Running command", chalk.bold(command.name))
 
-    const instance = new CommandInstance(new ActionQueue())
+    const instance = new CommandInstance()
     this.commandInstances.add(instance)
     await command.run(interaction, instance)
   }

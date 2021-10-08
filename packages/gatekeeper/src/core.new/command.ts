@@ -8,7 +8,7 @@ import type {
   MessageComponentInteraction,
 } from "discord.js"
 import type { DiscordInteraction } from "../internal/types"
-import type { ActionQueue } from "./action-queue"
+import { ActionQueue } from "./action-queue"
 import type { RenderReplyFn } from "./reply-component"
 import type { ReplyInstance } from "./reply-instance"
 import { EphemeralReplyInstance, PublicReplyInstance } from "./reply-instance"
@@ -28,13 +28,12 @@ export type Command = {
   ) => void | Promise<unknown>
 }
 
+const deferPriority = 0
+const updatePriority = 1
+
 export class CommandInstance {
   private readonly replyInstances = new Map<string, ReplyInstance>()
-  readonly queue: ActionQueue
-
-  constructor(queue: ActionQueue) {
-    this.queue = queue
-  }
+  private readonly queue = new ActionQueue()
 
   createReply(render: RenderReplyFn, interaction: DiscordInteraction) {
     const id = randomUUID()
@@ -56,16 +55,14 @@ export class CommandInstance {
   refreshReply(id: string) {
     void this.queue.addAction({
       name: "replyInstance.refreshMessage",
-      run: () => {
-        return this.replyInstances.get(id)?.refreshMessage()
-      },
+      run: async () => this.replyInstances.get(id)?.refreshMessage(),
     })
   }
 
   deleteReply(id: string) {
     void this.queue.addAction({
       name: "replyInstance.deleteMessage",
-      run: () => this.replyInstances.get(id)?.deleteMessage(),
+      run: async () => this.replyInstances.get(id)?.deleteMessage(),
     })
   }
 
@@ -75,7 +72,7 @@ export class CommandInstance {
     this.replyInstances.set(id, instance)
 
     void this.queue.addAction({
-      name: "replyInstance.createMessage",
+      name: "replyInstance.createEphemeralMessage",
       run: () => instance.createMessage(interaction),
     })
 
@@ -88,6 +85,7 @@ export class CommandInstance {
       if (subject) {
         void this.queue.addAction({
           name: "replyInstance.handleComponentInteraction",
+          priority: updatePriority,
           run: () =>
             instance.handleComponentInteraction(interaction, subject, this),
         })
@@ -95,5 +93,35 @@ export class CommandInstance {
       }
     }
     return false
+  }
+
+  defer(interaction: DiscordInteraction) {
+    void this.queue.addAction({
+      name: "defer",
+      priority: deferPriority,
+      run: async () => {
+        if (interaction.deferred) return
+        if (interaction.isCommand() || interaction.isContextMenu()) {
+          return interaction.deferReply()
+        }
+        if (interaction.isMessageComponent()) return interaction.deferUpdate()
+      },
+    })
+  }
+
+  ephemeralDefer(interaction: DiscordInteraction) {
+    void this.queue.addAction({
+      name: "ephemeralDefer",
+      priority: deferPriority,
+      run: async () => {
+        if (interaction.deferred) return
+
+        if (interaction.isCommand() || interaction.isContextMenu()) {
+          return interaction.deferReply({ ephemeral: true })
+        }
+
+        if (interaction.isMessageComponent()) return interaction.deferUpdate()
+      },
+    })
   }
 }

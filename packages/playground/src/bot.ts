@@ -21,6 +21,7 @@ createGatekeeper({
         reply.delete()
       },
     }),
+
     defineUserCommand({
       name: "countdown",
       async run(context) {
@@ -37,6 +38,7 @@ createGatekeeper({
         reply.delete()
       },
     }),
+
     defineUserCommand({
       name: "counter",
       async run(context) {
@@ -77,6 +79,15 @@ createGatekeeper({
         }
 
         createReply(context)
+      },
+    }),
+
+    defineUserCommand({
+      name: "defertest",
+      async run(context) {
+        context.ephemeralDefer()
+        context.reply(() => "this should be public")
+        context.ephemeralReply(() => "this should be private")
       },
     }),
   ],
