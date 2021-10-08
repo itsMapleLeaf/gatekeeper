@@ -1,5 +1,10 @@
 import chalk from "chalk"
-import type { Client, Guild, Interaction } from "discord.js"
+import type {
+  BaseCommandInteraction,
+  Client,
+  Guild,
+  MessageComponentInteraction,
+} from "discord.js"
 import { createConsoleLogger } from "../internal/logger"
 import type { Command } from "./command"
 import { CommandInstance } from "./command"
@@ -45,7 +50,12 @@ class Gatekeeper {
     client.on(
       "interactionCreate",
       this.withErrorHandler(async (interaction) => {
-        await this.handleInteraction(interaction)
+        if (interaction.isCommand() || interaction.isContextMenu()) {
+          await this.handleCommandInteraction(interaction)
+        }
+        if (interaction.isMessageComponent()) {
+          await this.handleComponentInteraction(interaction)
+        }
       }),
     )
   }
@@ -89,10 +99,7 @@ class Gatekeeper {
     })
   }
 
-  private async handleInteraction(interaction: Interaction) {
-    const isCommand = interaction.isCommand() || interaction.isContextMenu()
-    if (!isCommand) return
-
+  private async handleCommandInteraction(interaction: BaseCommandInteraction) {
     const command = [...this.commands.values()].find((command) =>
       command.matchesInteraction(interaction),
     )
@@ -104,6 +111,14 @@ class Gatekeeper {
     this.commandInstances.add(instance)
 
     await instance.run()
+  }
+
+  private async handleComponentInteraction(
+    interaction: MessageComponentInteraction,
+  ) {
+    for (const instance of this.commandInstances) {
+      if (instance.handleComponentInteraction(interaction)) return
+    }
   }
 
   private withErrorHandler<Args extends unknown[], Return>(

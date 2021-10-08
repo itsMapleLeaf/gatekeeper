@@ -1,3 +1,4 @@
+import { buttonComponent } from "@itsmapleleaf/gatekeeper/src/core.new/button-component"
 import { createGatekeeper } from "@itsmapleleaf/gatekeeper/src/core.new/gatekeeper"
 import { defineUserCommand } from "@itsmapleleaf/gatekeeper/src/core.new/user-command"
 import { Client, Intents } from "discord.js"
@@ -33,6 +34,23 @@ createGatekeeper({
 
         await setTimeout(1000)
         reply.delete()
+      },
+    }),
+    defineUserCommand({
+      name: "counter",
+      async run(context) {
+        let count = 0
+        const reply = context.reply(() => [
+          `count: ${count}`,
+          buttonComponent({
+            label: `add 1 (${count})`,
+            style: "PRIMARY",
+            onClick: () => {
+              count += 1
+              reply.refresh()
+            },
+          }),
+        ])
       },
     }),
   ],

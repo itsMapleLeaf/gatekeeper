@@ -33,7 +33,7 @@ export type SelectMenuComponentOptions = {
    *
    * @see selectMenuComponent
    */
-  onSelect: (context: SelectInteractionContext) => void
+  onSelect: (context: SelectInteractionContext) => void | Promise<unknown>
 
   /**
    * The minimum number of options that can be selected.
