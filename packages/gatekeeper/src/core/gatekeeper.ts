@@ -6,8 +6,7 @@ import type {
   MessageComponentInteraction,
 } from "discord.js"
 import glob from "fast-glob"
-import { relative } from "node:path"
-import { join } from "path/posix"
+import { join, relative } from "node:path"
 import type { Logger } from "../internal/logger"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { Command } from "./command/command"
