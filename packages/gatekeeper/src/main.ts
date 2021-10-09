@@ -1,3 +1,4 @@
+export {}
 export type { Command } from "./core/command/command"
 export { defineMessageCommand } from "./core/command/message-command"
 export type {
