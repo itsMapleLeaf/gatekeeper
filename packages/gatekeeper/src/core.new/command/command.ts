@@ -72,6 +72,10 @@ export class CommandInstance {
     return id
   }
 
+  getReplyMessage(id: string) {
+    return this.replyInstances.get(id)?.getMessage()
+  }
+
   refreshReply(id: string) {
     this.queue.addAction({
       name: "refresh",

@@ -24,6 +24,7 @@ export type ReplyInstance = {
   createMessage(interaction: DiscordInteraction): Promise<void>
   deleteMessage(): Promise<void>
   refreshMessage(): Promise<void>
+  getMessage(): Message | undefined
   findInteractionSubject(
     interaction: MessageComponentInteraction,
   ): InteractionSubject | undefined
@@ -35,14 +36,18 @@ export type ReplyInstance = {
 }
 
 export class PublicReplyInstance implements ReplyInstance {
-  private render: RenderReplyFn
+  private readonly render: RenderReplyFn
   private renderResult: TopLevelComponent[] = []
   private message?: Message
-  private events: ReplyInstanceEvents
+  private readonly events: ReplyInstanceEvents
 
   constructor(render: RenderReplyFn, events: ReplyInstanceEvents) {
     this.render = render
     this.events = events
+  }
+
+  getMessage() {
+    return this.message
   }
 
   async createMessage(interaction: DiscordInteraction) {
@@ -148,6 +153,11 @@ export class EphemeralReplyInstance implements ReplyInstance {
 
   constructor(render: RenderReplyFn) {
     this.render = render
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getMessage() {
+    return undefined
   }
 
   async createMessage(interaction: DiscordInteraction) {

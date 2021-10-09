@@ -1,11 +1,18 @@
-import type { Guild, GuildMember, TextBasedChannels, User } from "discord.js"
+import type {
+  Guild,
+  GuildMember,
+  Message,
+  TextBasedChannels,
+  User,
+} from "discord.js"
 import type { DiscordInteraction } from "../internal/types"
 import type { CommandInstance } from "./command/command"
 import type { RenderReplyFn } from "./component/reply-component"
 
 export type ReplyHandle = {
-  refresh: () => void
-  delete: () => void
+  get message(): Message | undefined
+  readonly refresh: () => void
+  readonly delete: () => void
 }
 
 export type InteractionContext = {
@@ -13,10 +20,10 @@ export type InteractionContext = {
   readonly channel: TextBasedChannels | undefined
   readonly guild: Guild | undefined
   readonly guildMember: GuildMember | undefined
-  reply: (render: RenderReplyFn) => ReplyHandle
-  ephemeralReply: (render: RenderReplyFn) => void
-  defer: () => void
-  ephemeralDefer: () => void
+  readonly reply: (render: RenderReplyFn) => ReplyHandle
+  readonly ephemeralReply: (render: RenderReplyFn) => void
+  readonly defer: () => void
+  readonly ephemeralDefer: () => void
 }
 
 export function createInteractionContext({
@@ -34,6 +41,9 @@ export function createInteractionContext({
     reply: (render: RenderReplyFn) => {
       const id = command.createReply(render, interaction)
       return {
+        get message() {
+          return command.getReplyMessage(id)
+        },
         refresh: () => {
           command.refreshReply(id)
         },
