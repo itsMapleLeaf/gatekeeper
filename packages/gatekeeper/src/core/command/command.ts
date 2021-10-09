@@ -1,5 +1,4 @@
 import chalk from "chalk"
-import { randomUUID } from "crypto"
 import type {
   ApplicationCommand,
   ApplicationCommandManager,
@@ -8,6 +7,7 @@ import type {
   Interaction,
   MessageComponentInteraction,
 } from "discord.js"
+import { randomUUID } from "node:crypto"
 import { ActionQueue } from "../../internal/action-queue"
 import type { Logger } from "../../internal/logger"
 import type { DiscordInteraction } from "../../internal/types"
