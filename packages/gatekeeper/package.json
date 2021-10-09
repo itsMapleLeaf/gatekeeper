@@ -3,8 +3,15 @@
   "description": "a slash command and interaction framework for discord.js",
   "author": "itsmapleleaf",
   "version": "0.4.0",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.mjs",
+  "types": "./dist/main.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.mjs",
+      "require": "./dist/main.cjs"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -28,7 +35,7 @@
   ],
   "scripts": {
     "clean": "trash dist",
-    "build": "pnpm run clean && tsc --project ./tsconfig.build.json",
+    "build": "pnpm run clean && rollup -c",
     "release": "pnpm run build && pnpm test && cpy ../../README.md . && release-it",
     "test": "jest",
     "test-watch": "jest --watch"
@@ -37,18 +44,22 @@
     "discord.js": ">=13"
   },
   "dependencies": {
-    "chalk": "4.1.2"
+    "chalk": "^4",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "jest": "27.2.4",
+    "@rollup/plugin-commonjs": "21.0.0",
+    "@rollup/plugin-node-resolve": "13.0.5",
     "@types/jest": "27.0.2",
-    "@types/lodash": "4.14.175",
     "@types/node": "16.10.3",
     "cpy-cli": "3.1.1",
     "discord.js": "^13.2.0",
     "esbuild": "0.13.4",
     "esbuild-jest": "0.5.0",
+    "jest": "27.2.4",
     "release-it": "14.11.6",
+    "rollup": "2.58.0",
+    "rollup-plugin-ts": "1.4.7",
     "trash-cli": "4.0.0",
     "typescript": "4.4.3"
   },
