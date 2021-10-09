@@ -1,5 +1,7 @@
-import { defineSlashCommand } from "@itsmapleleaf/gatekeeper/src/main"
-import { defineUserCommand } from "../../../gatekeeper/src/core/user-command"
+import {
+  defineSlashCommand,
+  defineUserCommand,
+} from "@itsmapleleaf/gatekeeper/src/main"
 
 const emojis = [
   "<:hug:784024746424795157>",

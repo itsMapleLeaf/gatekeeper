@@ -1,8 +1,8 @@
-import { linkComponent } from "@itsmapleleaf/gatekeeper/src/core/link-component"
 import {
   buttonComponent,
   defineSlashCommand,
-} from "../../../gatekeeper/src/main"
+  linkComponent,
+} from "@itsmapleleaf/gatekeeper/src/main"
 
 export const buttonCommand = defineSlashCommand({
   name: "buttons",
