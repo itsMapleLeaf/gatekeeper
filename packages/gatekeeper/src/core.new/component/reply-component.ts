@@ -1,5 +1,5 @@
 import type { InteractionReplyOptions } from "discord.js"
-import { isNonNil, isTruthy, last } from "../internal/helpers"
+import { isNonNil, isTruthy, last } from "../../internal/helpers"
 import type { ActionRowComponent } from "./action-row-component"
 import type { ButtonComponent } from "./button-component"
 import type { EmbedComponent } from "./embed-component"

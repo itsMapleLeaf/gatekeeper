@@ -1,40 +1,40 @@
-export { actionRowComponent } from "./core.new/action-row-component"
+export type { Command } from "./core.new/command/command"
+export { defineUserCommand } from "./core.new/command/user-command"
+export type { UserCommandConfig } from "./core.new/command/user-command"
+export { actionRowComponent } from "./core.new/component/action-row-component"
 export type {
   ActionRowChild,
   ActionRowComponent,
-} from "./core.new/action-row-component"
-export { buttonComponent } from "./core.new/button-component"
+} from "./core.new/component/action-row-component"
+export { buttonComponent } from "./core.new/component/button-component"
 export type {
   ButtonComponent,
   ButtonComponentOptions,
   ButtonInteractionContext,
-} from "./core.new/button-component"
-export type { Command } from "./core.new/command"
-export { embedComponent } from "./core.new/embed-component"
-export type { EmbedComponent } from "./core.new/embed-component"
-export { createGatekeeper } from "./core.new/gatekeeper"
-export type { Gatekeeper, GatekeeperConfig } from "./core.new/gatekeeper"
-export type {
-  InteractionContext,
-  ReplyHandle,
-} from "./core.new/interaction-context"
-export { linkComponent } from "./core.new/link-component"
+} from "./core.new/component/button-component"
+export { embedComponent } from "./core.new/component/embed-component"
+export type { EmbedComponent } from "./core.new/component/embed-component"
+export { linkComponent } from "./core.new/component/link-component"
 export type {
   LinkComponent,
   LinkComponentOptions,
-} from "./core.new/link-component"
+} from "./core.new/component/link-component"
 export type {
   RenderReplyFn,
   RenderResult,
   ReplyComponent,
   TextComponent,
   TopLevelComponent,
-} from "./core.new/reply-component"
-export { selectMenuComponent } from "./core.new/select-menu-component"
+} from "./core.new/component/reply-component"
+export { selectMenuComponent } from "./core.new/component/select-menu-component"
 export type {
   SelectMenuComponent,
   SelectMenuComponentOptions,
   SelectMenuInteractionContext,
-} from "./core.new/select-menu-component"
-export { defineUserCommand } from "./core.new/user-command"
-export type { UserCommandConfig } from "./core.new/user-command"
+} from "./core.new/component/select-menu-component"
+export { createGatekeeper } from "./core.new/gatekeeper"
+export type { Gatekeeper, GatekeeperConfig } from "./core.new/gatekeeper"
+export type {
+  InteractionContext,
+  ReplyHandle,
+} from "./core.new/interaction-context"

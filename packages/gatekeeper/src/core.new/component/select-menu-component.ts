@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto"
 import type { Message, MessageSelectOptionData } from "discord.js"
-import type { InteractionContext } from "./interaction-context"
+import type { InteractionContext } from "../interaction-context"
 
 /**
  * Options passed to {@link selectMenuComponent}

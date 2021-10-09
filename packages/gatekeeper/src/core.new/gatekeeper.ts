@@ -6,8 +6,8 @@ import type {
   MessageComponentInteraction,
 } from "discord.js"
 import { createConsoleLogger } from "../internal/logger"
-import type { Command } from "./command"
-import { CommandInstance } from "./command"
+import type { Command } from "./command/command"
+import { CommandInstance } from "./command/command"
 
 export type GatekeeperConfig = {
   client: Client

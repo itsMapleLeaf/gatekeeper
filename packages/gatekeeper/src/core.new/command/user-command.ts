@@ -1,8 +1,8 @@
 import type { GuildMember, User } from "discord.js"
-import { raise } from "../internal/helpers"
+import { raise } from "../../internal/helpers"
+import type { InteractionContext } from "../interaction-context"
+import { createInteractionContext } from "../interaction-context"
 import type { Command } from "./command"
-import type { InteractionContext } from "./interaction-context"
-import { createInteractionContext } from "./interaction-context"
 
 /**
  * Options for creating a user command.

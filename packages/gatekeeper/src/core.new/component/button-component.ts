@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto"
 import type { EmojiResolvable, Message, MessageButtonStyle } from "discord.js"
-import type { InteractionContext } from "./interaction-context"
+import type { InteractionContext } from "../interaction-context"
 
 /**
  * Options for {@link buttonComponent}

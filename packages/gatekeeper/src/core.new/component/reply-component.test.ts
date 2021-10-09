@@ -3,7 +3,7 @@ import {
   buttonComponent,
   embedComponent,
   selectMenuComponent,
-} from "../main"
+} from "../../main"
 import { linkComponent } from "./link-component"
 import type { RenderResult, TopLevelComponent } from "./reply-component"
 import { flattenRenderResult } from "./reply-component"

@@ -1,18 +1,18 @@
 import type { Message, MessageComponentInteraction } from "discord.js"
 import type { DiscordInteraction } from "../internal/types"
-import type { ButtonComponent } from "./button-component"
-import type { CommandInstance } from "./command"
-import { createInteractionContext } from "./interaction-context"
+import type { CommandInstance } from "./command/command"
+import type { ButtonComponent } from "./component/button-component"
 import type {
   RenderReplyFn,
   RenderResult,
   TopLevelComponent,
-} from "./reply-component"
+} from "./component/reply-component"
 import {
   createInteractionReplyOptions,
   flattenRenderResult,
-} from "./reply-component"
-import type { SelectMenuComponent } from "./select-menu-component"
+} from "./component/reply-component"
+import type { SelectMenuComponent } from "./component/select-menu-component"
+import { createInteractionContext } from "./interaction-context"
 
 type ReplyInstanceEvents = {
   onDelete: (instance: ReplyInstance) => void
