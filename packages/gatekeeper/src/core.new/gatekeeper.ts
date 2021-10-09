@@ -8,12 +8,15 @@ import type {
 import glob from "fast-glob"
 import { relative } from "node:path"
 import { join } from "path/posix"
-import { createConsoleLogger } from "../internal/logger"
+import type { Logger } from "../internal/logger"
+import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { Command } from "./command/command"
 import { CommandInstance, isCommand } from "./command/command"
 
 export type GatekeeperConfig = {
   client: Client
+  name?: string
+  logging?: boolean
   commands?: Command[]
   commandFolder?: string
 }
@@ -21,7 +24,11 @@ export type GatekeeperConfig = {
 export class Gatekeeper {
   private readonly commands = new Set<Command>()
   private readonly commandInstances = new Set<CommandInstance>()
-  private readonly logger = createConsoleLogger({ name: "gatekeeper" })
+  private readonly logger: Logger
+
+  constructor(logger: Logger) {
+    this.logger = logger
+  }
 
   addCommand(command: Command) {
     this.commands.add(command)
@@ -166,10 +173,14 @@ export class Gatekeeper {
   }
 }
 
-export async function createGatekeeper(
-  config: GatekeeperConfig,
-): Promise<Gatekeeper> {
-  const instance = new Gatekeeper()
+export async function createGatekeeper({
+  name = "gatekeeper",
+  logging = true,
+  ...config
+}: GatekeeperConfig): Promise<Gatekeeper> {
+  const instance = new Gatekeeper(
+    logging ? createConsoleLogger({ name }) : createNoopLogger(),
+  )
 
   if (config.commandFolder) {
     await instance.loadCommandsFromFolder(config.commandFolder)
