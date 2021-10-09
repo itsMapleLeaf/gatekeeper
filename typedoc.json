@@ -3,6 +3,8 @@
   "out": "docs/api",
   "name": "Gatekeeper API",
   "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": true,
   "excludeInternal": true,
   "sort": ["alphabetical"]
 }
