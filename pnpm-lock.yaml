@@ -39,6 +39,7 @@ importers:
       discord.js: ^13.2.0
       esbuild: 0.13.4
       esbuild-jest: 0.5.0
+      fast-glob: 3.2.7
       jest: 27.2.4
       release-it: 14.11.6
       rollup: 2.58.0
@@ -48,6 +49,7 @@ importers:
       typescript: 4.4.3
     dependencies:
       chalk: 4.1.2
+      fast-glob: 3.2.7
       tslib: 2.3.1
     devDependencies:
       '@rollup/plugin-commonjs': 21.0.0_rollup@2.58.0
@@ -71,14 +73,12 @@ importers:
       '@types/node': 16.10.3
       discord.js: 13.2.0
       dotenv: 10.0.0
-      fast-glob: 3.2.7
       nodemon: 2.0.13
       ts-node: 10.2.1
     dependencies:
       '@itsmapleleaf/gatekeeper': link:../gatekeeper
       discord.js: 13.2.0
       dotenv: 10.0.0
-      fast-glob: 3.2.7
       ts-node: 10.2.1_8304ecd715830f7c190b4d1dea90b100
     devDependencies:
       '@types/node': 16.10.3
