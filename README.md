@@ -52,9 +52,10 @@ const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 })
 
-const gatekeeper = createGatekeeper({ debug: true })
-gatekeeper.addCommand(counterCommand)
-gatekeeper.useClient(client)
+createGatekeeper({
+  client,
+  commands: [counterCommand],
+})
 
 client.login(process.env.BOT_TOKEN).catch(console.error)
 ```
