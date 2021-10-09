@@ -19,7 +19,7 @@ export type InteractionContext = {
   readonly user: User
   readonly channel: TextBasedChannels | undefined
   readonly guild: Guild | undefined
-  readonly guildMember: GuildMember | undefined
+  readonly member: GuildMember | undefined
   readonly reply: (render: RenderReplyFn) => ReplyHandle
   readonly ephemeralReply: (render: RenderReplyFn) => void
   readonly defer: () => void
@@ -37,7 +37,7 @@ export function createInteractionContext({
     user: interaction.user,
     channel: interaction.channel ?? undefined,
     guild: interaction.guild ?? undefined,
-    guildMember: (interaction.member ?? undefined) as GuildMember | undefined,
+    member: (interaction.member ?? undefined) as GuildMember | undefined,
     reply: (render: RenderReplyFn) => {
       const id = command.createReply(render, interaction)
       return {
