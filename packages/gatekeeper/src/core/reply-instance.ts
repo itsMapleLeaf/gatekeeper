@@ -37,9 +37,10 @@ export type ReplyInstance = {
 
 export class PublicReplyInstance implements ReplyInstance {
   private readonly render: RenderReplyFn
+  private readonly events: ReplyInstanceEvents
   private renderResult: TopLevelComponent[] = []
   private message?: Message
-  private readonly events: ReplyInstanceEvents
+  private isDeleted = false
 
   constructor(render: RenderReplyFn, events: ReplyInstanceEvents) {
     this.render = render
@@ -87,12 +88,17 @@ export class PublicReplyInstance implements ReplyInstance {
 
   async deleteMessage() {
     const message = this.message
+
     this.message = undefined
+    this.isDeleted = true
     this.events.onDelete(this)
+
     await message?.delete()
   }
 
   async refreshMessage() {
+    if (this.isDeleted) return
+
     this.renderResult = flattenRenderResult(this.render())
     if (this.renderResult.length === 0) {
       await this.deleteMessage()
@@ -113,6 +119,8 @@ export class PublicReplyInstance implements ReplyInstance {
   async updateMessageFromComponentInteraction(
     interaction: MessageComponentInteraction,
   ) {
+    if (this.isDeleted) return
+
     this.renderResult = flattenRenderResult(this.render())
     if (this.renderResult.length === 0) {
       await this.deleteMessage()
