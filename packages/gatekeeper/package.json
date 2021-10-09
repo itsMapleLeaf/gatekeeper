@@ -3,8 +3,7 @@
   "description": "a slash command and interaction framework for discord.js",
   "author": "itsmapleleaf",
   "version": "0.4.0",
-  "main": "./dist/main.cjs",
-  "module": "./dist/main.mjs",
+  "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
   "files": [
     "dist"
@@ -43,8 +42,6 @@
     "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "21.0.0",
-    "@rollup/plugin-node-resolve": "13.0.5",
     "@types/jest": "27.0.2",
     "@types/node": "16.10.3",
     "cpy-cli": "3.1.1",
