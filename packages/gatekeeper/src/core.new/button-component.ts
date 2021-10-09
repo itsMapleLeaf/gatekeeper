@@ -1,6 +1,12 @@
 import { randomUUID } from "crypto"
-import type { EmojiResolvable, MessageButtonStyle } from "discord.js"
-import type { InteractionContext } from "./interaction-context"
+import type {
+  ButtonInteraction,
+  EmojiResolvable,
+  Message,
+  MessageButtonStyle,
+} from "discord.js"
+import type { CommandInstance } from "./command"
+import { InteractionContext } from "./interaction-context"
 
 /**
  * Options for {@link buttonComponent}
@@ -46,12 +52,6 @@ export type ButtonComponent = ButtonComponentOptions & {
 }
 
 /**
- * The context object received by button onClick handlers.
- * @see buttonComponent
- */
-export type ButtonInteractionContext = InteractionContext
-
-/**
  * Represents a discord [button](https://discord.com/developers/docs/interactions/message-components#buttons) component.
  * Does not support URL or disabled props yet.
  *
@@ -73,5 +73,25 @@ export function buttonComponent(
     ...options,
     type: "button",
     customId: randomUUID(),
+  }
+}
+
+/**
+ * The context object received by button onClick handlers.
+ * @see buttonComponent
+ */
+export class ButtonInteractionContext extends InteractionContext {
+  protected readonly interaction: ButtonInteraction
+
+  constructor(
+    interaction: ButtonInteraction,
+    commandInstance: CommandInstance,
+  ) {
+    super(interaction, commandInstance)
+    this.interaction = interaction
+  }
+
+  get message(): Message {
+    return this.interaction.message as Message
   }
 }

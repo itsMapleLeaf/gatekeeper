@@ -1,8 +1,8 @@
 import type { Message, MessageComponentInteraction } from "discord.js"
 import type { DiscordInteraction } from "../internal/types"
 import type { ButtonComponent } from "./button-component"
+import { ButtonInteractionContext } from "./button-component"
 import type { CommandInstance } from "./command"
-import { InteractionContext } from "./interaction-context"
 import type {
   RenderReplyFn,
   RenderResult,
@@ -113,7 +113,7 @@ export class PublicReplyInstance implements ReplyInstance {
   ) {
     if (interaction.isButton() && subject?.type === "button") {
       await subject?.onClick(
-        new InteractionContext(interaction, commandInstance),
+        new ButtonInteractionContext(interaction, commandInstance),
       )
     }
 
@@ -186,7 +186,7 @@ export class EphemeralReplyInstance implements ReplyInstance {
   ) {
     if (interaction.isButton() && subject?.type === "button") {
       await subject?.onClick(
-        new InteractionContext(interaction, commandInstance),
+        new ButtonInteractionContext(interaction, commandInstance),
       )
     }
 

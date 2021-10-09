@@ -1,5 +1,9 @@
 import { randomUUID } from "crypto"
-import type { MessageSelectOptionData, SelectMenuInteraction } from "discord.js"
+import type {
+  Message,
+  MessageSelectOptionData,
+  SelectMenuInteraction,
+} from "discord.js"
 import type { CommandInstance } from "./command"
 import { InteractionContext } from "./interaction-context"
 
@@ -115,6 +119,10 @@ export class SelectMenuInteractionContext extends InteractionContext {
   ) {
     super(interaction, commandInstance)
     this.interaction = interaction
+  }
+
+  get message(): Message {
+    return this.interaction.message as Message
   }
 
   get values(): string[] {
