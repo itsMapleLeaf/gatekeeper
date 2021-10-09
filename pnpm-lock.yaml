@@ -30,6 +30,8 @@ importers:
 
   packages/gatekeeper:
     specifiers:
+      '@babel/core': 7.15.8
+      '@babel/preset-typescript': 7.15.0
       '@types/jest': 27.0.2
       '@types/node': 16.10.3
       chalk: ^4
@@ -50,6 +52,8 @@ importers:
       fast-glob: 3.2.7
       tslib: 2.3.1
     devDependencies:
+      '@babel/core': 7.15.8
+      '@babel/preset-typescript': 7.15.0_@babel+core@7.15.8
       '@types/jest': 27.0.2
       '@types/node': 16.10.3
       cpy-cli: 3.1.1
@@ -1076,6 +1080,20 @@ packages:
       '@babel/helper-plugin-utils': 7.14.5
     dev: true
 
+  /@babel/plugin-transform-typescript/7.15.8_@babel+core@7.15.8:
+    resolution: {integrity: sha512-ZXIkJpbaf6/EsmjeTbiJN/yMxWPFWvlr7sEG1P95Xb4S4IBcrf2n7s/fItIhsAmOf8oSh3VJPDppO6ExfAfKRQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.15.8
+      '@babel/helper-create-class-features-plugin': 7.15.4_@babel+core@7.15.8
+      '@babel/helper-plugin-utils': 7.14.5
+      '@babel/plugin-syntax-typescript': 7.14.5_@babel+core@7.15.8
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@babel/plugin-transform-unicode-escapes/7.14.5_@babel+core@7.15.8:
     resolution: {integrity: sha512-crTo4jATEOjxj7bt9lbYXcBAM3LZaUrbP2uUdxb6WIorLmjNKSpHfIybgY4B8SRpbf8tEVIWH3Vtm7ayCrKocA==}
     engines: {node: '>=6.9.0'}
@@ -1192,6 +1210,20 @@ packages:
       '@babel/plugin-transform-dotall-regex': 7.14.5_@babel+core@7.15.8
       '@babel/types': 7.15.6
       esutils: 2.0.3
+    dev: true
+
+  /@babel/preset-typescript/7.15.0_@babel+core@7.15.8:
+    resolution: {integrity: sha512-lt0Y/8V3y06Wq/8H/u0WakrqciZ7Fz7mwPDHWUJAXlABL5hiUG42BNlRXiELNjeWjO5rWmnNKlx+yzJvxezHow==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.15.8
+      '@babel/helper-plugin-utils': 7.14.5
+      '@babel/helper-validator-option': 7.14.5
+      '@babel/plugin-transform-typescript': 7.15.8_@babel+core@7.15.8
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@babel/runtime-corejs3/7.15.4:
