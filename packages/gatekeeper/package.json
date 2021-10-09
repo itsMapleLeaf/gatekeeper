@@ -6,12 +6,6 @@
   "main": "./dist/main.cjs",
   "module": "./dist/main.mjs",
   "types": "./dist/main.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/main.mjs",
-      "require": "./dist/main.cjs"
-    }
-  },
   "files": [
     "dist"
   ],
@@ -45,6 +39,7 @@
   },
   "dependencies": {
     "chalk": "^4",
+    "fast-glob": "3.2.7",
     "tslib": "^2.3.1"
   },
   "devDependencies": {

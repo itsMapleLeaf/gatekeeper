@@ -3,6 +3,7 @@ import { raise } from "../../internal/helpers"
 import type { InteractionContext } from "../interaction-context"
 import { createInteractionContext } from "../interaction-context"
 import type { Command } from "./command"
+import { createCommand } from "./command"
 
 /**
  * Options for creating a message command.
@@ -24,7 +25,7 @@ export type MessageCommandInteractionContext = InteractionContext & {
 }
 
 export function defineMessageCommand(config: MessageCommandConfig): Command {
-  return {
+  return createCommand({
     name: config.name,
 
     matchesExisting: (appCommand) => {
@@ -33,8 +34,8 @@ export function defineMessageCommand(config: MessageCommandConfig): Command {
 
     register: async (commandManager) => {
       await commandManager.create({
-        name: config.name,
         type: "MESSAGE",
+        name: config.name,
       })
     },
 
@@ -61,5 +62,5 @@ export function defineMessageCommand(config: MessageCommandConfig): Command {
         targetMessage,
       })
     },
-  }
+  })
 }

@@ -3,6 +3,7 @@ import { raise } from "../../internal/helpers"
 import type { InteractionContext } from "../interaction-context"
 import { createInteractionContext } from "../interaction-context"
 import type { Command } from "./command"
+import { createCommand } from "./command"
 
 /**
  * Options for creating a user command.
@@ -29,7 +30,7 @@ export type UserCommandInteractionContext = InteractionContext & {
 }
 
 export function defineUserCommand(config: UserCommandConfig): Command {
-  return {
+  return createCommand({
     name: config.name,
 
     matchesExisting: (appCommand) => {
@@ -68,5 +69,5 @@ export function defineUserCommand(config: UserCommandConfig): Command {
         targetGuildMember,
       })
     },
-  }
+  })
 }

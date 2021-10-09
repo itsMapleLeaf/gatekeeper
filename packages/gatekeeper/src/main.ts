@@ -1,6 +1,25 @@
 export type { Command } from "./core.new/command/command"
+export { defineMessageCommand } from "./core.new/command/message-command"
+export type {
+  MessageCommandConfig,
+  MessageCommandInteractionContext,
+} from "./core.new/command/message-command"
+export { defineSlashCommand } from "./core.new/command/slash-command"
+export type {
+  SlashCommandConfig,
+  SlashCommandInteractionContext,
+  SlashCommandMentionableValue,
+  SlashCommandOptionChoiceConfig,
+  SlashCommandOptionConfig,
+  SlashCommandOptionConfigBase,
+  SlashCommandOptionConfigMap,
+  SlashCommandOptionValueMap,
+} from "./core.new/command/slash-command"
 export { defineUserCommand } from "./core.new/command/user-command"
-export type { UserCommandConfig } from "./core.new/command/user-command"
+export type {
+  UserCommandConfig,
+  UserCommandInteractionContext,
+} from "./core.new/command/user-command"
 export { actionRowComponent } from "./core.new/component/action-row-component"
 export type {
   ActionRowChild,

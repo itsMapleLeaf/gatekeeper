@@ -5,30 +5,34 @@ import type {
   Guild,
   MessageComponentInteraction,
 } from "discord.js"
+import glob from "fast-glob"
+import { relative } from "node:path"
+import { join } from "path/posix"
 import { createConsoleLogger } from "../internal/logger"
 import type { Command } from "./command/command"
-import { CommandInstance } from "./command/command"
+import { CommandInstance, isCommand } from "./command/command"
 
 export type GatekeeperConfig = {
   client: Client
   commands?: Command[]
+  commandFolder?: string
 }
 
 export class Gatekeeper {
-  private readonly commands = new Map<string, Command>()
+  private readonly commands = new Set<Command>()
   private readonly commandInstances = new Set<CommandInstance>()
   private readonly logger = createConsoleLogger({ name: "gatekeeper" })
 
   addCommand(command: Command) {
-    this.commands.set(command.name, command)
+    this.commands.add(command)
   }
 
   addEventListeners(client: Client) {
     client.on(
       "ready",
       this.withErrorHandler(async () => {
-        const commandList = [...this.commands.keys()]
-          .map((name) => chalk.bold(name))
+        const commandList = [...this.commands]
+          .map((command) => chalk.bold(command.name))
           .join(", ")
 
         this.logger.success(`Using commands: ${commandList}`)
@@ -59,6 +63,30 @@ export class Gatekeeper {
     )
   }
 
+  async loadCommandsFromFolder(folderPath: string) {
+    // backslashes are ugly
+    const localPath = relative(process.cwd(), folderPath).replace(/\\/g, "/")
+
+    await this.logger.block(`Loading commands from ${localPath}`, async () => {
+      const files = await glob(`./**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}`, {
+        cwd: folderPath,
+      })
+      const loaded: string[] = []
+
+      await Promise.all(
+        files.map(async (filename) => {
+          const mod = await import(join(folderPath, filename))
+          for (const [, value] of Object.entries(mod)) {
+            if (isCommand(value)) {
+              this.addCommand(value)
+              loaded.push(value.name)
+            }
+          }
+        }),
+      )
+    })
+  }
+
   private async syncGuildCommands(guild: Guild) {
     await this.logger.block(`Syncing commands for ${guild.name}`, async () => {
       const commandManager = guild.commands
@@ -67,7 +95,7 @@ export class Gatekeeper {
       // remove commands first,
       // just in case we've hit the max number of commands
       const commandsToRemove = existingCommands.filter((appCommand) => {
-        const isUsingCommand = [...this.commands.values()].some((command) => {
+        const isUsingCommand = [...this.commands].some((command) => {
           return command.matchesExisting(appCommand)
         })
         return !isUsingCommand
@@ -76,14 +104,12 @@ export class Gatekeeper {
         this.logger.info(
           `Removing ${commandsToRemove.size} command(s) in ${guild.name}`,
         )
-        await Promise.all(
-          commandsToRemove.map((appCommand) =>
-            commandManager.delete(appCommand.id),
-          ),
-        )
+        for (const [, command] of commandsToRemove) {
+          await command.delete()
+        }
       }
 
-      const commandsToCreate = [...this.commands.values()].filter((command) => {
+      const commandsToCreate = [...this.commands].filter((command) => {
         const isExisting = existingCommands.some((appCommand) => {
           return command.matchesExisting(appCommand)
         })
@@ -93,9 +119,9 @@ export class Gatekeeper {
         this.logger.info(
           `Creating ${commandsToCreate.length} command(s) in ${guild.name}`,
         )
-        await Promise.all(
-          commandsToCreate.map((command) => command.register(commandManager)),
-        )
+        for (const command of commandsToCreate) {
+          await command.register(commandManager)
+        }
       }
     })
   }
@@ -123,7 +149,7 @@ export class Gatekeeper {
     interaction: MessageComponentInteraction,
   ) {
     for (const context of this.commandInstances) {
-      if (context.handleComponentInteraction(interaction)) return
+      if (await context.handleComponentInteraction(interaction)) return
     }
   }
 
@@ -140,8 +166,14 @@ export class Gatekeeper {
   }
 }
 
-export function createGatekeeper(config: GatekeeperConfig): Gatekeeper {
+export async function createGatekeeper(
+  config: GatekeeperConfig,
+): Promise<Gatekeeper> {
   const instance = new Gatekeeper()
+
+  if (config.commandFolder) {
+    await instance.loadCommandsFromFolder(config.commandFolder)
+  }
 
   for (const command of config.commands ?? []) {
     instance.addCommand(command)

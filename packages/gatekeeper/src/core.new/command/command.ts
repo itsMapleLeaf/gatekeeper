@@ -13,13 +13,19 @@ import type { Logger } from "../../internal/logger"
 import type { DiscordInteraction } from "../../internal/types"
 import type { RenderReplyFn } from "../component/reply-component"
 import type { ReplyInstance } from "../reply-instance"
-import { EphemeralReplyInstance, PublicReplyInstance } from "../reply-instance"
+import {
+  callInteractionSubject,
+  EphemeralReplyInstance,
+  PublicReplyInstance,
+} from "../reply-instance"
 
 type DiscordCommandManager =
   | ApplicationCommandManager
   | GuildApplicationCommandManager
 
-export type Command = {
+const commandSymbol = Symbol("command")
+
+export type CommandConfig = {
   name: string
   matchesExisting: (appCommand: ApplicationCommand) => boolean
   register: (commandManager: DiscordCommandManager) => Promise<void>
@@ -28,6 +34,18 @@ export type Command = {
     interaction: BaseCommandInteraction | MessageComponentInteraction,
     instance: CommandInstance,
   ) => void | Promise<unknown>
+}
+
+export type Command = CommandConfig & {
+  [commandSymbol]: true
+}
+
+export function createCommand(config: CommandConfig): Command {
+  return { ...config, [commandSymbol]: true }
+}
+
+export function isCommand(value: unknown): value is Command {
+  return (value as Command)?.[commandSymbol] === true
 }
 
 const deferPriority = 0
@@ -103,16 +121,23 @@ export class CommandInstance {
     return id
   }
 
-  handleComponentInteraction(interaction: MessageComponentInteraction) {
+  async handleComponentInteraction(interaction: MessageComponentInteraction) {
     for (const [, instance] of this.replyInstances) {
       const subject = instance.findInteractionSubject(interaction)
       if (subject) {
+        await callInteractionSubject(interaction, subject, this)
+
         this.queue.addAction({
           name: "replyInstance.handleComponentInteraction",
           priority: updatePriority,
           run: () =>
-            instance.handleComponentInteraction(interaction, subject, this),
+            instance.updateMessageFromComponentInteraction(
+              interaction,
+              subject,
+              this,
+            ),
         })
+
         return true
       }
     }

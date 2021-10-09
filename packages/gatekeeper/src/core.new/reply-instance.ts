@@ -28,7 +28,7 @@ export type ReplyInstance = {
   findInteractionSubject(
     interaction: MessageComponentInteraction,
   ): InteractionSubject | undefined
-  handleComponentInteraction(
+  updateMessageFromComponentInteraction(
     interaction: MessageComponentInteraction,
     subject: InteractionSubject,
     commandInstance: CommandInstance,
@@ -110,36 +110,18 @@ export class PublicReplyInstance implements ReplyInstance {
     )
   }
 
-  async handleComponentInteraction(
+  async updateMessageFromComponentInteraction(
     interaction: MessageComponentInteraction,
-    subject: InteractionSubject,
-    command: CommandInstance,
   ) {
-    const message = interaction.message as Message
-    if (interaction.isButton() && subject.type === "button") {
-      await subject.onClick({
-        ...createInteractionContext({ interaction, command }),
-        message,
-      })
-    }
-
-    if (interaction.isSelectMenu() && subject.type === "selectMenu") {
-      await subject.onSelect({
-        ...createInteractionContext({ interaction, command }),
-        message,
-        values: interaction.values,
-      })
+    this.renderResult = flattenRenderResult(this.render())
+    if (this.renderResult.length === 0) {
+      await this.deleteMessage()
+      return
     }
 
     // can't call update if it was deferred or replied to
     if (interaction.deferred || interaction.replied) {
       await this.refreshMessage()
-      return
-    }
-
-    this.renderResult = flattenRenderResult(this.render())
-    if (this.renderResult.length === 0) {
-      await this.deleteMessage()
       return
     }
 
@@ -192,27 +174,9 @@ export class EphemeralReplyInstance implements ReplyInstance {
     )
   }
 
-  async handleComponentInteraction(
+  async updateMessageFromComponentInteraction(
     interaction: MessageComponentInteraction,
-    subject: InteractionSubject,
-    command: CommandInstance,
   ) {
-    const message = interaction.message as Message
-    if (interaction.isButton() && subject?.type === "button") {
-      await subject.onClick({
-        ...createInteractionContext({ interaction, command }),
-        message,
-      })
-    }
-
-    if (interaction.isSelectMenu() && subject?.type === "selectMenu") {
-      await subject.onSelect({
-        ...createInteractionContext({ interaction, command }),
-        message,
-        values: interaction.values,
-      })
-    }
-
     this.renderResult = flattenRenderResult(this.render())
     if (this.renderResult.length === 0) return
 
@@ -225,6 +189,28 @@ export class EphemeralReplyInstance implements ReplyInstance {
     }
 
     await interaction.update(options)
+  }
+}
+
+export async function callInteractionSubject(
+  interaction: MessageComponentInteraction,
+  subject: InteractionSubject,
+  command: CommandInstance,
+) {
+  const message = interaction.message as Message
+  if (interaction.isButton() && subject.type === "button") {
+    await subject.onClick({
+      ...createInteractionContext({ interaction, command }),
+      message,
+    })
+  }
+
+  if (interaction.isSelectMenu() && subject.type === "selectMenu") {
+    await subject.onSelect({
+      ...createInteractionContext({ interaction, command }),
+      message,
+      values: interaction.values,
+    })
   }
 }
 
