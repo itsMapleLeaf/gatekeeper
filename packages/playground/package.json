@@ -10,8 +10,7 @@
     "@itsmapleleaf/gatekeeper": "workspace:*",
     "ts-node": "10.2.1",
     "discord.js": "13.2.0",
-    "dotenv": "10.0.0",
-    "fast-glob": "3.2.7"
+    "dotenv": "10.0.0"
   },
   "devDependencies": {
     "nodemon": "2.0.13",
