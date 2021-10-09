@@ -8,49 +8,50 @@ export type ReplyHandle = {
   delete: () => void
 }
 
-export class InteractionContext {
-  constructor(
-    protected readonly interaction: DiscordInteraction,
-    protected readonly commandInstance: CommandInstance,
-  ) {}
+export type InteractionContext = {
+  readonly user: User
+  readonly channel: TextBasedChannels | undefined
+  readonly guild: Guild | undefined
+  readonly guildMember: GuildMember | undefined
+  reply: (render: RenderReplyFn) => ReplyHandle
+  ephemeralReply: (render: RenderReplyFn) => void
+  defer: () => void
+  ephemeralDefer: () => void
+}
 
-  get user(): User {
-    return this.interaction.user
-  }
+export type InteractionContextInit = {
+  interaction: DiscordInteraction
+  command: CommandInstance
+}
 
-  get channel(): TextBasedChannels | undefined {
-    return this.interaction.channel ?? undefined
-  }
-
-  get guild(): Guild | undefined {
-    return this.interaction.guild ?? undefined
-  }
-
-  get guildMember(): GuildMember | undefined {
-    return (this.interaction.member ?? undefined) as GuildMember | undefined
-  }
-
-  reply(render: RenderReplyFn): ReplyHandle {
-    const id = this.commandInstance.createReply(render, this.interaction)
-    return {
-      refresh: () => {
-        this.commandInstance.refreshReply(id)
-      },
-      delete: () => {
-        this.commandInstance.deleteReply(id)
-      },
-    }
-  }
-
-  ephemeralReply(render: RenderReplyFn) {
-    this.commandInstance.createEphemeralReply(render, this.interaction)
-  }
-
-  defer() {
-    this.commandInstance.defer(this.interaction)
-  }
-
-  ephemeralDefer() {
-    this.commandInstance.ephemeralDefer(this.interaction)
+export function createInteractionContext({
+  interaction,
+  command,
+}: InteractionContextInit): InteractionContext {
+  return {
+    user: interaction.user,
+    channel: interaction.channel ?? undefined,
+    guild: interaction.guild ?? undefined,
+    guildMember: (interaction.member ?? undefined) as GuildMember | undefined,
+    reply: (render: RenderReplyFn) => {
+      const id = command.createReply(render, interaction)
+      return {
+        refresh: () => {
+          command.refreshReply(id)
+        },
+        delete: () => {
+          command.deleteReply(id)
+        },
+      }
+    },
+    ephemeralReply: (render: RenderReplyFn) => {
+      command.createEphemeralReply(render, interaction)
+    },
+    defer: () => {
+      command.defer(interaction)
+    },
+    ephemeralDefer: () => {
+      command.ephemeralDefer(interaction)
+    },
   }
 }

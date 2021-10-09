@@ -1,11 +1,6 @@
 import { randomUUID } from "crypto"
-import type {
-  Message,
-  MessageSelectOptionData,
-  SelectMenuInteraction,
-} from "discord.js"
-import type { CommandInstance } from "./command"
-import { InteractionContext } from "./interaction-context"
+import type { Message, MessageSelectOptionData } from "discord.js"
+import type { InteractionContext } from "./interaction-context"
 
 /**
  * Options passed to {@link selectMenuComponent}
@@ -66,6 +61,11 @@ export type SelectMenuComponent = Omit<
   customId: string
 }
 
+export type SelectMenuInteractionContext = InteractionContext & {
+  readonly message: Message
+  readonly values: string[]
+}
+
 /**
  * Represents a Discord [select menu](https://discord.com/developers/docs/interactions/message-components#select-menus) component.
  *
@@ -107,25 +107,5 @@ export function selectMenuComponent({
       ...option,
       default: option.default ?? selectedOptions.has(option.value),
     })),
-  }
-}
-
-export class SelectMenuInteractionContext extends InteractionContext {
-  protected override interaction: SelectMenuInteraction
-
-  constructor(
-    interaction: SelectMenuInteraction,
-    commandInstance: CommandInstance,
-  ) {
-    super(interaction, commandInstance)
-    this.interaction = interaction
-  }
-
-  get message(): Message {
-    return this.interaction.message as Message
-  }
-
-  get values(): string[] {
-    return this.interaction.values
   }
 }

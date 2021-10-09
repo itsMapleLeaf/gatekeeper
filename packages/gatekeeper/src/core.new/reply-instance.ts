@@ -1,8 +1,8 @@
 import type { Message, MessageComponentInteraction } from "discord.js"
 import type { DiscordInteraction } from "../internal/types"
 import type { ButtonComponent } from "./button-component"
-import { ButtonInteractionContext } from "./button-component"
 import type { CommandInstance } from "./command"
+import { createInteractionContext } from "./interaction-context"
 import type {
   RenderReplyFn,
   RenderResult,
@@ -13,7 +13,6 @@ import {
   flattenRenderResult,
 } from "./reply-component"
 import type { SelectMenuComponent } from "./select-menu-component"
-import { SelectMenuInteractionContext } from "./select-menu-component"
 
 type ReplyInstanceEvents = {
   onDelete: (instance: ReplyInstance) => void
@@ -109,18 +108,22 @@ export class PublicReplyInstance implements ReplyInstance {
   async handleComponentInteraction(
     interaction: MessageComponentInteraction,
     subject: InteractionSubject,
-    commandInstance: CommandInstance,
+    command: CommandInstance,
   ) {
-    if (interaction.isButton() && subject?.type === "button") {
-      await subject?.onClick(
-        new ButtonInteractionContext(interaction, commandInstance),
-      )
+    const message = interaction.message as Message
+    if (interaction.isButton() && subject.type === "button") {
+      await subject.onClick({
+        ...createInteractionContext({ interaction, command }),
+        message,
+      })
     }
 
-    if (interaction.isSelectMenu() && subject?.type === "selectMenu") {
-      await subject?.onSelect(
-        new SelectMenuInteractionContext(interaction, commandInstance),
-      )
+    if (interaction.isSelectMenu() && subject.type === "selectMenu") {
+      await subject.onSelect({
+        ...createInteractionContext({ interaction, command }),
+        message,
+        values: interaction.values,
+      })
     }
 
     // can't call update if it was deferred or replied to
@@ -182,18 +185,22 @@ export class EphemeralReplyInstance implements ReplyInstance {
   async handleComponentInteraction(
     interaction: MessageComponentInteraction,
     subject: InteractionSubject,
-    commandInstance: CommandInstance,
+    command: CommandInstance,
   ) {
+    const message = interaction.message as Message
     if (interaction.isButton() && subject?.type === "button") {
-      await subject?.onClick(
-        new ButtonInteractionContext(interaction, commandInstance),
-      )
+      await subject.onClick({
+        ...createInteractionContext({ interaction, command }),
+        message,
+      })
     }
 
     if (interaction.isSelectMenu() && subject?.type === "selectMenu") {
-      await subject?.onSelect(
-        new SelectMenuInteractionContext(interaction, commandInstance),
-      )
+      await subject.onSelect({
+        ...createInteractionContext({ interaction, command }),
+        message,
+        values: interaction.values,
+      })
     }
 
     this.renderResult = flattenRenderResult(this.render())
