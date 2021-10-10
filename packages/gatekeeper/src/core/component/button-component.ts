@@ -34,7 +34,7 @@ export type ButtonComponentOptions = {
   /**
    * Called when the button is clicked
    */
-  onClick: (context: ButtonInteractionContext) => void | Promise<unknown>
+  onClick: (context: ButtonInteractionContext) => unknown
 }
 
 /**

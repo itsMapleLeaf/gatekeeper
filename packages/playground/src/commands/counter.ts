@@ -18,9 +18,7 @@ export const counterCommand = defineSlashCommand({
       buttonComponent({
         style: "PRIMARY",
         label: `press it`,
-        onClick: () => {
-          count += 1
-        },
+        onClick: () => (count += 1),
       }),
       buttonComponent({
         style: "PRIMARY",
