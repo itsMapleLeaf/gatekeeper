@@ -52,12 +52,13 @@ const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
 })
 
-createGatekeeper({
-  client,
-  commands: [counterCommand],
-})
-
-client.login(process.env.BOT_TOKEN).catch(console.error)
+;(async () => {
+  await createGatekeeper({
+    client,
+    commands: [counterCommand],
+  })
+  await client.login(process.env.BOT_TOKEN)
+})()
 ```
 
 And a silly example, demonstrating the power of the library. [You can find the code here](./packages/playground/src/commands/counter-factory.ts)
