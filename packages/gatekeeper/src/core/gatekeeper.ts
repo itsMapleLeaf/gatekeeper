@@ -52,6 +52,10 @@ export class Gatekeeper {
     this.commands.add(command)
   }
 
+  getCommands(): readonly Command[] {
+    return [...this.commands]
+  }
+
   addEventListeners(
     client: Client,
     scope: NonNullable<GatekeeperConfig["scope"]>,
