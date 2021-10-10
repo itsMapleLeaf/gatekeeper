@@ -1,7 +1,7 @@
 import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
-import { join } from "path/posix"
+import { join } from "node:path"
 
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS],
@@ -14,6 +14,5 @@ void (async () => {
     commandFolder: join(__dirname, "commands"),
   })
 
-  // eslint-disable-next-line no-console
   await client.login(process.env.BOT_TOKEN)
 })()
