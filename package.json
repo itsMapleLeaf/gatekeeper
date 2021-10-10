@@ -27,6 +27,11 @@
   "eslintConfig": {
     "extends": [
       "./node_modules/@itsmapleleaf/configs/eslint"
+    ],
+    "ignorePatterns": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/docs/**"
     ]
   }
 }
