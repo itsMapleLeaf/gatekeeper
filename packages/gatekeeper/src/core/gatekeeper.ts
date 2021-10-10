@@ -217,8 +217,6 @@ export class Gatekeeper {
     )
     if (!command) return
 
-    this.logger.info("Running command", chalk.bold(command.name))
-
     const instance = new CommandInstance(command, this.logger)
     this.commandInstances.add(instance)
 
