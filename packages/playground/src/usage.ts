@@ -1,37 +1,34 @@
 /* eslint-disable no-console */
-import {
-  buttonComponent,
-  createGatekeeper,
-  defineSlashCommand,
-} from "@itsmapleleaf/gatekeeper"
+import { buttonComponent, Gatekeeper } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 
-const counterCommand = defineSlashCommand({
-  name: "counter",
-  description: "make a counter",
-  run(context) {
-    let count = 0
+void (async () => {
+  const client = new Client({
+    intents: [Intents.FLAGS.GUILDS],
+  })
 
-    context.reply(() => [
-      `button pressed ${count} times`,
-      buttonComponent({
-        style: "PRIMARY",
-        label: "press it",
-        onClick: () => {
-          count += 1
-        },
-      }),
-    ])
-  },
-})
+  const gatekeeper = await Gatekeeper.create({
+    client,
+  })
 
-const client = new Client({
-  intents: [Intents.FLAGS.GUILDS],
-})
+  gatekeeper.addSlashCommand({
+    name: "counter",
+    description: "make a counter",
+    run(context) {
+      let count = 0
 
-createGatekeeper({
-  client,
-  commands: [counterCommand],
-})
+      context.reply(() => [
+        `button pressed ${count} times`,
+        buttonComponent({
+          style: "PRIMARY",
+          label: "press it",
+          onClick: () => {
+            count += 1
+          },
+        }),
+      ])
+    },
+  })
 
-client.login(process.env.BOT_TOKEN).catch(console.error)
+  await client.login(process.env.BOT_TOKEN)
+})()
