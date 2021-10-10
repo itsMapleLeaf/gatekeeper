@@ -1,4 +1,4 @@
-import { defineSlashCommand } from "../../../gatekeeper/src/main"
+import { defineSlashCommand } from "@itsmapleleaf/gatekeeper/src/main"
 
 export const doubleCommand = defineSlashCommand({
   name: "double",

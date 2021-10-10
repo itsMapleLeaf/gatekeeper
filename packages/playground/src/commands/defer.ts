@@ -1,7 +1,7 @@
 import {
   buttonComponent,
   defineSlashCommand,
-} from "../../../gatekeeper/src/main"
+} from "@itsmapleleaf/gatekeeper/src/main"
 import { wait } from "../wait"
 
 // if a command can potentially take a while, deferring it can be a good idea!

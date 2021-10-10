@@ -1,7 +1,7 @@
 import {
   defineMessageCommand,
   defineSlashCommand,
-} from "../../../gatekeeper/src/main"
+} from "@itsmapleleaf/gatekeeper/src/main"
 
 function spongebobify(text: string): string {
   return [...text]

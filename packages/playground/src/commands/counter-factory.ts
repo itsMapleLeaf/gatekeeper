@@ -1,11 +1,11 @@
 import type {
   InteractionContext,
   ReplyHandle,
-} from "../../../gatekeeper/src/main"
+} from "@itsmapleleaf/gatekeeper/src/main"
 import {
   buttonComponent,
   defineSlashCommand,
-} from "../../../gatekeeper/src/main"
+} from "@itsmapleleaf/gatekeeper/src/main"
 import { wait } from "../wait"
 
 export const counterFactory = defineSlashCommand({

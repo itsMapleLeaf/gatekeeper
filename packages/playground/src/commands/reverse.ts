@@ -1,4 +1,4 @@
-import { defineMessageCommand } from "../../../gatekeeper/src/main"
+import { defineMessageCommand } from "@itsmapleleaf/gatekeeper/src/main"
 
 export const reverseCommand = defineMessageCommand({
   name: "reverse message content",
