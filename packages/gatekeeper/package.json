@@ -6,7 +6,9 @@
   "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "bin",
+    "codemods"
   ],
   "repository": "https://github.com/itsMapleLeaf/gatekeeper",
   "homepage": "https://github.com/itsMapleLeaf/gatekeeper#readme",
