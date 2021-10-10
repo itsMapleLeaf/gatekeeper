@@ -21,8 +21,8 @@ export class ActionQueue {
     this.actions.push(action)
 
     this.actions.sort((a, b) => {
-      if (a.priority == null) return 1
-      if (b.priority == null) return -1
+      if (a.priority == null) return -1
+      if (b.priority == null) return 1
       return a.priority - b.priority
     })
 
