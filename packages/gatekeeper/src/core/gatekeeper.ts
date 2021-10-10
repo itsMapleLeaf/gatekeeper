@@ -14,13 +14,21 @@ import type { Logger } from "../internal/logger"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { DiscordCommandManager } from "../internal/types"
 import type { Command } from "./command/command"
-import { CommandInstance, isCommand } from "./command/command"
+import { CommandInstance } from "./command/command"
+import type { MessageCommandConfig } from "./command/message-command"
+import { defineMessageCommand } from "./command/message-command"
+import type {
+  SlashCommandConfig,
+  SlashCommandOptionConfigMap,
+} from "./command/slash-command"
+import { defineSlashCommand } from "./command/slash-command"
+import type { UserCommandConfig } from "./command/user-command"
+import { defineUserCommand } from "./command/user-command"
 
 export type GatekeeperConfig = {
   client: Client
   name?: string
   logging?: boolean
-  commands?: Command[]
   commandFolder?: string
 
   /**
@@ -39,24 +47,63 @@ export type GatekeeperConfig = {
   scope?: "guild" | "global" | "both"
 }
 
+/** Basic information about the commands currently added */
+export type CommandInfo = {
+  /** The name of the command */
+  name: string
+}
+
 export class Gatekeeper {
   private readonly commands = new Set<Command>()
   private readonly commandInstances = new Set<CommandInstance>()
   private readonly logger: Logger
 
-  constructor(logger: Logger) {
+  private constructor(logger: Logger) {
     this.logger = logger
   }
 
-  addCommand(command: Command) {
-    this.commands.add(command)
+  static async create({
+    name = "gatekeeper",
+    logging = true,
+    scope = "guild",
+    ...config
+  }: GatekeeperConfig) {
+    const instance = new Gatekeeper(
+      logging ? createConsoleLogger({ name }) : createNoopLogger(),
+    )
+
+    if (config.commandFolder) {
+      await instance.loadCommandsFromFolder(config.commandFolder)
+    }
+
+    instance.addEventListeners(config.client, scope)
+
+    return instance
   }
 
-  getCommands(): readonly Command[] {
+  getCommands(): readonly CommandInfo[] {
     return [...this.commands]
   }
 
-  addEventListeners(
+  addSlashCommand<Options extends SlashCommandOptionConfigMap>(
+    config: SlashCommandConfig<Options>,
+  ) {
+    this.addCommand(defineSlashCommand(config))
+  }
+
+  addUserCommand(config: UserCommandConfig) {
+    this.addCommand(defineUserCommand(config))
+  }
+
+  addMessageCommand(config: MessageCommandConfig) {
+    this.addCommand(defineMessageCommand(config))
+  }
+
+  private addCommand(command: Command) {
+    this.commands.add(command)
+  }
+
+  private addEventListeners(
     client: Client,
     scope: NonNullable<GatekeeperConfig["scope"]>,
   ) {
@@ -118,7 +165,7 @@ export class Gatekeeper {
     )
   }
 
-  async loadCommandsFromFolder(folderPath: string) {
+  private async loadCommandsFromFolder(folderPath: string) {
     // backslashes are ugly
     const localPath = relative(process.cwd(), folderPath).replace(/\\/g, "/")
 
@@ -126,23 +173,18 @@ export class Gatekeeper {
       const files = await glob(`./**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}`, {
         cwd: folderPath,
       })
-      const loaded: string[] = []
 
       await Promise.all(
         files.map(async (filename) => {
           const mod = await import(join(folderPath, filename))
-          for (const [, value] of Object.entries(mod)) {
-            if (isCommand(value)) {
-              this.addCommand(value)
-              loaded.push(value.name)
-            }
-          }
+          const fn = mod.default || mod
+          if (typeof fn === "function") fn(this)
         }),
       )
     })
   }
 
-  async syncGuildCommands(guild: Guild) {
+  private async syncGuildCommands(guild: Guild) {
     await this.logger.block(`Syncing commands for ${guild.name}`, async () => {
       await this.syncCommands(
         `in ${guild.name}`,
@@ -152,7 +194,7 @@ export class Gatekeeper {
     })
   }
 
-  async syncGlobalCommands(client: Client) {
+  private async syncGlobalCommands(client: Client) {
     await this.logger.block(`Syncing global commands`, async () => {
       const commandManager =
         client.application?.commands ?? raise("No client application found")
@@ -251,27 +293,4 @@ export class Gatekeeper {
       }
     }
   }
-}
-
-export async function createGatekeeper({
-  name = "gatekeeper",
-  logging = true,
-  scope = "guild",
-  ...config
-}: GatekeeperConfig): Promise<Gatekeeper> {
-  const instance = new Gatekeeper(
-    logging ? createConsoleLogger({ name }) : createNoopLogger(),
-  )
-
-  if (config.commandFolder) {
-    await instance.loadCommandsFromFolder(config.commandFolder)
-  }
-
-  for (const command of config.commands ?? []) {
-    instance.addCommand(command)
-  }
-
-  instance.addEventListeners(config.client, scope)
-
-  return instance
 }

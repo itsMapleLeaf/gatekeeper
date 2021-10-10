@@ -1,22 +1,24 @@
 import {
   buttonComponent,
-  defineSlashCommand,
+  Gatekeeper,
 } from "@itsmapleleaf/gatekeeper/src/main"
 
-export const ephemeralCounterCommand = defineSlashCommand({
-  name: "ephemeral-counter",
-  description: "a counter, but private",
-  run(context) {
-    let count = 0
+export default function defineCommands(gatekeeper: Gatekeeper) {
+  gatekeeper.addSlashCommand({
+    name: "ephemeral-counter",
+    description: "a counter, but private",
+    run(context) {
+      let count = 0
 
-    context.ephemeralReply(() => [
-      buttonComponent({
-        label: `increment (${count})`,
-        style: "PRIMARY",
-        onClick: () => {
-          count++
-        },
-      }),
-    ])
-  },
-})
+      context.ephemeralReply(() => [
+        buttonComponent({
+          label: `increment (${count})`,
+          style: "PRIMARY",
+          onClick: () => {
+            count++
+          },
+        }),
+      ])
+    },
+  });
+}

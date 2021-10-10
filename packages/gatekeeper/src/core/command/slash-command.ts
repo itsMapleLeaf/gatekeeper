@@ -89,7 +89,9 @@ export type SlashCommandOptionChoiceConfig<Value> = {
  * This is the magic that takes your option config
  * and gives you a typesafe object of values.
  */
-type SlashCommandOptionValues<Options extends SlashCommandOptionConfigMap> = {
+export type SlashCommandOptionValues<
+  Options extends SlashCommandOptionConfigMap,
+> = {
   [Name in keyof Options]: Options[Name]["required"] extends true
     ? SlashCommandOptionValueMap[Options[Name]["type"]]
     : SlashCommandOptionValueMap[Options[Name]["type"]] | undefined

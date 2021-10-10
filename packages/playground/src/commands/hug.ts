@@ -1,7 +1,4 @@
-import {
-  defineSlashCommand,
-  defineUserCommand,
-} from "@itsmapleleaf/gatekeeper/src/main"
+import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main";
 
 const emojis = [
   "<:hug:784024746424795157>",
@@ -15,31 +12,32 @@ const emojis = [
   "<:btmcHug:814621172611940352>",
 ]
 
-// this defines a context menu command when you right-click on a user
-export const hugUserCommand = defineUserCommand({
-  name: "hug",
-  run(context) {
-    const user = `<@${context.user.id}>`
-    const target = `<@${context.targetUser.id}>`
-    const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
-    context.reply(() => `${user} gave ${target} a hug! ${emoji}`)
-  },
-})
-
-export const hugSlashCommand = defineSlashCommand({
-  name: "hug",
-  description: "give someone a hug ♥",
-  options: {
-    target: {
-      type: "MENTIONABLE",
-      description: "the target to hug",
-      required: true,
+export default function defineCommands(gatekeeper: Gatekeeper) {
+  gatekeeper.addUserCommand({
+    name: "hug",
+    run(context) {
+      const user = `<@${context.user.id}>`
+      const target = `<@${context.targetUser.id}>`
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
+      context.reply(() => `${user} gave ${target} a hug! ${emoji}`)
     },
-  },
-  run(context) {
-    const { target } = context.options
-    const user = `<@!${context.user.id}>`
-    const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
-    context.reply(() => `${user} gave ${target.mention} a hug! ${emoji}`)
-  },
-})
+  });
+
+  gatekeeper.addSlashCommand({
+    name: "hug",
+    description: "give someone a hug ♥",
+    options: {
+      target: {
+        type: "MENTIONABLE",
+        description: "the target to hug",
+        required: true,
+      },
+    },
+    run(context) {
+      const { target } = context.options
+      const user = `<@!${context.user.id}>`
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
+      context.reply(() => `${user} gave ${target.mention} a hug! ${emoji}`)
+    },
+  });
+}

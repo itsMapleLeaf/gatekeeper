@@ -1,7 +1,4 @@
-import {
-  defineMessageCommand,
-  defineSlashCommand,
-} from "@itsmapleleaf/gatekeeper/src/main"
+import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main";
 
 function spongebobify(text: string): string {
   return [...text]
@@ -11,25 +8,26 @@ function spongebobify(text: string): string {
     .join("")
 }
 
-// this defines a context menu command when you right-click on a message
-export const spongebobMessageCommand = defineMessageCommand({
-  name: "spongebob",
-  run(context) {
-    context.reply(() => spongebobify(context.targetMessage.content))
-  },
-})
-
-export const spongebobSlashCommand = defineSlashCommand({
-  name: "spongebob",
-  description: "sUrE yOu dId",
-  options: {
-    text: {
-      type: "STRING",
-      description: "iT's hTe tExT",
-      required: true,
+export default function defineCommands(gatekeeper: Gatekeeper) {
+  gatekeeper.addMessageCommand({
+    name: "spongebob",
+    run(context) {
+      context.reply(() => spongebobify(context.targetMessage.content))
     },
-  },
-  run(context) {
-    context.reply(() => spongebobify(context.options.text))
-  },
-})
+  });
+
+  gatekeeper.addSlashCommand({
+    name: "spongebob",
+    description: "sUrE yOu dId",
+    options: {
+      text: {
+        type: "STRING",
+        description: "iT's hTe tExT",
+        required: true,
+      },
+    },
+    run(context) {
+      context.reply(() => spongebobify(context.options.text))
+    },
+  });
+}

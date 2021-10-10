@@ -1,4 +1,4 @@
-import { createGatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
+import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
 import { join } from "path/posix"
@@ -8,8 +8,8 @@ const client = new Client({
 })
 
 void (async () => {
-  await createGatekeeper({
-    name: "playground-bot",
+  await Gatekeeper.create({
+    name: "playground",
     client,
     commandFolder: join(__dirname, "commands"),
   })

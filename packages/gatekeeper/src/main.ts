@@ -1,15 +1,8 @@
 export {}
 export type {
-  Command,
-  CommandConfig,
-  CommandInstance,
-} from "./core/command/command"
-export { defineMessageCommand } from "./core/command/message-command"
-export type {
   MessageCommandConfig,
   MessageCommandInteractionContext,
 } from "./core/command/message-command"
-export { defineSlashCommand } from "./core/command/slash-command"
 export type {
   SlashCommandConfig,
   SlashCommandInteractionContext,
@@ -19,8 +12,8 @@ export type {
   SlashCommandOptionConfigBase,
   SlashCommandOptionConfigMap,
   SlashCommandOptionValueMap,
+  SlashCommandOptionValues,
 } from "./core/command/slash-command"
-export { defineUserCommand } from "./core/command/user-command"
 export type {
   UserCommandConfig,
   UserCommandInteractionContext,
@@ -56,9 +49,10 @@ export type {
   SelectMenuComponentOptions,
   SelectMenuInteractionContext,
 } from "./core/component/select-menu-component"
-export { createGatekeeper } from "./core/gatekeeper"
-export type { Gatekeeper, GatekeeperConfig } from "./core/gatekeeper"
+export { Gatekeeper } from "./core/gatekeeper"
+export type { CommandInfo, GatekeeperConfig } from "./core/gatekeeper"
 export type {
   InteractionContext,
   ReplyHandle,
 } from "./core/interaction-context"
+

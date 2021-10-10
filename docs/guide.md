@@ -476,6 +476,10 @@ defineSlashCommand({
 })
 ```
 
+## Tutorial: Loading commands from a folder
+
+> TODO
+
 ## More examples
 
 - [Select menu (single selection)](/packages/playground/src/commands/select.ts)

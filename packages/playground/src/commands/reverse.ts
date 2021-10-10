@@ -1,10 +1,12 @@
-import { defineMessageCommand } from "@itsmapleleaf/gatekeeper/src/main"
+import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
 
-export const reverseCommand = defineMessageCommand({
-  name: "reverse message content",
-  run(context) {
-    context.reply(() =>
-      context.targetMessage.content.split("").reverse().join(""),
-    )
-  },
-})
+export default function defineCommands(gatekeeper: Gatekeeper) {
+  gatekeeper.addMessageCommand({
+    name: "reverse message content",
+    run(context) {
+      context.reply(() =>
+        context.targetMessage.content.split("").reverse().join(""),
+      )
+    },
+  });
+}
