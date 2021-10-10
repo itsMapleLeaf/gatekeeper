@@ -5,6 +5,5 @@
   "readme": "none",
   "excludePrivate": true,
   "excludeProtected": true,
-  "excludeInternal": true,
   "sort": ["alphabetical"]
 }

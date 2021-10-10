@@ -1,16 +1,16 @@
 import chalk from "chalk"
 import type {
   ApplicationCommand,
-  ApplicationCommandManager,
-  BaseCommandInteraction,
-  GuildApplicationCommandManager,
   Interaction,
   MessageComponentInteraction,
 } from "discord.js"
 import { randomUUID } from "node:crypto"
 import { ActionQueue } from "../../internal/action-queue"
 import type { Logger } from "../../internal/logger"
-import type { DiscordInteraction } from "../../internal/types"
+import type {
+  DiscordCommandManager,
+  DiscordInteraction,
+} from "../../internal/types"
 import type { RenderReplyFn } from "../component/reply-component"
 import type { ReplyInstance } from "../reply-instance"
 import {
@@ -19,23 +19,31 @@ import {
   PublicReplyInstance,
 } from "../reply-instance"
 
-type DiscordCommandManager =
-  | ApplicationCommandManager
-  | GuildApplicationCommandManager
-
 const commandSymbol = Symbol("command")
 
+/**
+ * Configuration for defining the behavior of a command.
+ * This is used by the various `define*Command` functions,
+ * and shouldn't be used directly.
+ * @internal
+ */
 export type CommandConfig = {
   name: string
   matchesExisting: (appCommand: ApplicationCommand) => boolean
   register: (commandManager: DiscordCommandManager) => Promise<void>
   matchesInteraction: (interaction: Interaction) => boolean
   run: (
-    interaction: BaseCommandInteraction | MessageComponentInteraction,
+    interaction: DiscordInteraction,
     instance: CommandInstance,
   ) => void | Promise<unknown>
 }
 
+/**
+ * Defines the behavior for a command.
+ * This is returned from the various `define*Command` functions,
+ * and shouldn't be used/created directly.
+ * @internal
+ */
 export type Command = CommandConfig & {
   [commandSymbol]: true
 }
@@ -51,6 +59,12 @@ export function isCommand(value: unknown): value is Command {
 const deferPriority = 0
 const updatePriority = 1
 
+/**
+ * Created when running a command,
+ * and used to track replies created by the command.
+ * Do not use this directly.
+ * @internal
+ */
 export class CommandInstance {
   private readonly replyInstances = new Map<string, ReplyInstance>()
   private readonly logger: Logger
