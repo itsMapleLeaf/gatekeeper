@@ -1,4 +1,4 @@
-import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
 
 export default function defineCommands(gatekeeper: Gatekeeper) {
   gatekeeper.addSlashCommand({
@@ -30,8 +30,9 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
     },
     run(context) {
       context.reply(
-        () => `you picked ${context.options.color} and ${context.options.number}`,
+        () =>
+          `you picked ${context.options.color} and ${context.options.number}`,
       )
     },
-  });
+  })
 }

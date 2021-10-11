@@ -1,7 +1,5 @@
-import {
-  embedComponent,
-  Gatekeeper,
-} from "@itsmapleleaf/gatekeeper/src/main"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
+import { embedComponent } from "@itsmapleleaf/gatekeeper/src/main"
 import type { EmbedFieldData } from "discord.js"
 
 export default function defineCommands(gatekeeper: Gatekeeper) {
@@ -31,7 +29,8 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
       context.reply(() =>
         embedComponent({
           title:
-            context.targetGuildMember?.displayName ?? context.targetUser.username,
+            context.targetGuildMember?.displayName ??
+            context.targetUser.username,
           color: context.targetGuildMember?.displayColor,
           thumbnail: {
             url: context.targetUser.avatarURL() ?? undefined,
@@ -40,5 +39,5 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
         }),
       )
     },
-  });
+  })
 }

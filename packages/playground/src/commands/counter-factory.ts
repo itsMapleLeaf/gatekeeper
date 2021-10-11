@@ -1,5 +1,9 @@
-import type { InteractionContext, ReplyHandle, Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main";
-import { buttonComponent } from "@itsmapleleaf/gatekeeper/src/main";
+import type {
+  InteractionContext,
+  ReplyHandle,
+  Gatekeeper,
+} from "@itsmapleleaf/gatekeeper/src/main"
+import { buttonComponent } from "@itsmapleleaf/gatekeeper/src/main"
 import { wait } from "../wait"
 
 function createCounterReply(context: InteractionContext) {
@@ -76,5 +80,5 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
         ]
       })
     },
-  });
+  })
 }

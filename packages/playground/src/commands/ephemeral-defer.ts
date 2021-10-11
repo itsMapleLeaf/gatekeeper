@@ -1,7 +1,5 @@
-import {
-  buttonComponent,
-  Gatekeeper,
-} from "@itsmapleleaf/gatekeeper/src/main"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
+import { buttonComponent } from "@itsmapleleaf/gatekeeper/src/main"
 
 export default function defineCommands(gatekeeper: Gatekeeper) {
   gatekeeper.addSlashCommand({
@@ -24,5 +22,5 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
 
       context.ephemeralReply(() => "hi")
     },
-  });
+  })
 }

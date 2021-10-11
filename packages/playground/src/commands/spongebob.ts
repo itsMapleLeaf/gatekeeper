@@ -1,4 +1,4 @@
-import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main";
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
 
 function spongebobify(text: string): string {
   return [...text]
@@ -14,7 +14,7 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
     run(context) {
       context.reply(() => spongebobify(context.targetMessage.content))
     },
-  });
+  })
 
   gatekeeper.addSlashCommand({
     name: "spongebob",
@@ -29,5 +29,5 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
     run(context) {
       context.reply(() => spongebobify(context.options.text))
     },
-  });
+  })
 }

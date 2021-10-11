@@ -1,4 +1,4 @@
-import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main";
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
 
 const emojis = [
   "<:hug:784024746424795157>",
@@ -21,7 +21,7 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
       const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
       context.reply(() => `${user} gave ${target} a hug! ${emoji}`)
     },
-  });
+  })
 
   gatekeeper.addSlashCommand({
     name: "hug",
@@ -39,5 +39,5 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
       const emoji = emojis[Math.floor(Math.random() * emojis.length)] as string
       context.reply(() => `${user} gave ${target.mention} a hug! ${emoji}`)
     },
-  });
+  })
 }

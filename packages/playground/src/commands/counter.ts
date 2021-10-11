@@ -1,7 +1,7 @@
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
 import {
   buttonComponent,
   embedComponent,
-  Gatekeeper,
 } from "@itsmapleleaf/gatekeeper/src/main"
 
 export default function defineCommands(gatekeeper: Gatekeeper) {
@@ -32,5 +32,5 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
         }),
       ])
     },
-  });
+  })
 }
