@@ -47,7 +47,7 @@ export type ButtonComponent = ButtonComponentOptions & {
 
 /**
  * The context object received by button onClick handlers.
- * @see buttonComponent
+ * See {@link buttonComponent}
  */
 export type ButtonInteractionContext = InteractionContext & {
   readonly message: Message

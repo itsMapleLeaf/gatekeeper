@@ -6,8 +6,8 @@ import type { Command } from "./command"
 import { createCommand } from "./command"
 
 /**
- * Options for creating a user command.
- * @see defineUserCommand
+ * Options for creating a user command. Shows when right-clicking on a user.
+ * @see Gatekeeper.addUserCommand
  */
 export type UserCommandConfig = {
   /**
@@ -21,11 +21,10 @@ export type UserCommandConfig = {
 }
 
 export type UserCommandInteractionContext = InteractionContext & {
+  /** The user that the command was run on */
   readonly targetUser: User
 
-  /**
-   * If in a guild (server), the guild member for the user
-   */
+  /** If in a guild (server), the guild member for the user */
   readonly targetGuildMember: GuildMember | undefined
 }
 

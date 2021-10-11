@@ -30,6 +30,9 @@ export type LinkComponent = LinkComponentOptions & {
   type: "link"
 }
 
+/**
+ * Creates a link component, which is a button that opens a URL when clicked.
+ */
 export function linkComponent(options: LinkComponentOptions): LinkComponent {
   return {
     ...options,

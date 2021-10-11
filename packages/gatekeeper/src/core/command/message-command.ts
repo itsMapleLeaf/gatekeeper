@@ -6,8 +6,8 @@ import type { Command } from "./command"
 import { createCommand } from "./command"
 
 /**
- * Options for creating a message command.
- * @see defineMessageCommand
+ * Options for creating a message command. Shows when right-clicking a message.
+ * @see Gatekeeper.addMessageCommand
  */
 export type MessageCommandConfig = {
   /**
@@ -20,7 +20,9 @@ export type MessageCommandConfig = {
   run: (context: MessageCommandInteractionContext) => void | Promise<unknown>
 }
 
+/** The context object received when running a message command */
 export type MessageCommandInteractionContext = InteractionContext & {
+  /** The message that the command was run on */
   targetMessage: Message
 }
 

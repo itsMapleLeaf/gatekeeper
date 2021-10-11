@@ -9,7 +9,6 @@ export type SelectMenuComponentOptions = {
   /**
    * The array of options that can be selected.
    * Same structure as [MessageSelectOptionData from DJS](https://discord.js.org/#/docs/main/stable/typedef/MessageSelectOptionData)
-   * @see selectMenuComponent
    */
   options: MessageSelectOptionData[]
 
@@ -30,8 +29,6 @@ export type SelectMenuComponentOptions = {
    *
    * **Note:** For multi-select ({@link SelectMenuComponentOptions.maxValues}), this doesn't get called immediately.
    * It only gets called after clicking away from the select dropdown.
-   *
-   * @see selectMenuComponent
    */
   onSelect: (context: SelectMenuInteractionContext) => unknown
 
@@ -61,8 +58,13 @@ export type SelectMenuComponent = Omit<
   customId: string
 }
 
+/**
+ * Context object passed to {@link SelectMenuComponentOptions.onSelect}
+ */
 export type SelectMenuInteractionContext = InteractionContext & {
+  /** The message that the component is on */
   readonly message: Message
+  /** The values the user selected */
   readonly values: string[]
 }
 

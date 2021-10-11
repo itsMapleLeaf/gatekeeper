@@ -25,10 +25,39 @@ import { defineSlashCommand } from "./command/slash-command"
 import type { UserCommandConfig } from "./command/user-command"
 import { defineUserCommand } from "./command/user-command"
 
+/** Options for creating a gatekeeper instance */
 export type GatekeeperConfig = {
+  /** A Discord.JS client */
   client: Client
+
+  /** The name of the bot, used for logger messages */
   name?: string
+
+  /** Show colorful debug logs in the console */
   logging?: boolean
+
+  /**
+   * An *absolute path* to a folder with command files.
+   * Each file should `export default` a function to accept a gatekeeper instance
+   * and add commands to it.
+   *
+   * ```ts
+   * // main.ts
+   * Gatekeeper.create({
+   *   commandFolder: join(__dirname, "commands"),
+   * })
+   * ```
+   * ```ts
+   * // commands/ping.ts
+   * export default function addCommands(gatekeeper) {
+   *   gatekeeper.addCommand({
+   *     name: "ping",
+   *     description: "Pong!",
+   *     run: (ctx) => ctx.reply(() => "Pong!"),
+   *   })
+   * }
+   * ```
+   */
   commandFolder?: string
 
   /**
@@ -53,6 +82,10 @@ export type CommandInfo = {
   name: string
 }
 
+/**
+ * A gatekeeper instance.
+ * Holds commands, manages discord interactions, etc.
+ */
 export class Gatekeeper {
   private readonly commands = new Set<Command>()
   private readonly commandInstances = new Set<CommandInstance>()
@@ -62,6 +95,7 @@ export class Gatekeeper {
     this.logger = logger
   }
 
+  /** Create a {@link Gatekeeper} instance */
   static async create({
     name = "gatekeeper",
     logging = true,
@@ -81,20 +115,51 @@ export class Gatekeeper {
     return instance
   }
 
+  /** Returns a list of basic info for each added command */
   getCommands(): readonly CommandInfo[] {
     return [...this.commands]
   }
 
+  /**
+   * Add a slash command
+   * ```ts
+   * gatekeeper.addSlashCommand({
+   *   name: "ping",
+   *   description: "Pong!",
+   *   run: (ctx) => ctx.reply(() => "Pong!"),
+   * })
+   * ```
+   */
   addSlashCommand<Options extends SlashCommandOptionConfigMap>(
     config: SlashCommandConfig<Options>,
   ) {
     this.addCommand(defineSlashCommand(config))
   }
 
+  /**
+   * Add a user command
+   * ```ts
+   * gatekeeper.addUserCommand({
+   *   name: 'get user color',
+   *   run: (ctx) => ctx.reply(() => ctx.targetGuildMember?.color ?? "not in a guild!"),
+   * })
+   * ```
+   */
   addUserCommand(config: UserCommandConfig) {
     this.addCommand(defineUserCommand(config))
   }
 
+  /**
+   * Add a message command
+   * ```ts
+   * gatekeeper.addMessageCommand({
+   *   name: 'reverse',
+   *   run: (ctx) => {
+   *     ctx.reply(() => ctx.targetMessage.content.split("").reverse().join(""))
+   *   }
+   * })
+   * ```
+   */
   addMessageCommand(config: MessageCommandConfig) {
     this.addCommand(defineMessageCommand(config))
   }

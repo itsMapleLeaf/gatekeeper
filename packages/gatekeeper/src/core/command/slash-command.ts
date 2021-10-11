@@ -14,8 +14,7 @@ import type { Command } from "./command"
 import { createCommand } from "./command"
 
 /**
- * Configuration for a slash command.
- * @see defineSlashCommand
+ * Configuration for a slash command. See {@link Gatekeeper.addSlashCommand}
  */
 export type SlashCommandConfig<
   Options extends SlashCommandOptionConfigMap = SlashCommandOptionConfigMap,
@@ -35,7 +34,6 @@ export type SlashCommandConfig<
 
   /**
    * An object of options for the command, also called arguments, or parameters.
-   * @see defineSlashCommand
    */
   options?: Options
 
