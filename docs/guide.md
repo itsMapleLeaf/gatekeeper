@@ -1,6 +1,10 @@
 # Guide
 
-This guide should cover most of the things you'll want to do with Gatekeeper. It assumes some familiarity with JavaScript (or TypeScript!), Node.JS, and Discord.JS. Consult the [API reference](https://itsmapleleaf.github.io/gatekeeper/api/) for more in-depth information.
+This guide should cover most of the things you'll want to do with Gatekeeper. It assumes some familiarity with JavaScript (or TypeScript!), Node.JS, and Discord.JS.
+
+If you're completely new to discord bots in general, [see the Discord.JS guide first.](https://discordjs.guide/)
+
+Consult the [API reference](https://itsmapleleaf.github.io/gatekeeper/api/) for more in-depth information on Gatekeeper.
 
 ## Motivation
 
@@ -109,18 +113,23 @@ Gatekeeper leverages a **declarative UI** paradigm: you can describe what you wa
 
    ```js
    const Discord = require("discord.js")
-   const gatekeeper = require("@itsmapleleaf/gatekeeper")
+   const { Gatekeeper } = require("@itsmapleleaf/gatekeeper")
 
    const client = new Discord.Client({
      intents: [Discord.Intents.FLAGS.GUILDS],
    })
 
-   const instance = gatekeeper.createGatekeeper({ debug: true })
-   instance.useClient(client)
+   // need this iffe for async/await
+   // if you're using node.js ES modules, you don't need this!
+   ;(async () => {
+     const gatekeeper = await Gatekeeper.create({
+       client,
+     })
 
-   // replace this with the bot token from your Discord application
-   const botToken = "..."
-   client.login(botToken).catch(console.error)
+     // replace this with the bot token from your Discord application
+     const botToken = "..."
+     await client.login(botToken)
+   })()
    ```
 
    > This is fine just for getting started, but if your project is a git repo, **do not** commit the bot token! Use a package like [dotenv](https://npm.im/dotenv), and put your token in the `.env` file:
@@ -133,7 +142,7 @@ Gatekeeper leverages a **declarative UI** paradigm: you can describe what you wa
 
 1. Run the bot: `node bot.js`
 
-If all went well, your bot should be up and running, and you should see some colorful debug messages in the console! If you find them distracting, you can always disable it by setting `debug: false`.
+If all went well, your bot should be up and running, and you should see some colorful debug messages in the console! If you find them distracting, you can always disable it by setting `logging: false`.
 
 For a fast dev workflow, consider using [node-dev](https://npm.im/node-dev), which reruns your code on changes.
 
@@ -145,10 +154,13 @@ npx node-dev bot.js
 
 To start things off, we'll write the classic `/ping` command, which responds with "pong!"
 
-Use `defineSlashCommand` to define the command. A name and description for the command is required.
-
 ```js
-const pingCommand = gatekeeper.defineSlashCommand({
+const gatekeeper = await Gatekeeper.create({
+  client,
+})
+
+// add commands *right after* creating the instance
+gatekeeper.addSlashCommand({
   name: "ping",
   description: "Pong!",
   run(context) {
@@ -157,17 +169,11 @@ const pingCommand = gatekeeper.defineSlashCommand({
 })
 ```
 
-> You'll notice we're passing a function here, instead of just calling `context.reply("Pong!")`. This is important, but we'll go over that later. Passing just the string will **not** work.
+> You'll notice we're passing a function here, instead of `context.reply("Pong!")`. This is important, but we'll go over that later. Passing just the string will **not** work.
 
-We use the `context` to reply to commands, and it also comes with some other info, like the guild where the command was ran, and the user that ran the command.
+We use the `context` to create replies, and it also comes with some other info, like the `guild` where the command was ran, and the `user` that ran the command.
 
-Now add the command:
-
-```js
-instance.addCommand(pingCommand)
-```
-
-When you rerun the bot, you should see 'Registering slash command "ping"' in the console. Run the command, and you should get a `"Pong!"` back from the bot.
+When you rerun the bot, you should see the ping command listed in the console. Run the command, and you should get a `"Pong!"` back from the bot.
 
 Congrats, you've just written your first command with Gatekeeper! 🎉
 
@@ -182,18 +188,20 @@ Return an array to specify multiple components to the message: message content, 
 - `onClick` - code to run when the button gets clicked
 
 ```js
-const counterCommand = gatekeeper.defineSlashCommand({
+const { buttonComponent } = require("@itsmapleleaf/gatekeeper")
+
+gatekeeper.addSlashCommand({
   name: "counter",
   description: "Counts button presses",
   run(context) {
     context.reply(() => [
       `Button pressed 0 times`,
-      gatekeeper.buttonComponent({
+      buttonComponent({
         label: "+1",
         style: "PRIMARY",
         onClick: () => {}, // leave this empty for now!
       }),
-      gatekeeper.buttonComponent({
+      buttonComponent({
         label: "done",
         style: "SECONDARY",
         onClick: () => {}, // leave this empty for now!
@@ -201,7 +209,6 @@ const counterCommand = gatekeeper.defineSlashCommand({
     ])
   },
 })
-instance.addCommand(counterCommand)
 ```
 
 If you run the command, you'll get a message with some buttons, but they won't do anything yet.
@@ -209,7 +216,7 @@ If you run the command, you'll get a message with some buttons, but they won't d
 Now we need to keep track of the current count. A variable works for that:
 
 ```js
-const counterCommand = gatekeeper.defineSlashCommand({
+gatekeeper.addSlashCommand({
   // ...
   run(context) {
     let count = 0
@@ -222,7 +229,9 @@ const counterCommand = gatekeeper.defineSlashCommand({
 Then we can add one on click, and show the current count:
 
 ```js
-const counterCommand = gatekeeper.defineSlashCommand({
+const { buttonComponent } = require("@itsmapleleaf/gatekeeper")
+
+gatekeeper.addSlashCommand({
   name: "counter",
   description: "Counts button presses",
   run(context) {
@@ -231,7 +240,7 @@ const counterCommand = gatekeeper.defineSlashCommand({
     context.reply(() => [
       // show the count in the message
       `Button pressed ${count} times`,
-      gatekeeper.buttonComponent({
+      buttonComponent({
         label: "+1",
         style: "PRIMARY",
         onClick: () => {
@@ -239,7 +248,7 @@ const counterCommand = gatekeeper.defineSlashCommand({
           count += 1
         },
       }),
-      gatekeeper.buttonComponent({
+      buttonComponent({
         label: "done",
         style: "SECONDARY",
         onClick: () => {},
@@ -265,7 +274,9 @@ With that, hopefully this looks easy to follow! And the "done" button won't take
 `reply()` returns a **handle** that we can use to delete the message:
 
 ```js
-const counterCommand = gatekeeper.defineSlashCommand({
+const { buttonComponent } = require("@itsmapleleaf/gatekeeper")
+
+gatekeeper.addSlashCommand({
   // ...
 
   run(context) {
@@ -274,7 +285,7 @@ const counterCommand = gatekeeper.defineSlashCommand({
     const handle = context.reply(() => [
       // ...
 
-      gatekeeper.buttonComponent({
+      buttonComponent({
         label: "done",
         style: "SECONDARY",
         onClick: () => {
@@ -293,7 +304,13 @@ Click "done", and the message should go away.
   <summary>Here's the final code. (click to expand)</summary>
 
 ```js
-const counterCommand = gatekeeper.defineSlashCommand({
+const { Gatekeeper, buttonComponent } = require("@itsmapleleaf/gatekeeper")
+
+const gatekeeper = await Gatekeeper.create({
+  /* ... */
+})
+
+gatekeeper.addSlashCommand({
   name: "counter",
   description: "Counts button presses",
   run(context) {
@@ -301,14 +318,14 @@ const counterCommand = gatekeeper.defineSlashCommand({
 
     const handle = context.reply(() => [
       `Button pressed ${count} times`,
-      gatekeeper.buttonComponent({
+      buttonComponent({
         label: "+1",
         style: "PRIMARY",
         onClick: () => {
           count += 1
         },
       }),
-      gatekeeper.buttonComponent({
+      buttonComponent({
         label: "done",
         style: "SECONDARY",
         onClick: () => {
@@ -318,7 +335,6 @@ const counterCommand = gatekeeper.defineSlashCommand({
     ])
   },
 })
-instance.addCommand(counterCommand)
 ```
 
 </details>
@@ -328,7 +344,9 @@ instance.addCommand(counterCommand)
 You can render link buttons using `linkComponent`.
 
 ```js
-defineSlashCommand({
+const { linkComponent } = require("@itsmapleleaf/gatekeeper")
+
+gatekeeper.addSlashCommand({
   name: "cool-video",
   description: "shows a link to a cool video",
   run(context) {
@@ -349,7 +367,7 @@ Options are also called "arguments" or "parameters". You can use them to let use
 ### Basic types: string, number, boolean
 
 ```js
-const nameCommand = defineSlashCommand({
+gatekeeper.addSlashCommand({
   name: "name",
   description: "what's your name?",
   options: {
@@ -380,7 +398,7 @@ const nameCommand = defineSlashCommand({
 For strings and numbers, you can define a limited set of values to choose from:
 
 ```js
-defineSlashCommand({
+gatekeeper.addSlashCommand({
   // ...
   options: {
     color: {
@@ -414,7 +432,7 @@ defineSlashCommand({
 ### Advanced types: user, role, channel
 
 ```js
-defineSlashCommand({
+gatekeeper.addSlashCommand({
   // ...
   options: {
     color: {
@@ -448,7 +466,7 @@ defineSlashCommand({
 ### Advanced types: mentionable
 
 ```js
-defineSlashCommand({
+gatekeeper.addSlashCommand({
   // ...
   options: {
     target: {
@@ -476,9 +494,59 @@ defineSlashCommand({
 })
 ```
 
-## Tutorial: Loading commands from a folder
+## Loading commands from a folder
 
-> TODO
+Loading commands from a folder is a convenient way to manage and create commands.
+
+Let's assume you have this folder structure:
+
+```
+src/
+  main.ts
+  commands/
+    ping.ts
+```
+
+A command file should export a function which adds commands to the gatekeeper instance.
+
+```ts
+// src/commands/ping.ts
+import { Gatekeeper } from "@itsmapleleaf/gatekeeper"
+
+export default function addCommands(gatekeeper: Gatekeeper) {
+  gatekeeper.addSlashCommand({
+    name: "ping",
+    description: "Pong!",
+    run(context) {
+      context.reply(() => "Pong!")
+    },
+  })
+}
+```
+
+Then, pass an absolute path to the commands folder when creating the gatekeeper instance.
+
+```ts
+// src/main.ts
+import { Gatekeeper } from "@itsmapleleaf/gatekeeper"
+import { Client } from "discord.js"
+import { join } from "node:path"
+
+const client = new Client({
+  intents: ["GUILD"],
+})
+
+;(async () => {
+  await Gatekeeper.create({
+    client,
+    commandsFolder: join(__dirname, "commands"),
+  })
+
+  await client.login(process.env.BOT_TOKEN)
+})()
+```
+
+Gatekeeper will load all commands from folder, and in nested folders within.
 
 ## More examples
 
