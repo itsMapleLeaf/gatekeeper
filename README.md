@@ -25,11 +25,11 @@ Here's a taste of what Gatekeeper looks like:
 import { buttonComponent, Gatekeeper } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 
-void (async () => {
-  const client = new Client({
-    intents: [Intents.FLAGS.GUILDS],
-  })
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS],
+})
 
+;(async () => {
   const gatekeeper = await Gatekeeper.create({
     client,
   })
