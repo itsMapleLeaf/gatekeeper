@@ -3,4 +3,4 @@ dist
 .yarn
 pnpm-lock.yaml
 .next
-docs
+docs/api
