@@ -12,21 +12,40 @@ export type Logger = {
   block<T>(description: string, block: () => Promise<T> | T): Promise<T>
 }
 
-export function createConsoleLogger({ name = "" } = {}): Logger {
-  const prefix = name && chalk.gray`[${name}]`
+export type ConsoleLoggerLevel = "info" | "success" | "error" | "warn"
+
+export type ConsoleLoggerConfig = {
+  name?: string
+  levels?: ConsoleLoggerLevel[]
+}
+
+export function createConsoleLogger(config: ConsoleLoggerConfig = {}): Logger {
+  const prefix = config.name ? chalk.gray`[${config.name}]` : ""
+
+  const levels = new Set<ConsoleLoggerLevel>(
+    config.levels || ["info", "success", "error", "warn"],
+  )
 
   const logger: Logger = {
     info(...args) {
-      console.info(prefix, chalk.cyan`[i]`, ...args)
+      if (levels.has("info")) {
+        console.info(prefix, chalk.cyan`[i]`, ...args)
+      }
     },
     success(...args) {
-      console.info(prefix, chalk.green`[s]`, ...args)
+      if (levels.has("success")) {
+        console.info(prefix, chalk.green`[s]`, ...args)
+      }
     },
     error(...args) {
-      console.error(prefix, chalk.red`[e]`, ...args)
+      if (levels.has("error")) {
+        console.error(prefix, chalk.red`[e]`, ...args)
+      }
     },
     warn(...args) {
-      console.warn(prefix, chalk.yellow`[w]`, ...args)
+      if (levels.has("warn")) {
+        console.warn(prefix, chalk.yellow`[w]`, ...args)
+      }
     },
     async promise(description, promise) {
       const startTime = Date.now()

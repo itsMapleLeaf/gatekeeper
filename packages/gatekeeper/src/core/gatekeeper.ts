@@ -10,7 +10,7 @@ import type {
 import glob from "fast-glob"
 import { join, relative } from "node:path"
 import { raise } from "../internal/helpers"
-import type { Logger } from "../internal/logger"
+import type { ConsoleLoggerLevel, Logger } from "../internal/logger"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { DiscordCommandManager } from "../internal/types"
 import type { Command } from "./command/command"
@@ -34,7 +34,7 @@ export type GatekeeperConfig = {
   name?: string
 
   /** Show colorful debug logs in the console */
-  logging?: boolean
+  logging?: boolean | ConsoleLoggerLevel[]
 
   /**
    * An *absolute path* to a folder with command files.
@@ -102,9 +102,20 @@ export class Gatekeeper {
     scope = "guild",
     ...config
   }: GatekeeperConfig) {
-    const instance = new Gatekeeper(
-      logging ? createConsoleLogger({ name }) : createNoopLogger(),
-    )
+    const logger = (() => {
+      if (!logging) return createNoopLogger()
+      if (logging === true) return createConsoleLogger({ name })
+      return createConsoleLogger({ name, levels: logging })
+    })()
+
+    if (process.env.NODE_ENV === "test") {
+      logger.info("test logging info")
+      logger.warn("test logging warn")
+      logger.error("test logging error")
+      logger.success("test logging success")
+    }
+
+    const instance = new Gatekeeper(logger)
 
     if (config.commandFolder) {
       await instance.loadCommandsFromFolder(config.commandFolder)

@@ -55,3 +55,4 @@ export type {
   InteractionContext,
   ReplyHandle,
 } from "./core/interaction-context"
+export type { ConsoleLoggerLevel } from "./internal/logger"

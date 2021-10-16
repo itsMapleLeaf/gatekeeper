@@ -1,3 +1,4 @@
+import replace from "@rollup/plugin-replace"
 import { createRequire } from "module"
 import typescript from "rollup-plugin-ts"
 
@@ -16,6 +17,10 @@ export default {
     typescript({
       tsconfig: "../../tsconfig.json",
       transpileOnly: true,
+    }),
+    replace({
+      "process.env.NODE_ENV": JSON.stringify("production"),
+      "preventAssignment": true,
     }),
   ],
   external: [
