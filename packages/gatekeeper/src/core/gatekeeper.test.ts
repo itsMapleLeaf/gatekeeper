@@ -1,5 +1,7 @@
+import type { ContextMenuInteraction } from "discord.js"
 import { Client } from "discord.js"
 import { mockConsole } from "../internal/mock-console"
+import { waitFor } from "../internal/wait-for"
 import type { GatekeeperConfig } from "./gatekeeper"
 import { Gatekeeper } from "./gatekeeper"
 
@@ -70,4 +72,91 @@ describe("logging", () => {
       mock.restore()
     })
   }
+})
+
+describe("onError", () => {
+  it("should be called when an error happens in commands", async () => {
+    const onError = jest.fn()
+
+    const instance = await Gatekeeper.create({
+      name: "testclient",
+      client,
+      logging: false,
+      onError,
+    })
+
+    const error = new Error("💣 oops 💣")
+
+    instance.addMessageCommand({
+      name: "test",
+      run: () => {
+        throw error
+      },
+    })
+
+    const mockInteraction = {
+      type: "APPLICATION_COMMAND",
+      isCommand: () => true,
+      isContextMenu: () => true,
+      isMessageComponent: () => false,
+      commandName: "test",
+      targetType: "MESSAGE",
+      targetId: "123",
+      channel: {
+        messages: {
+          fetch: jest.fn().mockResolvedValue({
+            id: "123",
+            content: "test",
+          }),
+        },
+      },
+    } as unknown as ContextMenuInteraction
+
+    client.emit("interactionCreate", mockInteraction)
+
+    await waitFor(() => {
+      expect(onError).toHaveBeenCalledTimes(1)
+      expect(onError).toHaveBeenCalledWith(error)
+    })
+  })
+
+  it("should be called when something goes wrong in gatekeeper", async () => {
+    const onError = jest.fn()
+
+    const instance = await Gatekeeper.create({
+      name: "testclient",
+      client,
+      logging: false,
+      onError,
+    })
+
+    instance.addMessageCommand({
+      name: "test",
+      run: () => {},
+    })
+
+    const error = new Error("message not found")
+
+    const mockInteraction = {
+      type: "APPLICATION_COMMAND",
+      isCommand: () => true,
+      isContextMenu: () => true,
+      isMessageComponent: () => false,
+      commandName: "test",
+      targetType: "MESSAGE",
+      targetId: "123",
+      channel: {
+        messages: {
+          fetch: jest.fn().mockRejectedValue(error),
+        },
+      },
+    } as unknown as ContextMenuInteraction
+
+    client.emit("interactionCreate", mockInteraction)
+
+    await waitFor(() => {
+      expect(onError).toHaveBeenCalledTimes(1)
+      expect(onError).toHaveBeenCalledWith(error)
+    })
+  })
 })

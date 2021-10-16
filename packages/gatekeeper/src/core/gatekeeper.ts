@@ -9,7 +9,7 @@ import type {
 } from "discord.js"
 import glob from "fast-glob"
 import { join, relative } from "node:path"
-import { raise } from "../internal/helpers"
+import { raise, toError } from "../internal/helpers"
 import type { ConsoleLoggerLevel, Logger } from "../internal/logger"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { DiscordCommandManager } from "../internal/types"
@@ -74,6 +74,12 @@ export type GatekeeperConfig = {
    * See the discord docs for more info: https://discord.com/developers/docs/interactions/application-commands#registering-a-command
    */
   scope?: "guild" | "global" | "both"
+
+  /**
+   * Called when any error occurs.
+   * You can use this to log your own errors, send them to an error reporting service, etc.
+   */
+  onError?: (error: Error) => void
 }
 
 /** Basic information about the commands currently added */
@@ -89,23 +95,26 @@ export type CommandInfo = {
 export class Gatekeeper {
   private readonly commands = new Set<Command>()
   private readonly commandInstances = new Set<CommandInstance>()
-  private readonly logger: Logger
 
-  private constructor(logger: Logger) {
-    this.logger = logger
-  }
+  private constructor(
+    private readonly config: GatekeeperConfig,
+    private readonly logger: Logger,
+  ) {}
 
   /** Create a {@link Gatekeeper} instance */
-  static async create({
-    name = "gatekeeper",
-    logging = true,
-    scope = "guild",
-    ...config
-  }: GatekeeperConfig) {
+  static async create(config: GatekeeperConfig) {
+    const { name = "gatekeeper", scope = "guild" } = config
+
     const logger = (() => {
-      if (!logging) return createNoopLogger()
-      if (logging === true) return createConsoleLogger({ name })
-      return createConsoleLogger({ name, levels: logging })
+      if (config.logging === true || config.logging == null) {
+        return createConsoleLogger({ name })
+      }
+
+      if (!config.logging) {
+        return createNoopLogger()
+      }
+
+      return createConsoleLogger({ name, levels: config.logging })
     })()
 
     if (process.env.NODE_ENV === "test") {
@@ -115,7 +124,7 @@ export class Gatekeeper {
       logger.success("test logging success")
     }
 
-    const instance = new Gatekeeper(logger)
+    const instance = new Gatekeeper(config, logger)
 
     if (config.commandFolder) {
       await instance.loadCommandsFromFolder(config.commandFolder)
@@ -347,6 +356,7 @@ export class Gatekeeper {
     } catch (error) {
       this.logger.error(`Error running command`, chalk.bold(command.name))
       this.logger.error(error)
+      this.config.onError?.(toError(error))
     }
   }
 
@@ -366,6 +376,7 @@ export class Gatekeeper {
         return await fn(...args)
       } catch (error) {
         this.logger.error("An error occurred:", error)
+        this.config.onError?.(toError(error))
       }
     }
   }
