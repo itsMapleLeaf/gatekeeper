@@ -1,10 +1,6 @@
 import replace from "@rollup/plugin-replace"
-import { createRequire } from "module"
 import typescript from "rollup-plugin-ts"
-
-// @ts-expect-error
-const require = createRequire(import.meta.url)
-const pkg = require("./packages/gatekeeper/package.json")
+import pkg from "./package.json"
 
 export default {
   input: "./src/main.ts",
@@ -15,7 +11,7 @@ export default {
   },
   plugins: [
     typescript({
-      tsconfig: "../../tsconfig.json",
+      tsconfig: "./tsconfig.build.json",
       transpileOnly: true,
     }),
     replace({
