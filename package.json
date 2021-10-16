@@ -91,10 +91,7 @@
     "transform": {
       "^.+\\.tsx?$": "esbuild-jest"
     },
-    "verbose": true,
-    "globals": {
-      "__TEST__": true
-    }
+    "verbose": true
   },
   "babel": {
     "presets": [
