@@ -1,9 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "dev": "nodemon -w ./ -w ../gatekeeper --transpile-only ./src/bot.ts",
-    "dev-counter": "nodemon -w ./ -w ../gatekeeper --transpile-only ./src/counter-vanilla.ts",
-    "dev-usage": "nodemon -r dotenv/config -w ./ -w ../gatekeeper --transpile-only ./src/usage.ts",
+    "dev": "nodemon ./src/bot.ts",
+    "dev-counter": "nodemon ./src/counter-vanilla.ts",
+    "dev-usage": "nodemon -r dotenv/config ./src/usage.ts",
     "start": "ts-node --transpile-only ./src/bot"
   },
   "dependencies": {

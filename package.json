@@ -1,25 +1,78 @@
 {
-  "private": true,
+  "name": "@itsmapleleaf/gatekeeper",
+  "description": "a slash command and interaction framework for discord.js",
+  "author": "itsmapleleaf",
+  "version": "0.6.0",
+  "main": "./dist/main.js",
+  "types": "./dist/main.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": "https://github.com/itsMapleLeaf/gatekeeper",
+  "homepage": "https://github.com/itsMapleLeaf/gatekeeper#readme",
+  "bugs": "https://github.com/itsMapleLeaf/gatekeeper/issues",
+  "keywords": [
+    "discord",
+    "discord.js",
+    "slash",
+    "command",
+    "commands",
+    "interaction",
+    "message",
+    "component",
+    "framework",
+    "bot",
+    "react",
+    "reactive",
+    "declarative"
+  ],
+  "sideEffects": false,
   "scripts": {
-    "dev": "pnpm -C packages/playground run dev",
-    "build": "pnpm run --parallel build",
-    "release": "pnpm run docs && git add docs && git commit -m docs && pnpm -C packages/gatekeeper run release",
-    "lint": "eslint --ext js,ts,tsx .",
+    "clean": "trash dist",
+    "dev": "pnpm -C playground run dev",
+    "build": "pnpm run clean && rollup -c",
     "typecheck": "tsc --noEmit",
-    "docs": "typedoc",
+    "test": "jest",
+    "test-watch": "jest --watch",
+    "lint": "eslint --ext js,ts,tsx .",
     "lint-fix": "npm run lint -- --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "docs": "typedoc",
+    "release": "bash ./scripts/release.sh"
+  },
+  "dependencies": {
+    "chalk": "^4",
+    "fast-glob": "3.2.7",
+    "tslib": "^2.3.1"
+  },
+  "peerDependencies": {
+    "discord.js": ">=13"
   },
   "devDependencies": {
+    "@babel/core": "7.15.8",
+    "@babel/preset-typescript": "7.15.0",
     "@itsmapleleaf/configs": "1.0.0",
+    "@rollup/plugin-replace": "3.0.0",
+    "@types/jest": "27.0.2",
+    "@types/node": "16.10.3",
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
-    "eslint": "7.32.0",
+    "cpy-cli": "3.1.1",
+    "discord.js": "^13.2.0",
+    "esbuild-jest": "0.5.0",
+    "esbuild": "0.13.4",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-jsx-a11y": "6.4.1",
-    "eslint-plugin-react": "7.26.1",
     "eslint-plugin-react-hooks": "4.2.0",
+    "eslint-plugin-react": "7.26.1",
+    "eslint": "7.32.0",
+    "jest-mock-console": "1.2.3",
+    "jest": "27.2.4",
     "prettier": "2.4.1",
+    "release-it": "14.11.6",
+    "rollup-plugin-ts": "1.4.7",
+    "rollup": "2.58.0",
+    "trash-cli": "4.0.0",
     "typedoc": "0.22.5",
     "typescript": "4.4.3"
   },
@@ -33,5 +86,28 @@
       "**/dist/**",
       "**/docs/**"
     ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "esbuild-jest"
+    },
+    "verbose": true,
+    "globals": {
+      "__TEST__": true
+    }
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-typescript"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "release-it": {
+    "github": {
+      "release": true,
+      "web": true
+    }
   }
 }

@@ -4,7 +4,7 @@ import typescript from "rollup-plugin-ts"
 
 // @ts-expect-error
 const require = createRequire(import.meta.url)
-const pkg = require("./package.json")
+const pkg = require("./packages/gatekeeper/package.json")
 
 export default {
   input: "./src/main.ts",
