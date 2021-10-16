@@ -3,11 +3,11 @@ import { Client } from "discord.js"
 import { mockConsole } from "../internal/mock-console"
 import { waitFor } from "../internal/wait-for"
 import type { GatekeeperConfig } from "./gatekeeper"
-import { Gatekeeper } from "./gatekeeper"
+import { createGatekeeperLogger, Gatekeeper } from "./gatekeeper"
 
 const client = new Client({ intents: [] })
 
-describe("logging", () => {
+describe("logging option", () => {
   type Scenario = {
     description: string
     config: Partial<GatekeeperConfig>
@@ -61,11 +61,11 @@ describe("logging", () => {
     it(scenario.description, async () => {
       const mock = mockConsole()
 
-      await Gatekeeper.create({
-        name: "testclient",
-        client,
-        ...scenario.config,
-      })
+      const logger = createGatekeeperLogger(scenario.config as GatekeeperConfig)
+      logger.info("test logging info")
+      logger.warn("test logging warn")
+      logger.error("test logging error")
+      logger.success("test logging success")
 
       expect(mock.fn).toHaveBeenCalledTimes(scenario.expectedCallCount)
 

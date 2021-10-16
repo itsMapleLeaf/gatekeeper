@@ -103,34 +103,14 @@ export class Gatekeeper {
 
   /** Create a {@link Gatekeeper} instance */
   static async create(config: GatekeeperConfig) {
-    const { name = "gatekeeper", scope = "guild" } = config
-
-    const logger = (() => {
-      if (config.logging === true || config.logging == null) {
-        return createConsoleLogger({ name })
-      }
-
-      if (!config.logging) {
-        return createNoopLogger()
-      }
-
-      return createConsoleLogger({ name, levels: config.logging })
-    })()
-
-    if (process.env.NODE_ENV === "test") {
-      logger.info("test logging info")
-      logger.warn("test logging warn")
-      logger.error("test logging error")
-      logger.success("test logging success")
-    }
-
+    const logger = createGatekeeperLogger(config)
     const instance = new Gatekeeper(config, logger)
 
     if (config.commandFolder) {
       await instance.loadCommandsFromFolder(config.commandFolder)
     }
 
-    instance.addEventListeners(config.client, scope)
+    instance.addEventListeners(config.client, config.scope ?? "guild")
 
     return instance
   }
@@ -380,4 +360,16 @@ export class Gatekeeper {
       }
     }
   }
+}
+
+export function createGatekeeperLogger(config: GatekeeperConfig) {
+  if (config.logging === true || config.logging == null) {
+    return createConsoleLogger({ name: config.name })
+  }
+
+  if (!config.logging) {
+    return createNoopLogger()
+  }
+
+  return createConsoleLogger({ name: config.name, levels: config.logging })
 }
