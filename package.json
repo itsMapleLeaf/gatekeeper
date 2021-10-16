@@ -32,7 +32,7 @@
     "dev": "pnpm -C playground run dev",
     "build": "pnpm run clean && rollup -c",
     "typecheck": "tsc --noEmit",
-    "test": "jest",
+    "test": "jest --colors",
     "test-watch": "jest --watch",
     "lint": "eslint --ext js,ts,tsx .",
     "lint-fix": "npm run lint -- --fix",
