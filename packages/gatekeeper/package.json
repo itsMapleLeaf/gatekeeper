@@ -6,9 +6,7 @@
   "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
   "files": [
-    "dist",
-    "bin",
-    "codemods"
+    "dist"
   ],
   "repository": "https://github.com/itsMapleLeaf/gatekeeper",
   "homepage": "https://github.com/itsMapleLeaf/gatekeeper#readme",
@@ -43,7 +41,6 @@
     "chalk": "^4",
     "execa": "5.1.1",
     "fast-glob": "3.2.7",
-    "jscodeshift": "0.13.0",
     "tslib": "^2.3.1"
   },
   "devDependencies": {
@@ -51,7 +48,6 @@
     "@babel/preset-typescript": "7.15.0",
     "@rollup/plugin-replace": "3.0.0",
     "@types/jest": "27.0.2",
-    "@types/jscodeshift": "0.11.2",
     "@types/node": "16.10.3",
     "cpy-cli": "3.1.1",
     "discord.js": "^13.2.0",
@@ -64,9 +60,6 @@
     "rollup-plugin-ts": "1.4.7",
     "trash-cli": "4.0.0",
     "typescript": "4.4.3"
-  },
-  "bin": {
-    "gatekeeper-migrate": "./bin/migrate.js"
   },
   "publishConfig": {
     "access": "public"
