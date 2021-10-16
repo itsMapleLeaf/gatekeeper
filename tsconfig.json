@@ -1,18 +1,10 @@
 {
+  "extends": "@itsmapleleaf/configs/tsconfig.base",
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es2019",
+    "lib": ["es2019"],
     "module": "commonjs",
-    "moduleResolution": "node",
-    "lib": ["es2017"],
-    "allowJs": true,
-    "checkJs": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "isolatedModules": true,
-    "declaration": true,
-    "esModuleInterop": true,
     "noEmit": true,
-    "skipLibCheck": true,
     "resolveJsonModule": true
   },
   "exclude": ["**/dist/**", "**/node_modules/**", "**/docs/**"]
