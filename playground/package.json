@@ -1,10 +1,11 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "nodemon ./src/bot.ts",
-    "dev-counter": "nodemon ./src/counter-vanilla.ts",
+    "dev": "nodemon --exec node --loader ts-node/esm/transpile-only -w src -w ../dist ./src/bot.ts",
+    "dev-counter": "nodemon --exec node --loader ts-node/esm/transpile-only ./src/counter-vanilla.ts",
     "dev-usage": "nodemon -r dotenv/config ./src/usage.ts",
-    "start": "ts-node --transpile-only ./src/bot"
+    "start": "node --loader ts-node/esm/transpile-only ./src/bot"
   },
   "dependencies": {
     "@itsmapleleaf/gatekeeper": "workspace:*",

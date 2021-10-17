@@ -1,5 +1,5 @@
-import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
-import { embedComponent } from "@itsmapleleaf/gatekeeper/src/main"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper"
+import { embedComponent } from "@itsmapleleaf/gatekeeper"
 import type { EmbedFieldData } from "discord.js"
 
 export default function defineCommands(gatekeeper: Gatekeeper) {

@@ -1,10 +1,10 @@
 import type {
+  Gatekeeper,
   InteractionContext,
   ReplyHandle,
-  Gatekeeper,
-} from "@itsmapleleaf/gatekeeper/src/main"
-import { buttonComponent } from "@itsmapleleaf/gatekeeper/src/main"
-import { wait } from "../wait"
+} from "@itsmapleleaf/gatekeeper"
+import { buttonComponent } from "@itsmapleleaf/gatekeeper"
+import { setTimeout } from "node:timers/promises"
 
 function createCounterReply(context: InteractionContext) {
   let count = 0
@@ -47,12 +47,12 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
             counterReply.delete()
           }
 
-          await wait(1000)
+          await setTimeout(1000)
 
           state = "done"
           reply.refresh()
 
-          await wait(1000)
+          await setTimeout(1000)
           reply.delete()
         }
 

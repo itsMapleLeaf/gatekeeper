@@ -1,4 +1,4 @@
-import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper"
 
 function spongebobify(text: string): string {
   return [...text]

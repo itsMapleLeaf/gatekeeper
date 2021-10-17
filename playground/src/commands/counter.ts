@@ -1,8 +1,5 @@
-import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
-import {
-  buttonComponent,
-  embedComponent,
-} from "@itsmapleleaf/gatekeeper/src/main"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper"
+import { buttonComponent, embedComponent } from "@itsmapleleaf/gatekeeper"
 
 export default function defineCommands(gatekeeper: Gatekeeper) {
   gatekeeper.addSlashCommand({

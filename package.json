@@ -3,8 +3,11 @@
   "description": "a slash command and interaction framework for discord.js",
   "author": "itsmapleleaf",
   "version": "0.6.0",
-  "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
+  "exports": {
+    "import": "./dist/main.module.mjs",
+    "require": "./dist/main.js"
+  },
   "files": [
     "dist"
   ],
@@ -29,8 +32,9 @@
   "sideEffects": false,
   "scripts": {
     "clean": "trash dist",
-    "dev": "pnpm -C playground run dev",
+    "dev": "concurrently \"pnpm -C playground run dev\" \"pnpm run build-watch\"",
     "build": "pnpm run clean && rollup -c",
+    "build-watch": "rollup -c --watch",
     "typecheck": "tsc --noEmit",
     "test": "jest --colors",
     "test-watch": "jest --watch",
@@ -58,6 +62,7 @@
     "@types/node": "16.11.0",
     "@typescript-eslint/eslint-plugin": "5.0.0",
     "@typescript-eslint/parser": "5.0.0",
+    "concurrently": "6.3.0",
     "cpy-cli": "3.1.1",
     "discord.js": "^13.2.0",
     "esbuild": "0.13.7",

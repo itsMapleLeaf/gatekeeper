@@ -1,6 +1,6 @@
-import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
-import { buttonComponent } from "@itsmapleleaf/gatekeeper/src/main"
-import { wait } from "../wait"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper"
+import { buttonComponent } from "@itsmapleleaf/gatekeeper"
+import { setTimeout } from "node:timers/promises"
 
 export default function defineCommands(gatekeeper: Gatekeeper) {
   gatekeeper.addSlashCommand({
@@ -9,7 +9,7 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
     async run(context) {
       context.defer()
 
-      await wait(4000)
+      await setTimeout(4000)
 
       context.reply(() =>
         buttonComponent({
@@ -18,7 +18,7 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
           style: "SECONDARY",
           onClick: async (context) => {
             context.defer()
-            await wait(4000)
+            await setTimeout(4000)
             context.ephemeralReply(
               () => `thanks for waiting, here's your cookie! 🍪`,
             )
