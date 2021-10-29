@@ -1,5 +1,5 @@
 {
-  "entryPoints": ["packages/gatekeeper/src/main.ts"],
+  "entryPoints": ["src/main.ts"],
   "out": "docs/api",
   "name": "Gatekeeper API",
   "readme": "none",
