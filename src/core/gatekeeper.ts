@@ -279,36 +279,29 @@ export class Gatekeeper {
   ) {
     // remove commands first,
     // just in case we've hit the max number of commands
-    const commandsToRemove = existingCommands.filter((appCommand) => {
+    for (const [, appCommand] of existingCommands) {
       const isUsingCommand = [...this.commands].some((command) => {
         return command.matchesExisting(appCommand)
       })
-      return !isUsingCommand
-    })
-    if (commandsToRemove.size > 0) {
-      this.logger.info(`Removing ${commandsToRemove.size} command(s) ${scope}`)
-      for (const [, command] of commandsToRemove) {
-        await command.delete()
+      if (!isUsingCommand) {
+        await appCommand.delete()
+        this.logger.info(
+          `Removed unused ${scope}: ${chalk.bold(appCommand.name)}`,
+        )
       }
     }
 
-    const commandsToCreate = [...this.commands].filter((command) => {
+    for (const command of this.commands) {
       const isExisting = existingCommands.some((appCommand) => {
         return command.matchesExisting(appCommand)
       })
-      return !isExisting
-    })
-    if (commandsToCreate.length > 0) {
-      this.logger.info(
-        `Creating ${commandsToCreate.length} command(s) ${scope}`,
-      )
-      for (const command of commandsToCreate) {
+      if (!isExisting) {
         await command.register(commandManager)
+        this.logger.info(`Created ${scope}: ${chalk.bold(command.name)}`)
       }
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async removeAllCommands(
     commands: Collection<string, ApplicationCommand>,
     scope: string,
