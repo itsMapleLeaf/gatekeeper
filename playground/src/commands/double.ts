@@ -9,11 +9,19 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
         type: "NUMBER",
         description: "the number to double",
         required: true,
+        choices: [],
+      },
+      strawberry: {
+        type: "BOOLEAN",
+        description: "add a strawberry",
       },
     },
     run(context) {
-      const { number } = context.options
-      context.reply(() => `${number} × 2 = **${number * 2}**`)
+      const { number, strawberry } = context.options
+      context.reply(() => [
+        `${number} × 2 = **${number * 2}**`,
+        strawberry && "🍓",
+      ])
     },
   })
 }
