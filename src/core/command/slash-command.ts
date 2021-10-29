@@ -191,8 +191,13 @@ export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
     name,
     description: option.description,
     type: option.type,
-    required: option.required,
-    choices: "choices" in option ? option.choices : undefined,
+
+    // discord always returns a boolean, even if the user didn't send one
+    required: option.required ?? false,
+
+    // discord returns undefined if the user passed an empty array,
+    // so normalize undefined to an empty array
+    choices: ("choices" in option && option.choices) || [],
   }))
 
   const commandData: ApplicationCommandData = {
@@ -207,16 +212,16 @@ export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
     matchesExisting: (command) => {
       if (command.type !== "CHAT_INPUT") return false
 
-      const existingCommandData = {
+      const existingCommandData: ApplicationCommandData = {
         name: command.name,
         description: command.description,
         // need to use the same shape so they can be compared
-        options: command.options.map((opt) => ({
-          name: opt.name,
-          description: opt.description,
-          type: opt.type,
-          required: opt.required,
-          choices: "choices" in opt ? opt.choices : undefined,
+        options: command.options.map((option) => ({
+          name: option.name,
+          description: option.description,
+          type: option.type,
+          required: option.required,
+          choices: ("choices" in option && option.choices) || [],
         })),
       }
 
