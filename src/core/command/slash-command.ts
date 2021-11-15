@@ -203,7 +203,6 @@ export type SlashCommandOptionConfigBase = {
   required?: boolean
 }
 
-// I don't know where to put this, help
 /** Sorts channel types based on Discord's list */
 function sortChannelTypes(
   arrA: SlashCommandOptionChannelType[],
