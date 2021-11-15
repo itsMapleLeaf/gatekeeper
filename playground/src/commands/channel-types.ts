@@ -18,7 +18,7 @@ export default function defineCommands(gatekeeper: Gatekeeper) {
       "text-voice": {
         type: "CHANNEL",
         description: "A voice channel",
-        channelTypes: ["GUILD_TEXT", "GUILD_VOICE"],
+        channelTypes: ["GUILD_VOICE", "GUILD_TEXT"],
       },
       "category": {
         type: "CHANNEL",
