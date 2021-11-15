@@ -203,6 +203,29 @@ export type SlashCommandOptionConfigBase = {
   required?: boolean
 }
 
+// I don't know where to put this, help
+/** Sorts channel types based on Discord's list */
+function sortChannelTypes(
+  arrA: SlashCommandOptionChannelType[],
+): SlashCommandOptionChannelType[] {
+  const channelTypesOrder = [
+    "GUILD_TEXT",
+    "DM",
+    "GUILD_VOICE",
+    "GROUP_DM",
+    "GUILD_CATEGORY",
+    "GUILD_NEWS",
+    "GUILD_STORE",
+    "GUILD_NEWS_THREAD",
+    "GUILD_PUBLIC_THREAD",
+    "GUILD_PRIVATE_THREAD",
+    "GUILD_STAGE_VOICE",
+  ]
+  return [...arrA].sort(
+    (a, b) => channelTypesOrder.indexOf(a) - channelTypesOrder.indexOf(b),
+  )
+}
+
 export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
   config: SlashCommandConfig<Options>,
 ): Command {
@@ -220,8 +243,11 @@ export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
     // so normalize undefined to an empty array
     choices: ("choices" in option && option.choices) || [],
 
+    // Discord returns channel types in a specific order
     channelTypes:
-      ("channelTypes" in option && option.channelTypes) || undefined,
+      ("channelTypes" in option &&
+        sortChannelTypes(option.channelTypes ?? [])) ||
+      undefined,
   }))
 
   const commandData: ApplicationCommandData = {
