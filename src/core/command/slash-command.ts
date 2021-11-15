@@ -1,6 +1,8 @@
 import type {
+  ApplicationCommandChannelOptionData,
   ApplicationCommandData,
   ApplicationCommandOptionData,
+  ChatInputApplicationCommandData,
   CommandInteraction,
   GuildChannel,
   Role,
@@ -218,7 +220,8 @@ export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
     // so normalize undefined to an empty array
     choices: ("choices" in option && option.choices) || [],
 
-    channelType: ("channelTypes" in option && option.channelTypes) || undefined,
+    channelTypes:
+      ("channelTypes" in option && option.channelTypes) || undefined,
   }))
 
   const commandData: ApplicationCommandData = {
@@ -233,19 +236,24 @@ export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
     matchesExisting: (command) => {
       if (command.type !== "CHAT_INPUT") return false
 
-      const existingCommandData: ApplicationCommandData = {
+      const existingCommandData: ChatInputApplicationCommandData = {
         name: command.name,
         description: command.description,
         // need to use the same shape so they can be compared
-        options: command.options.map((option) => ({
-          name: option.name,
-          description: option.description,
-          type: option.type,
-          required: option.required,
-          choices: ("choices" in option && option.choices) || [],
-          channelType:
-            ("channelTypes" in option && option.channelTypes) || undefined,
-        })),
+        options: command.options.map(
+          (option): ApplicationCommandOptionData => ({
+            name: option.name,
+            description: option.description,
+            type: option.type,
+            required: option.required,
+            choices: ("choices" in option && option.choices) || [],
+            /* option.channelTypes includes "UNKNOWN", but it's not allowed by ApplicationCommandOptionData */
+            channelTypes:
+              (("channelTypes" in option &&
+                option.channelTypes) as ApplicationCommandChannelOptionData["channelTypes"]) ||
+              undefined,
+          }),
+        ),
       }
 
       return isDeepEqual(commandData, existingCommandData)
