@@ -70,10 +70,29 @@ export type SlashCommandOptionConfig = SlashCommandOptionConfigBase &
       }
     | { type: "BOOLEAN" }
     | { type: "USER" }
-    | { type: "CHANNEL" }
+    | {
+        type: "CHANNEL"
+        channelTypes?: SlashCommandOptionChannelType[]
+      }
     | { type: "ROLE" }
     | { type: "MENTIONABLE" }
   )
+
+/**
+ * All possible channel types to filter by when using the `CHANNEL` option type
+ */
+export type SlashCommandOptionChannelType =
+  | "GUILD_TEXT"
+  | "DM"
+  | "GUILD_VOICE"
+  | "GROUP_DM"
+  | "GUILD_CATEGORY"
+  | "GUILD_NEWS"
+  | "GUILD_STORE"
+  | "GUILD_NEWS_THREAD"
+  | "GUILD_PUBLIC_THREAD"
+  | "GUILD_PRIVATE_THREAD"
+  | "GUILD_STAGE_VOICE"
 
 /**
  * A potential choice for a slash command option
@@ -198,6 +217,8 @@ export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
     // discord returns undefined if the user passed an empty array,
     // so normalize undefined to an empty array
     choices: ("choices" in option && option.choices) || [],
+
+    channelType: ("channelTypes" in option && option.channelTypes) || undefined,
   }))
 
   const commandData: ApplicationCommandData = {
@@ -222,6 +243,8 @@ export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
           type: option.type,
           required: option.required,
           choices: ("choices" in option && option.choices) || [],
+          channelType:
+            ("channelTypes" in option && option.channelTypes) || undefined,
         })),
       }
 
