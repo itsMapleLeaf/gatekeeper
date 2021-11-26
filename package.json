@@ -3,8 +3,13 @@
   "description": "a slash command and interaction framework for discord.js",
   "author": "itsmapleleaf",
   "version": "0.6.1",
-  "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.mjs",
+      "require": "./dist/main.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -28,9 +33,8 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "clean": "trash dist",
     "dev": "pnpm -C playground run dev",
-    "build": "pnpm run clean && rollup -c",
+    "build": "tsup-node",
     "typecheck": "tsc --noEmit",
     "test": "jest --colors",
     "test-watch": "jest --watch",
@@ -72,11 +76,20 @@
     "npm-run-all": "4.1.5",
     "prettier": "2.4.1",
     "release-it": "14.11.6",
-    "rollup": "2.58.0",
-    "rollup-plugin-ts": "1.4.7",
-    "trash-cli": "4.0.0",
+    "tsup": "^5.10.0",
     "typedoc": "0.22.5",
     "typescript": "4.4.4"
+  },
+  "tsup": {
+    "entryPoints": [
+      "src/main.ts"
+    ],
+    "target": "node16",
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "dts": true
   },
   "prettier": "@itsmapleleaf/configs/prettier",
   "eslintConfig": {

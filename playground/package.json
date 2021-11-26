@@ -1,14 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "dev": "nodemon ./src/bot.ts",
-    "dev-counter": "nodemon ./src/counter-vanilla.ts",
+    "dev": "nodemon --exec esno ./src/bot.ts",
+    "dev-counter": "nodemon --exec esno ./src/counter-vanilla.ts",
     "dev-usage": "nodemon -r dotenv/config ./src/usage.ts",
-    "start": "ts-node --transpile-only ./src/bot"
+    "start": "esno ./src/bot"
   },
   "dependencies": {
     "@itsmapleleaf/gatekeeper": "workspace:*",
-    "ts-node": "10.2.1",
+    "esno": "^0.12.1",
     "discord.js": "13.2.0",
     "dotenv": "10.0.0"
   },
