@@ -1,4 +1,4 @@
-import type { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
+import type { Gatekeeper } from "@itsmapleleaf/gatekeeper"
 
 const emojis = [
   "<:hug:784024746424795157>",

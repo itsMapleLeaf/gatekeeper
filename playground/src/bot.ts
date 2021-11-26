@@ -1,4 +1,4 @@
-import { Gatekeeper } from "@itsmapleleaf/gatekeeper/src/main"
+import { Gatekeeper } from "@itsmapleleaf/gatekeeper"
 import { Client, Intents } from "discord.js"
 import "dotenv/config"
 import { join } from "node:path"
