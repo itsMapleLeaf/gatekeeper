@@ -8,7 +8,7 @@ import type {
   MessageComponentInteraction,
 } from "discord.js"
 import glob from "fast-glob"
-import { join, relative } from "node:path"
+import { relative } from "node:path"
 import { raise, toError } from "../internal/helpers"
 import type { ConsoleLoggerLevel, Logger } from "../internal/logger"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
@@ -237,11 +237,12 @@ export class Gatekeeper {
     await this.logger.block(`Loading commands from ${localPath}`, async () => {
       const files = await glob(`./**/*.{ts,tsx,js,jsx,mjs,cjs,mts,cts}`, {
         cwd: folderPath,
+        absolute: true,
       })
 
       await Promise.all(
-        files.map(async (filename) => {
-          const mod = await import(join(folderPath, filename))
+        files.map(async (path) => {
+          const mod = require(path)
           const fn = mod.default || mod
           if (typeof fn === "function") fn(this)
         }),
