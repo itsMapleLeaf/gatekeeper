@@ -276,7 +276,7 @@ export function createSlashCommands<
               name: option.name,
               description: option.description,
               type: option.type,
-              required: option.required,
+              required: (option as any).required, // ???
               choices: ("choices" in option && option.choices) || [],
               /* option.channelTypes includes "UNKNOWN", but it's not allowed by ApplicationCommandOptionData */
               channelTypes:

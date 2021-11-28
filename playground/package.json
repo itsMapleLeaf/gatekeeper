@@ -9,11 +9,11 @@
   "dependencies": {
     "@itsmapleleaf/gatekeeper": "workspace:*",
     "esno": "^0.12.1",
-    "discord.js": "13.2.0",
+    "discord.js": "13.3.1",
     "dotenv": "10.0.0"
   },
   "devDependencies": {
-    "nodemon": "2.0.13",
-    "@types/node": "16.10.3"
+    "nodemon": "2.0.15",
+    "@types/node": "16.11.10"
   }
 }
