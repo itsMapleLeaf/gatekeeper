@@ -28,6 +28,9 @@ export type SlashCommandConfig<
    */
   name: string
 
+  /** Aliases: alternate names to call this command with */
+  aliases?: string[]
+
   /**
    * The description of the command.
    * Shows up when showing a list of the bot's commands
@@ -225,82 +228,86 @@ function sortChannelTypes(
   )
 }
 
-export function defineSlashCommand<Options extends SlashCommandOptionConfigMap>(
-  config: SlashCommandConfig<Options>,
-): Command {
-  const options: ApplicationCommandOptionData[] = Object.entries(
-    config.options ?? {},
-  ).map(([name, option]) => ({
-    name,
-    description: option.description,
-    type: option.type,
+export function createSlashCommands<
+  Options extends SlashCommandOptionConfigMap,
+>(config: SlashCommandConfig<Options>): Command[] {
+  const names = [config.name, ...(config.aliases || [])]
 
-    // discord always returns a boolean, even if the user didn't send one
-    required: option.required ?? false,
+  return names.map((name) => {
+    const options: ApplicationCommandOptionData[] = Object.entries(
+      config.options ?? {},
+    ).map(([name, option]) => ({
+      name,
+      description: option.description,
+      type: option.type,
 
-    // discord returns undefined if the user passed an empty array,
-    // so normalize undefined to an empty array
-    choices: ("choices" in option && option.choices) || [],
+      // discord always returns a boolean, even if the user didn't send one
+      required: option.required ?? false,
 
-    // Discord returns channel types in a specific order
-    channelTypes:
-      ("channelTypes" in option &&
-        sortChannelTypes(option.channelTypes ?? [])) ||
-      undefined,
-  }))
+      // discord returns undefined if the user passed an empty array,
+      // so normalize undefined to an empty array
+      choices: ("choices" in option && option.choices) || [],
 
-  const commandData: ApplicationCommandData = {
-    name: config.name,
-    description: config.description,
-    options,
-  }
+      // Discord returns channel types in a specific order
+      channelTypes:
+        ("channelTypes" in option &&
+          sortChannelTypes(option.channelTypes ?? [])) ||
+        undefined,
+    }))
 
-  return createCommand({
-    name: config.name,
+    const commandData: ApplicationCommandData = {
+      name,
+      description: config.description,
+      options,
+    }
 
-    matchesExisting: (command) => {
-      if (command.type !== "CHAT_INPUT") return false
+    return createCommand({
+      name,
 
-      const existingCommandData: ChatInputApplicationCommandData = {
-        name: command.name,
-        description: command.description,
-        // need to use the same shape so they can be compared
-        options: command.options.map(
-          (option): ApplicationCommandOptionData => ({
-            name: option.name,
-            description: option.description,
-            type: option.type,
-            required: option.required,
-            choices: ("choices" in option && option.choices) || [],
-            /* option.channelTypes includes "UNKNOWN", but it's not allowed by ApplicationCommandOptionData */
-            channelTypes:
-              (("channelTypes" in option &&
-                option.channelTypes) as ApplicationCommandChannelOptionData["channelTypes"]) ||
-              undefined,
-          }),
-        ),
-      }
+      matchesExisting: (command) => {
+        if (command.type !== "CHAT_INPUT") return false
 
-      return isDeepEqual(commandData, existingCommandData)
-    },
+        const existingCommandData: ChatInputApplicationCommandData = {
+          name: command.name,
+          description: command.description,
+          // need to use the same shape so they can be compared
+          options: command.options.map(
+            (option): ApplicationCommandOptionData => ({
+              name: option.name,
+              description: option.description,
+              type: option.type,
+              required: option.required,
+              choices: ("choices" in option && option.choices) || [],
+              /* option.channelTypes includes "UNKNOWN", but it's not allowed by ApplicationCommandOptionData */
+              channelTypes:
+                (("channelTypes" in option &&
+                  option.channelTypes) as ApplicationCommandChannelOptionData["channelTypes"]) ||
+                undefined,
+            }),
+          ),
+        }
 
-    register: async (manager) => {
-      await manager.create(commandData)
-    },
+        return isDeepEqual(commandData, existingCommandData)
+      },
 
-    matchesInteraction: (interaction) => {
-      return interaction.isCommand() && interaction.commandName === config.name
-    },
+      register: async (manager) => {
+        await manager.create(commandData)
+      },
 
-    run: async (interaction, command) => {
-      await config.run({
-        ...createInteractionContext({ interaction, command }),
-        options: collectSlashCommandOptionValues(
-          config,
-          interaction as CommandInteraction,
-        ),
-      })
-    },
+      matchesInteraction: (interaction) => {
+        return interaction.isCommand() && interaction.commandName === name
+      },
+
+      run: async (interaction, command) => {
+        await config.run({
+          ...createInteractionContext({ interaction, command }),
+          options: collectSlashCommandOptionValues(
+            config,
+            interaction as CommandInteraction,
+          ),
+        })
+      },
+    })
   })
 }
 
