@@ -4,10 +4,11 @@
   "author": "itsmapleleaf",
   "version": "0.8.0",
   "types": "./dist/main.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/main.mjs",
-      "require": "./dist/main.js"
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
     }
   },
   "files": [
@@ -38,8 +39,8 @@
     "dev-build": "pnpm build -- --watch",
     "build": "tsup-node",
     "typecheck": "tsc --noEmit",
-    "test": "jest --colors",
-    "test-watch": "jest --watch",
+    "test": "node --no-warnings --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test-watch": "pnpm test -- --watch",
     "lint": "eslint --ext js,ts,tsx .",
     "lint-fix": "npm run lint -- --fix",
     "ci": "npm-run-all --parallel --print-label --continue-on-error build test lint && pnpm run typecheck",
@@ -92,17 +93,6 @@
     "extends": [
       "./node_modules/@itsmapleleaf/configs/eslint"
     ]
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": [
-        "esbuild-jest",
-        {
-          "sourcemap": true
-        }
-      ]
-    },
-    "verbose": true
   },
   "publishConfig": {
     "access": "public"
