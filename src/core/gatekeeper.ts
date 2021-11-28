@@ -16,14 +16,14 @@ import type { DiscordCommandManager } from "../internal/types"
 import type { Command } from "./command/command"
 import { CommandInstance } from "./command/command"
 import type { MessageCommandConfig } from "./command/message-command"
-import { defineMessageCommand } from "./command/message-command"
+import { createMessageCommands } from "./command/message-command"
 import type {
   SlashCommandConfig,
   SlashCommandOptionConfigMap,
 } from "./command/slash-command"
-import { defineSlashCommand } from "./command/slash-command"
+import { createSlashCommands } from "./command/slash-command"
 import type { UserCommandConfig } from "./command/user-command"
-import { defineUserCommand } from "./command/user-command"
+import { createUserCommands } from "./command/user-command"
 
 /** Options for creating a gatekeeper instance */
 export type GatekeeperConfig = {
@@ -133,7 +133,7 @@ export class Gatekeeper {
   addSlashCommand<Options extends SlashCommandOptionConfigMap>(
     config: SlashCommandConfig<Options>,
   ) {
-    this.addCommand(defineSlashCommand(config))
+    this.addCommands(createSlashCommands(config))
   }
 
   /**
@@ -146,7 +146,7 @@ export class Gatekeeper {
    * ```
    */
   addUserCommand(config: UserCommandConfig) {
-    this.addCommand(defineUserCommand(config))
+    this.addCommands(createUserCommands(config))
   }
 
   /**
@@ -161,11 +161,13 @@ export class Gatekeeper {
    * ```
    */
   addMessageCommand(config: MessageCommandConfig) {
-    this.addCommand(defineMessageCommand(config))
+    this.addCommands(createMessageCommands(config))
   }
 
-  private addCommand(command: Command) {
-    this.commands.add(command)
+  private addCommands(commands: Command[]) {
+    for (const command of commands) {
+      this.commands.add(command)
+    }
   }
 
   private addEventListeners(

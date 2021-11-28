@@ -14,6 +14,10 @@ export type UserCommandConfig = {
    * The name of the command. This shows up in the context menu for users.
    */
   name: string
+
+  /** Aliases: alternate names to call this command with */
+  aliases?: string[]
+
   /**
    * The function to call when the command is ran.
    */
@@ -28,45 +32,50 @@ export type UserCommandInteractionContext = InteractionContext & {
   readonly targetGuildMember: GuildMember | undefined
 }
 
-export function defineUserCommand(config: UserCommandConfig): Command {
-  return createCommand({
-    name: config.name,
+export function createUserCommands(config: UserCommandConfig): Command[] {
+  const names = [config.name, ...(config.aliases || [])]
 
-    matchesExisting: (appCommand) => {
-      return appCommand.name === config.name && appCommand.type === "USER"
-    },
+  return names.map((name) =>
+    createCommand({
+      name,
 
-    register: async (commandManager) => {
-      await commandManager.create({
-        name: config.name,
-        type: "USER",
-      })
-    },
+      matchesExisting: (appCommand) => {
+        return appCommand.name === name && appCommand.type === "USER"
+      },
 
-    matchesInteraction: (interaction) =>
-      interaction.isContextMenu() &&
-      interaction.targetType === "USER" &&
-      interaction.commandName === config.name,
+      register: async (commandManager) => {
+        await commandManager.create({
+          name,
+          type: "USER",
+        })
+      },
 
-    run: async (interaction, command) => {
-      const isUserInteraction =
-        interaction.isContextMenu() && interaction.targetType === "USER"
+      matchesInteraction: (interaction) =>
+        interaction.isContextMenu() &&
+        interaction.targetType === "USER" &&
+        interaction.commandName === name,
 
-      if (!isUserInteraction) raise("Expected a context menu user interaction")
+      run: async (interaction, command) => {
+        const isUserInteraction =
+          interaction.isContextMenu() && interaction.targetType === "USER"
 
-      const targetUser = await interaction.client.users.fetch(
-        interaction.targetId,
-      )
+        if (!isUserInteraction)
+          raise("Expected a context menu user interaction")
 
-      const targetGuildMember = await interaction.guild?.members.fetch({
-        user: targetUser,
-      })
+        const targetUser = await interaction.client.users.fetch(
+          interaction.targetId,
+        )
 
-      await config.run({
-        ...createInteractionContext({ interaction, command }),
-        targetUser,
-        targetGuildMember,
-      })
-    },
-  })
+        const targetGuildMember = await interaction.guild?.members.fetch({
+          user: targetUser,
+        })
+
+        await config.run({
+          ...createInteractionContext({ interaction, command }),
+          targetUser,
+          targetGuildMember,
+        })
+      },
+    }),
+  )
 }

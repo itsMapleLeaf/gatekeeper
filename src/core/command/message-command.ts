@@ -14,6 +14,10 @@ export type MessageCommandConfig = {
    * The name of the command. This shows up in the context menu for messages.
    */
   name: string
+
+  /** Aliases: alternate names to call this command with */
+  aliases?: string[]
+
   /**
    * The function to call when the command is ran.
    */
@@ -26,43 +30,47 @@ export type MessageCommandInteractionContext = InteractionContext & {
   targetMessage: Message
 }
 
-export function defineMessageCommand(config: MessageCommandConfig): Command {
-  return createCommand({
-    name: config.name,
+export function createMessageCommands(config: MessageCommandConfig): Command[] {
+  const names = [config.name, ...(config.aliases || [])]
 
-    matchesExisting: (appCommand) => {
-      return appCommand.name === config.name && appCommand.type === "MESSAGE"
-    },
+  return names.map((name) =>
+    createCommand({
+      name,
 
-    register: async (commandManager) => {
-      await commandManager.create({
-        type: "MESSAGE",
-        name: config.name,
-      })
-    },
+      matchesExisting: (appCommand) => {
+        return appCommand.name === name && appCommand.type === "MESSAGE"
+      },
 
-    matchesInteraction: (interaction) =>
-      interaction.isContextMenu() &&
-      interaction.targetType === "MESSAGE" &&
-      interaction.commandName === config.name,
+      register: async (commandManager) => {
+        await commandManager.create({
+          type: "MESSAGE",
+          name,
+        })
+      },
 
-    run: async (interaction, command) => {
-      const isMessageInteraction =
+      matchesInteraction: (interaction) =>
         interaction.isContextMenu() &&
-        interaction.channel &&
-        interaction.targetType === "MESSAGE"
+        interaction.targetType === "MESSAGE" &&
+        interaction.commandName === name,
 
-      if (!isMessageInteraction)
-        raise("Expected a context menu message interaction")
+      run: async (interaction, command) => {
+        const isMessageInteraction =
+          interaction.isContextMenu() &&
+          interaction.channel &&
+          interaction.targetType === "MESSAGE"
 
-      const targetMessage = await interaction.channel.messages.fetch(
-        interaction.targetId,
-      )
+        if (!isMessageInteraction)
+          raise("Expected a context menu message interaction")
 
-      await config.run({
-        ...createInteractionContext({ interaction, command }),
-        targetMessage,
-      })
-    },
-  })
+        const targetMessage = await interaction.channel.messages.fetch(
+          interaction.targetId,
+        )
+
+        await config.run({
+          ...createInteractionContext({ interaction, command }),
+          targetMessage,
+        })
+      },
+    }),
+  )
 }
