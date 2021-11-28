@@ -1,7 +1,7 @@
 import type { Gatekeeper } from "@itsmapleleaf/gatekeeper"
 
 function spongebobify(text: string): string {
-  return [...text]
+  return [...(text || "no message content")]
     .map((char, index) =>
       index % 2 === 0 ? char.toLocaleLowerCase() : char.toLocaleUpperCase(),
     )
@@ -11,6 +11,7 @@ function spongebobify(text: string): string {
 export default function defineCommands(gatekeeper: Gatekeeper) {
   gatekeeper.addMessageCommand({
     name: "spongebob",
+    aliases: ["sb"],
     run(context) {
       context.reply(() => spongebobify(context.targetMessage.content))
     },

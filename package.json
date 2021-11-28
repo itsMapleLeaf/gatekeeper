@@ -33,7 +33,9 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "dev": "pnpm -C playground run dev",
+    "dev": "npm-run-all --parallel --print-label --race dev-*",
+    "dev-playground": "pnpm -C playground run dev",
+    "dev-build": "pnpm build -- --watch",
     "build": "tsup-node",
     "typecheck": "tsc --noEmit",
     "test": "jest --colors",
