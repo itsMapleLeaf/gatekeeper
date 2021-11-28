@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 export function mockConsole() {
   const consoleCalls: unknown[][] = []
-  const fn = jest.fn((...message: unknown[]) => consoleCalls.push(message))
+  const log = (...message: unknown[]) => consoleCalls.push(message)
 
   const originalMethods = {
     log: console.log,
@@ -10,10 +10,10 @@ export function mockConsole() {
     info: console.info,
   }
 
-  console.log = console.error = console.info = console.warn = fn
+  console.log = console.error = console.info = console.warn = log
 
   return {
-    fn,
+    consoleCalls,
     restore: () => {
       console.log = originalMethods.log
       console.warn = originalMethods.warn

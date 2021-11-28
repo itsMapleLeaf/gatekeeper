@@ -244,7 +244,7 @@ export class Gatekeeper {
 
       await Promise.all(
         files.map(async (path) => {
-          const mod = require(path)
+          const mod = await import(path)
           const fn = mod.default || mod
           if (typeof fn === "function") fn(this)
         }),

@@ -1,14 +1,18 @@
+import test from "ava"
+import { linkComponent } from "../src/core/component/link-component"
+import type {
+  RenderResult,
+  TopLevelComponent,
+} from "../src/core/component/reply-component"
+import { flattenRenderResult } from "../src/core/component/reply-component"
 import {
   actionRowComponent,
   buttonComponent,
   embedComponent,
   selectMenuComponent,
-} from "../../main"
-import { linkComponent } from "./link-component"
-import type { RenderResult, TopLevelComponent } from "./reply-component"
-import { flattenRenderResult } from "./reply-component"
+} from "../src/main"
 
-test("flattenRenderResult", () => {
+test("flattenRenderResult", (t) => {
   const button = buttonComponent({
     label: "button",
     style: "PRIMARY",
@@ -111,6 +115,6 @@ test("flattenRenderResult", () => {
   ]
 
   for (const { input, expected } of cases) {
-    expect(flattenRenderResult(input)).toEqual(expected)
+    t.deepEqual(flattenRenderResult(input), expected)
   }
 })
