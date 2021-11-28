@@ -1,11 +1,15 @@
-import type { Format } from "tsup"
+import { createRequire } from "node:module"
 
-export function loadFile(path: string) {
-  if (__BUILD_FORMAT__ === "esm") return import(path)
-  if (__BUILD_FORMAT__ === "cjs") return require(path)
-  throw new Error(`Unsupported build format: ${__BUILD_FORMAT__}`)
-}
+let require: NodeRequire | undefined
 
-declare global {
-  const __BUILD_FORMAT__: Format
+export async function loadFile(path: string) {
+  // when in commonjs and running via a `*-register` package,
+  // .ts files can't be `import()`ed, and this will throw
+  // if it does throw, we'll try `require()` instead
+  try {
+    return await import(path)
+  } catch {
+    require ??= createRequire(import.meta.url)
+    return require(path)
+  }
 }
