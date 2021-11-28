@@ -10,6 +10,7 @@ import type {
 import glob from "fast-glob"
 import { relative } from "node:path"
 import { raise, toError } from "../internal/helpers"
+import { loadFile } from "../internal/load-file"
 import type { ConsoleLoggerLevel, Logger } from "../internal/logger"
 import { createConsoleLogger, createNoopLogger } from "../internal/logger"
 import type { DiscordCommandManager } from "../internal/types"
@@ -244,7 +245,7 @@ export class Gatekeeper {
 
       await Promise.all(
         files.map(async (path) => {
-          const mod = await import(path)
+          const mod = await loadFile(path)
           const fn = mod.default || mod
           if (typeof fn === "function") fn(this)
         }),
