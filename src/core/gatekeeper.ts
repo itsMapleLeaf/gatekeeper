@@ -276,24 +276,35 @@ export class Gatekeeper {
   private async syncCommands(
     scope: string,
     commandManager: DiscordCommandManager,
-    existingCommands: Collection<string, ApplicationCommand>,
+    remoteCommands: Collection<string, ApplicationCommand>,
   ) {
     // remove commands first,
     // just in case we've hit the max number of commands
-    for (const [, appCommand] of existingCommands) {
-      const isUsingCommand = [...this.commands].some((command) => {
-        return command.matchesExisting(appCommand)
-      })
-      if (!isUsingCommand) {
-        await appCommand.delete()
-        this.logger.info(
-          `Removed unused ${scope}: ${chalk.bold(appCommand.name)}`,
-        )
-      }
-    }
+    await this.removeUnusedRemoteCommand(remoteCommands)
+    await this.updateChangedCommands(scope, commandManager, remoteCommands)
+  }
 
+  private async removeUnusedRemoteCommand(
+    remoteCommands: Collection<string, ApplicationCommand<{}>>,
+  ) {
+    const localCommandNames = new Set([...this.commands].map((c) => c.name))
+
+    const unusedRemoteCommands = remoteCommands.filter(
+      (command) => !localCommandNames.has(command.name),
+    )
+
+    for (const [, command] of unusedRemoteCommands) {
+      await command.delete()
+    }
+  }
+
+  private async updateChangedCommands(
+    scope: string,
+    commandManager: DiscordCommandManager,
+    remoteCommands: Collection<string, ApplicationCommand<{}>>,
+  ) {
     for (const command of this.commands) {
-      const isExisting = existingCommands.some((appCommand) => {
+      const isExisting = remoteCommands.some((appCommand) => {
         return command.matchesExisting(appCommand)
       })
       if (!isExisting) {
