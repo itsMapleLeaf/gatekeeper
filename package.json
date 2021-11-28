@@ -49,22 +49,17 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "fast-glob": "^3.2.7",
-    "tslib": "^2.3.1"
+    "fast-glob": "^3.2.7"
   },
   "peerDependencies": {
     "discord.js": ">=13"
   },
   "devDependencies": {
-    "@babel/core": "7.16.0",
-    "@babel/preset-typescript": "7.16.0",
     "@itsmapleleaf/configs": "1.0.1",
-    "@rollup/plugin-replace": "3.0.0",
     "@types/jest": "27.0.3",
     "@types/node": "16.11.10",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
-    "cpy-cli": "3.1.1",
     "discord.js": "^13.3.1",
     "esbuild": "0.14.0",
     "esbuild-jest": "0.5.0",
@@ -74,7 +69,6 @@
     "eslint-plugin-react": "7.27.1",
     "eslint-plugin-react-hooks": "4.3.0",
     "jest": "27.3.1",
-    "jest-mock-console": "1.2.3",
     "npm-run-all": "4.1.5",
     "prettier": "2.5.0",
     "release-it": "14.11.8",
@@ -109,11 +103,6 @@
       ]
     },
     "verbose": true
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-typescript"
-    ]
   },
   "publishConfig": {
     "access": "public"
