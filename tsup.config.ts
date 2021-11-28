@@ -5,4 +5,5 @@ export default defineConfig({
   target: "node16",
   format: ["cjs", "esm"],
   dts: true,
+  sourcemap: true,
 })
