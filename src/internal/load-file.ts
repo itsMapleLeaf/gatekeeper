@@ -8,8 +8,13 @@ export async function loadFile(path: string) {
   // if it does throw, we'll try `require()` instead
   try {
     return await import(path)
-  } catch {
-    require ??= createRequire(import.meta.url)
-    return require(path)
+  } catch (error) {
+    try {
+      require ??= createRequire(import.meta.url)
+      return require(path)
+    } catch {
+      // at this point, there's an actual problem with the imported file, so report the original error
+      throw error
+    }
   }
 }
