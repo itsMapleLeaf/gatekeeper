@@ -1,3 +1,14 @@
+**TL;DR:** Use [Reacord](https://github.com/itsMapleLeaf/reacord)
+
+psst! This project isn't deprecated or anything (yet?), but I'm moving away from its development for a few reasons:
+
+- The command handling part is limited, and doesn't accomodate the use cases that a decent portion of bots need, e.g. being able to add a command for individual guilds
+- The reactivity part has gaps, and is also enforced in every case, including cases where it might be suboptimal
+
+For that reason, I split out the reactivity part into a new library: [Reacord](https://github.com/itsMapleLeaf/reacord). It allows you to leverage JSX, react state, as well as the react ecosystem, and is much more powerful than what gatekeeper offers to accomplish the same goal. I would recommend using Reacord if declarative and reactive messages are what you're looking for.
+
+For command handling, I can't recommend a library for that (yet?), but you'll probably be able to build your own [simple command handler](https://github.com/itsMapleLeaf/reacord/blob/main/packages/reacord/playground/command-handler.ts).
+
 # gatekeeper
 
 Gatekeeper is a ✨reactive✨ interaction framework for discord.js!
